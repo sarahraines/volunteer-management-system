@@ -1,0 +1,12 @@
+.auth-form {
+    max-width: 400px;
+}
+.auth-form-forgot {
+    float: right;
+}
+.ant-col-rtl .auth-form-forgot {
+    float: left;
+}
+.auth-form-button {
+    width: 100%;
+}

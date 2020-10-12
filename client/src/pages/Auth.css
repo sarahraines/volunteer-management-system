@@ -1,0 +1,14 @@
+.auth-logo {
+    width: 100%;
+    max-width: 400px;
+}
+.auth-container {
+    background: #fff;
+    padding: 25px;
+    max-width: 450px;
+}
+.auth-content {
+    padding: 5vh 5vw;
+    margin: 0 auto;
+    height: auto;
+}
