@@ -5,4 +5,9 @@ Run frontend:
 cd client
 yarn start
 ```
-No need to run backend for initial set of tasks (week of 10/12).
+Run backend:
+```
+cd server
+python manage.py migrate (only after you pull)
+python manage.py runserver
+```
