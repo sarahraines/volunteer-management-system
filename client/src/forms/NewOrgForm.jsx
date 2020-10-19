@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { Form, Input, Button, Select, Upload, message } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
+import { Form, Input, Button, Select, Upload, message, Space } from 'antd';
+import { LoadingOutlined, PlusOutlined, MailOutlined } from '@ant-design/icons';
 import { register, login } from '../api/authenticationApi';
 import "antd/dist/antd.css";
-import "./AuthForm.css"
+import "./NewOrgForm.css"
 
-const EventForm = ({isRegister}) => {
+const NewOrgForm = ({isRegister}) => {
     const history = useHistory();
 
     const onFinish = useCallback(async (values) => {
@@ -26,8 +26,7 @@ const EventForm = ({isRegister}) => {
 
     const {TextArea} = Input;
 
-    const {Option} = Select;
-    const OPTIONS = ['Women\'s Rights', 'Eenvironment', 'Education'];
+    const OPTIONS = ['Women\'s Rights', 'Environment', 'Education'];
 
     class SelectWithHiddenSelectedOptions extends React.Component {
         state = {
@@ -80,45 +79,45 @@ const EventForm = ({isRegister}) => {
     class Avatar extends React.Component {
         state = {
           loading: false,
-    };
+        };
       
-    handleChange = info => {
-        if (info.file.status === 'uploading') {
-            this.setState({ loading: true });
-            return;
-        }
-        if (info.file.status === 'done') {
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj, imageUrl =>
-              this.setState({
-                imageUrl,
-                loading: false,
-              }),
+        handleChange = info => {
+            if (info.file.status === 'uploading') {
+                this.setState({ loading: true });
+                return;
+            }
+            if (info.file.status === 'done') {
+                // Get this url from response in real world.
+                getBase64(info.file.originFileObj, imageUrl =>
+                this.setState({
+                    imageUrl,
+                    loading: false,
+                }),
+                );
+            }
+        };
+      
+        render() {
+            const { loading, imageUrl } = this.state;
+            const uploadButton = (
+                <div>
+                    {loading ? <LoadingOutlined /> : <PlusOutlined />}
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                </div>
             );
-        }
-    };
-      
-    render() {
-        const { loading, imageUrl } = this.state;
-        const uploadButton = (
-            <div>
-              {loading ? <LoadingOutlined /> : <PlusOutlined />}
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
-        );
-        return (
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList={false}
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              beforeUpload={beforeUpload}
-              onChange={this.handleChange}
-            >
-              {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-            </Upload>
-          );
+            return (
+                <Upload
+                    name="avatar"
+                    listType="picture-card"
+                    className="avatar-uploader"
+                    showUploadList={false}
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    beforeUpload={beforeUpload}
+                    onChange={this.handleChange}
+                >
+                {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                </Upload>
+            );
         }
     }
 
@@ -126,40 +125,40 @@ const EventForm = ({isRegister}) => {
     <React.Fragment>
         <Form
             name="event"
-            className="auth-form"
+            className="org-form"
             initialValues={{ remember: true }}
             onFinish={onFinish}
         >   
             <Form.Item
                 name="event_name"
-                noStyle
+                hasFeedback
                 rules={[{ required: true, message: 'Event name is required' }]}
             >
                 <Input style={{ width: '100%' }} placeholder="Event name" />
             </Form.Item>
             <Form.Item
                 name="cause"
-                noStyle
-                rules={[{ required: true, message: 'Social impact cause is required' }]}
+                hasFeedback
             >
-                <SelectWithHiddenSelectedOptions />
+                <SelectWithHiddenSelectedOptions rules={[{ required: true, message: 'Social impact cause is required' }]} />
             </Form.Item>
             <Form.Item
                 name="org_desc"
-                noStyle
+                hasFeedback
                 rules={[{ required: true, message: 'Organization description is required' }]}
             >
                 <TextArea row={6} style={{ width: '100%' }} placeholder="Organization description" />
             </Form.Item>
             <Form.Item
-                name="cause"
-                noStyle
+                name="profile-pic"
+                hasFeedback
                 rules={[{ required: true, message: 'Profile picture upload' }]}
             >
-                <Avatar placeholder="Upload profile picture" />
+                Upload a profile picture for  your  organization:
+                <Avatar placeholder="Upload profile picture" className="org-form-prof-pic" />
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit" className="auth-form-button">
+                <Button type="primary" htmlType="submit" className="org-form-button">
                     {submitButtonText}
                 </Button>
             </Form.Item>
@@ -168,4 +167,4 @@ const EventForm = ({isRegister}) => {
   );
 };
 
-export default EventForm;
+export default NewOrgForm;

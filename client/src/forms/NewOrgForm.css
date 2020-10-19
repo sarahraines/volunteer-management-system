@@ -1,0 +1,12 @@
+.org-form {
+    max-width: 400px;
+}
+.org-form-forgot {
+    float: right;
+}
+.ant-col-rtl .event-form-forgot {
+    float: left;
+}
+.org-form-button {
+    width: 100%;
+}

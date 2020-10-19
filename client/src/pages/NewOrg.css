@@ -1,0 +1,14 @@
+.org-logo {
+    width: 100%;
+    max-width: 400px;
+}
+.org-container {
+    background: #fff;
+    padding: 25px;
+    max-width: 450px;
+}
+.org-content {
+    padding: 5vh 5vw;
+    margin: 0 auto;
+    height: auto;
+}
