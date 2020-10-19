@@ -36,3 +36,19 @@ class CreateUser(APIView):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ResetPassword(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        # serializer = UserSerializer(data=data)
+        # if serializer.is_valid():
+        User.objects.change_password(
+            email=data['email'],
+            old_password=data['old_password'],
+            new_password=data['new_password'],
+        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

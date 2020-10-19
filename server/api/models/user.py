@@ -33,6 +33,20 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+    def change_password(self, email, old_password, new_password):
+        if not old_password:
+            raise ValueError('Enter your old password')
+        if not new_password:
+            raise ValueError('Enter a new password')
+        if old_password != user.password:
+            raise ValueError('Old password is incorrect')
+        print("raised no exceptions")
+        user = User.objects.get(email = data['email'])
+        user.update(password = new_password)
+        # user.set_password(new_password)
+        user.save()
+        return user
+
     def create_superuser(self, email, password, first_name, last_name, **extra_fields):
         """
         Create and save a SuperUser with the given email and password.

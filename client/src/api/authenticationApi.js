@@ -16,8 +16,22 @@ export async function login(email, password) {
     email,
     password,
   });
+  localStorage.setItem("email", email);
   setNewHeaders(response);
   return response;
+}
+
+export async function reset_password(old_password, new_password) {
+  const email = localStorage.getItem("email");
+  const response = await axiosAPI.post("user/reset_password", {
+    email,
+    old_password,
+    new_password,
+  });
+  console.log("email"+ email);
+  setNewHeaders(response);
+  // localStorage.setItem("user", response.data);
+  return email;
 }
 
 /* Currently don't need this
