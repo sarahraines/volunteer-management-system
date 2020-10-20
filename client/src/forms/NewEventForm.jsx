@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Form, Input, Button, Select, Switch, DatePicker} from 'antd';
-import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Select, Switch, DatePicker, Space} from 'antd';
 import "antd/dist/antd.css";
 import "./NewEventForm.css"
+import axiosAPI from "../api/axiosApi";
 
 const {TextArea} = Input;
 const OPTIONS = ['Women\'s Rights', 'Environment', 'Education'];
@@ -14,8 +14,13 @@ const NewEventForm = () => {
     const filteredCauses = useMemo(() => {
         return OPTIONS.filter(o => !selectedCauses.includes(o));
     }, [selectedCauses]);
-    const onFinish = useCallback((values) => {
+    const onFinish = useCallback(async (values) => {
         console.log(values);
+        const response = await axiosAPI.post("event/create/", {
+            name: values.name,
+            location: values.location,
+            description: values.description,
+        });
     }, []);
 
   return (
@@ -30,12 +35,11 @@ const NewEventForm = () => {
             hasFeedback
             rules={[{ required: true, message: 'Event name is required.' }]}
         >
-            <Input style={{ width: '100%' }} placeholder="Event name" />
+            <Input style={{ width: '100%' }} placeholder="Event name"/>
         </Form.Item>
         <Form.Item
             name="virtual"
             hasFeedback
-            rules={[{ required: true, message: 'Event type is required.' }]}
         >
              <Switch checkedChildren="Virtual" unCheckedChildren="Non-Virtual" defaultChecked />
         </Form.Item>
@@ -49,7 +53,9 @@ const NewEventForm = () => {
             name="location"
             hasFeedback
         >
+            <Space direction="vertical" size={12}>
               <RangePicker showTime />
+              </Space>
         </Form.Item>
          <Form.Item
             name="causes"
@@ -82,6 +88,4 @@ const NewEventForm = () => {
         </Form.Item>
     </Form>
   );
-};
-
-export default NewEventForm; 
+}; export default NewEventForm; 
