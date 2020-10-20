@@ -2,7 +2,7 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from api.serializers import UserSerializer
+from api.serializers import UserSerializer, ChangePasswordSerializer
 from api.models import User
 import logging
 
@@ -44,15 +44,12 @@ class ChangePassword(APIView):
     def post(self, request, format='json'):
         data = request.data
         serializer = ChangePasswordSerializer(data=data)
-        # data = request.data
-        # user_serializer = User.objects.get(email = data['email'])
-        # serializer = UserSerializer(data=user_serializer)
         if serializer.is_valid():
             user = User.objects.get(email = data['email'])
             if(user.check_password(data['old_password'])): 
                 user.set_password(data['new_password'])
                 user.save()
                 return Response(serializer.data, status=status.HTTP_200_SUCCESS)
-            #change to better code
+            # change to appropriate response
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

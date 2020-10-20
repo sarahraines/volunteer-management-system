@@ -5,7 +5,7 @@ import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
-import ForgotPassword from './pages/ForgotPassword';
+// import ForgotPassword from './pages/ForgotPassword';
 import './App.css';
 import ResetPassword from './pages/ResetPassword';
 
@@ -18,7 +18,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           {/* <Route path="/forgot-password" component={ForgotPassword} /> */}
-          <Route path="/reset_password" component={ResetPassword} />
+          <Route path="/reset-password" component={ResetPassword} />
       </Switch> 
   </main>
   );

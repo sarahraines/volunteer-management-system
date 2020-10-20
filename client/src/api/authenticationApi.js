@@ -23,7 +23,7 @@ export async function login(email, password) {
 
 export async function reset_password(old_password, new_password) {
   const email = localStorage.getItem("email");
-  const response = await axiosAPI.post("user/reset_password", {
+  const response = await axiosAPI.post("user/reset-password/", {
     email,
     old_password,
     new_password,
