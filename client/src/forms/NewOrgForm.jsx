@@ -5,7 +5,6 @@ import "./NewOrgForm.css";
 import axiosAPI from "../api/axiosApi";
 
 const {TextArea} = Input;
-const CAUSES = [];
 
 const NewOrgForm = () => {
     const onFinish = useCallback(async (values) => {
