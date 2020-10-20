@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import PrivateRoute from './PrivateRoute';
 import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
+import NewEvent from './pages/NewEvent';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 import './App.css';
@@ -14,6 +15,7 @@ function App() {
           <PrivateRoute exact path="/" component={isAuthenticated() ? Home : Feed}/>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/create-event" component={NewEvent} />
       </Switch> 
   </main>
   );
