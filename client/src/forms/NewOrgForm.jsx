@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select } from 'antd';
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
 import axiosAPI from "../api/axiosApi";
 
 const {TextArea} = Input;
-const causes = ["Women's Rights", "Education"]
+const CAUSES = [];
 
 const NewOrgForm = () => {
     const onFinish = useCallback(async (values) => {
@@ -16,19 +16,28 @@ const NewOrgForm = () => {
             description: values.description,
         });
     }, []);
-    /*const causes = async () => {
+    
+    const [selectedCauses, setSelectedCauses] = useState([]);
+    const [causes, setCauses] = useState([]);
+
+    useEffect(() => {
+        getCauses();
+    }, []);
+
+    const getCauses = async () => {
         try{
-            console.log(causes.data);
-            return await axiosAPI.get('causes/get/')
+            const response = await axiosAPI.get("causes/get/");
+            setCauses(response.data);
         } catch (error) {
             console.error(error)
         }
-    }*/
-    const [selectedCauses, setSelectedCauses] = useState([]);
-    /*const filteredCauses = causes.data;*/
+    }
+    //console.log(axiosAPI.get("causes/get/"));
+    
+    //const filteredCauses = causes.data;
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
-    }, [selectedCauses]);
+    }, [selectedCauses, causes]);
 
   return (
     <Form
@@ -57,8 +66,8 @@ const NewOrgForm = () => {
             >
                 
             {filteredCauses.map(item => (
-                <Select.Option key={item} value={item}>
-                    {item}
+                <Select.Option key={item.id} value={item.id}>
+                    {item.name}
                 </Select.Option>
             ))}
             </Select>

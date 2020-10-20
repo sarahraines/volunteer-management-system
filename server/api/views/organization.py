@@ -19,11 +19,8 @@ class CreateOrganization(APIView):
 class GetCauses(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
-
+    
     def get(self, request):
         causes = Cause.objects.all()
         serializer = CauseSerializer(causes, many=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"causes": serializer.data})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data)
