@@ -35,7 +35,7 @@ const ResetPasswordForm = () => {
                 ]}
                 
             >
-                   <Input
+                <Input
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     type="password"
                     placeholder="Old Password"
