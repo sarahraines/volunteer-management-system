@@ -46,10 +46,10 @@ class ChangePassword(APIView):
         serializer = ChangePasswordSerializer(data=data)
         if serializer.is_valid():
             user = User.objects.get(email = data['email'])
-            if(user.check_password(data['old_password'])): 
+            if user.check_password(data['old_password']) : 
                 user.set_password(data['new_password'])
                 user.save()
-                return Response(serializer.data, status=status.HTTP_200_SUCCESS)
-            # change to appropriate response
-            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            #wrong password
+            return Response(serializer.data, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
