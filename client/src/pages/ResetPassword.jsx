@@ -14,7 +14,7 @@ const ResetPassword = () => {
                 <img 
                     className="auth-logo"
                     src={logo} 
-                    alt={"Forgot Password logo"}
+                    alt={"Reset Password logo"}
                 />
                 <ResetPasswordForm/>
             </div>

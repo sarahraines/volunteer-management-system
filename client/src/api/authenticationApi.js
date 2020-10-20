@@ -28,9 +28,7 @@ export async function reset_password(old_password, new_password) {
     old_password,
     new_password,
   });
-  console.log("email"+ email);
   setNewHeaders(response);
-  // localStorage.setItem("user", response.data);
   return response;
 }
 

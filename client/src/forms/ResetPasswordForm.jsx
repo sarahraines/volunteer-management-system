@@ -55,16 +55,15 @@ const ResetPasswordForm = () => {
                     placeholder="New Password"
                 />
             </Form.Item>
-            {/* {isRegister &&
-                <Form.Item
+            <Form.Item
                     name="confirm"
-                    dependencies={['password']}
+                    dependencies={['new_password']}
                     hasFeedback
                     rules={[
-                        { required: true, message: 'Please confirm your password.' },
+                        { required: true, message: 'Please confirm your new password.' },
                         ({ getFieldValue }) => ({
                             validator(rule, value) {
-                                if (!value || getFieldValue('password') === value) {
+                                if (!value || getFieldValue('new_password') === value) {
                                 return Promise.resolve();
                                 }
                                 return Promise.reject('Passwords do not match.');
@@ -77,8 +76,7 @@ const ResetPasswordForm = () => {
                         type="password"
                         placeholder="Confirm password"
                     />
-                </Form.Item>
-            } */}
+            </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" className="auth-form-button">
                     Submit
