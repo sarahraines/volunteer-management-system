@@ -1,27 +1,44 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker, Space} from 'antd';
 import "antd/dist/antd.css";
 import "./NewEventForm.css"
 import axiosAPI from "../api/axiosApi";
 
 const {TextArea} = Input;
-const OPTIONS = ['Women\'s Rights', 'Environment', 'Education'];
-
 const { RangePicker } = DatePicker;
 
 const NewEventForm = () => {
-    const [selectedCauses, setSelectedCauses] = useState([]);
-    const filteredCauses = useMemo(() => {
-        return OPTIONS.filter(o => !selectedCauses.includes(o));
-    }, [selectedCauses]);
     const onFinish = useCallback(async (values) => {
         console.log(values);
         const response = await axiosAPI.post("event/create/", {
             name: values.name,
+            virtual: values.virtual,
             location: values.location,
+            causes: values.causes,
+            date:values.date,
             description: values.description,
         });
     }, []);
+
+    const [selectedCauses, setSelectedCauses] = useState([]);
+    const [causes, setCauses] = useState([]);
+
+     useEffect(() => {
+        getCauses();
+    }, []);
+
+    const getCauses = async () => {
+        try{
+            const response = await axiosAPI.get("causes/get/");
+            setCauses(response.data);
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const filteredCauses = useMemo(() => {
+        return causes.filter(o => !selectedCauses.includes(o));
+    }, [selectedCauses, causes]);
 
   return (
     <Form
@@ -40,6 +57,7 @@ const NewEventForm = () => {
         <Form.Item
             name="virtual"
             hasFeedback
+            rules={[{ required: true, message: 'Virtual/non-virtual specification is rquired.' }]}
         >
              <Switch checkedChildren="Virtual" unCheckedChildren="Non-Virtual" defaultChecked />
         </Form.Item>
@@ -50,12 +68,10 @@ const NewEventForm = () => {
              <Input style={{ width: '100%' }} placeholder="Location" />
         </Form.Item>
         <Form.Item
-            name="location"
+            name="date"
             hasFeedback
         >
-            <Space direction="vertical" size={12}>
               <RangePicker showTime />
-              </Space>
         </Form.Item>
          <Form.Item
             name="causes"
@@ -69,8 +85,8 @@ const NewEventForm = () => {
                 style={{ width: '100%' }}
             >
                 {filteredCauses.map(item => (
-                    <Select.Option key={item} value={item}>
-                        {item}
+                    <Select.Option key={item.id} value={item.id}>
+                        {item.name}
                     </Select.Option>
                 ))}
             </Select>

@@ -1,2 +1,2 @@
 from .user import UserSerializer
-from .event import EventSerializer
+from .event import CauseSerializer, EventSerializer

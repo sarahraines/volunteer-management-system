@@ -7,5 +7,6 @@ urlpatterns = [
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('blacklist/', views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='blacklist'),
     path('user/create/', views.CreateUser.as_view(), name='create_user'),
-    path('event/create/', views.CreateEvent.as_view(), name='create_event')
+    path('event/create/', views.CreateEvent.as_view(), name='create_event'),
+    path('causes/get/', views.GetCauses.as_view(), name='get_causes')
 ]
