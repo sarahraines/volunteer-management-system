@@ -20,15 +20,14 @@ class CreateEvent(APIView):
 		# 	return Response(serializer.data, status=status.HTTP_201_CREATED)
 		# print(serializer.errors)
 		# return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-		# new_event = Event(
-		# 	name=data['name'], 
-		# 	virtual=data['virtual'], 
-		# 	location=data['location'], 
-		# 	begindate=data['date'][0], 
-		# 	enddate=data['date'][1],
-		# 	causes=data['causes'],
-		# 	description=data['description'])
-		# new_event.save()
+		new_event = Event(
+			name=data['name'], 
+			virtual=data['virtual'], 
+			location=data['location'], 
+			begindate=data['date'][0], 
+			enddate=data['date'][1],
+			description=data['description'])
+		new_event.save()
 		return Response(data, status=status.HTTP_201_CREATED)
 
 class GetCauses(APIView):
