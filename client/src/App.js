@@ -11,7 +11,7 @@ function App() {
   return (
     <main>
       <Switch>
-          <PrivateRoute exact path="/" component={isAuthenticated() ? Home : Feed}/>
+          <PrivateRoute exact path="/" component={isAuthenticated() ? Feed : Home}/>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
       </Switch> 
