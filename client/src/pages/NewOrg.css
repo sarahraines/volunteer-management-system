@@ -3,6 +3,7 @@
     max-width: 400px;
 }
 .org-container {
+    margin: 0 auto;
     background: #fff;
     padding: 25px;
     max-width: 450px;
