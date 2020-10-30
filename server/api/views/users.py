@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class LogoutAndBlacklistRefreshTokenForUserView(APIView):
     permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
 
     def post(self, request):
         try:

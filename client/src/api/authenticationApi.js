@@ -30,9 +30,10 @@ export async function refreshToken(refresh) {
 }
 */
 
-export async function logout() {
+export function logout() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
+  axiosAPI.defaults.headers['Authorization'] = null;
 }
 
 export const isAuthenticated = () => {
