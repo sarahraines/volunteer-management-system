@@ -1,2 +1,2 @@
 from .user import User
-from .organization import Organization, Cause
+from .organization import Organization, Cause, FAQ

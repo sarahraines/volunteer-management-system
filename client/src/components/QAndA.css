@@ -1,0 +1,14 @@
+.org-content {
+    padding: 5vh 5vw;
+    margin: 0 auto;
+    height: auto;
+}
+.org-container {
+    background: #fff;
+    padding: 25px;
+    max-width: 450px;
+    margin: 20 px;
+}
+.qa-container{
+    padding: 25px;
+}

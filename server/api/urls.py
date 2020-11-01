@@ -8,5 +8,7 @@ urlpatterns = [
     path('blacklist/', views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='blacklist'),
     path('user/create/', views.CreateUser.as_view(), name='create_user'),
     path('organization/create/', views.CreateOrganization.as_view(), name='create_organization'),
+    path('organization/faq/', views.UpdateFAQ.as_view(), name='update_faq'),
+    path('organization/get-faq/', views.GetFAQ.as_view(), name='get_faq'),
     path('causes/get/', views.GetCauses.as_view(), name='get_causes')
 ]
