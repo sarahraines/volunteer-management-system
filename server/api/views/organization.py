@@ -30,7 +30,9 @@ class UpdateFAQ(APIView):
     
     def post(self, request, format='json'):
         data = request.data
-        serializer = FAQSerializer(data=data["formVals"], many=True)
+        # serializer = FAQSerializer(data=data["formVals"], many=True)
+        for item in data["formVals"]:
+            FAQ.objects.filter(id=item.id).update(question = item.question, answer = item.answer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

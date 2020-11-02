@@ -6,21 +6,7 @@ import { addFAQ,getFAQ } from '../api/authenticationApi';
 
 function QAndAPage() {
     const [qA, setQA] = useState([]);
-    // useCallback(async () => {
-    //     try {
-    //         // console.log(qA)
-    //         response = await getFAQ();
-    //         setQA
-    //         // if (isRegister) {
-    //         //     await register(values.email, values.first_name, values.last_name, values.password)
-    //         // } else {
-    //         //     await login(values.email, values.password);
-    //         //     history.push("/");
-    //         // }
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }, []);
+
     useEffect(() => {
 
         getFAQ()
@@ -29,28 +15,26 @@ function QAndAPage() {
           setQA(faq);
         })
 
-    })
+    }, qA)
     const onFinish = useCallback(async (qA) => {
         try {
-            // console.log(qA)
-            await addFAQ(qA);
-            // if (isRegister) {
-            //     await register(values.email, values.first_name, values.last_name, values.password)
-            // } else {
-            //     await login(values.email, values.password);
-            //     history.push("/");
-            // }
+            const updatedQA = getUpdatedQA(qA);
+            await addFAQ(updatedQA);
         } catch (error) {
             throw error;
         }
     }, []);
     function addQAField(){
-        setQA([...qA, {question: "", answer: ""}]);
+        setQA([...qA, {id: qA.length, question: "", answer: "", updated: true}]);
     }
-    function updateItem(i, question, answer){
+    function updateItem(i, question, answer, id){
         const qACopy = [...qA]
-        qACopy[i] = {question: question, answer: answer}
+        qACopy[i] = {id:id, question: question, answer: answer, updated: true}
         setQA(qACopy)
+    }
+    function getUpdatedQA(qA){
+        const updated = qA.filter(item => item.updated);
+        return updated;
     }
     
 

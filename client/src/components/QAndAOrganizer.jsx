@@ -8,7 +8,7 @@ function QAndAOrganizer ({qA, updateItem}) {
     console.log(qA)
 
     return (
-        qA.map((item, i)=> <div className="qa-container"><QAndA valInArr={i} updateItem={updateItem} question={item.question} answer={item.answer}/></div>)
+        qA.map((item, i)=> <div className="qa-container"><QAndA id={item.id} valInArr={i} updateItem={updateItem} question={item.question} answer={item.answer}/></div>)
 
     )
 

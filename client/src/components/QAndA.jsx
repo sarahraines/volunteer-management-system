@@ -4,16 +4,16 @@ import './QAndA.css';
 const { Title, Paragraph } = Typography;
 
 
-function QAndA ({valInArr, updateItem, question, answer}) {
+function QAndA ({id, valInArr, updateItem, question, answer}) {
     const [questionStr, setQuestionStr] = useState(question);
     const [answerStr, setAnswerStr] = useState(answer);
     function updateQ(questionStr){
         setQuestionStr(questionStr)
-        updateItem(valInArr, questionStr, answerStr)
+        updateItem(valInArr, questionStr, answerStr, id)
     }
     function updateA(answerString){
         setAnswerStr(answerString)
-        updateItem(valInArr, questionStr, answerString)
+        updateItem(valInArr, questionStr, answerString, id)
     }
 
 
