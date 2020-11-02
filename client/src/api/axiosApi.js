@@ -61,6 +61,8 @@ export function setNewHeaders(response) {
     axiosInstance.defaults.headers["Authorization"] = "JWT " + response.data.access;
     localStorage.setItem("access_token", response.data.access);
     localStorage.setItem("refresh_token", response.data.refresh);
+    localStorage.setItem("user_id", response.data.user_id);
+
 }
 
 export default axiosInstance;

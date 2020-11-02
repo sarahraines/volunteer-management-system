@@ -33,6 +33,7 @@ export async function refreshToken(refresh) {
 export function logout() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user_id");
   axiosAPI.defaults.headers['Authorization'] = null;
 }
 
