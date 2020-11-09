@@ -27,8 +27,12 @@ export async function addFAQ(formVals) {
   setNewHeaders(response);
   return response;
 }
-export async function getFAQ(formVals) {
-  const response =  await axiosAPI.get("organization/get-faq/");
+export async function getFAQ(orgId) {
+  const response =  await axiosAPI.get("organization/get-faq/", {
+    params: {
+      org_id: 1,
+    }
+  });
   // setNewHeaders(response);
   return response;
 }

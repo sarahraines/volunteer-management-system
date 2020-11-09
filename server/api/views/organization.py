@@ -27,23 +27,25 @@ class GetCauses(APIView):
 class UpdateFAQ(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
-    
     def post(self, request, format='json'):
         data = request.data
-        # serializer = FAQSerializer(data=data["formVals"], many=True)
         for item in data["formVals"]:
-            FAQ.objects.filter(id=item.id).update(question = item.question, answer = item.answer)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer = FAQSerializer(data=item)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            faq, created = FAQ.objects.update_or_create(
+                id=item['id'], org_id= item['org_id'], defaults={"question": item['question'], "answer": item['answer']}
+            )
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
 
 class GetFAQ(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     
     def get(self, request):
-        causes = FAQ.objects.all()
+        org_id = request.GET['org_id']
+        causes = FAQ.objects.filter(org_id=org_id)
         serializer = FAQSerializer(causes, many=True)
         print(serializer.data)
         return Response(serializer.data)

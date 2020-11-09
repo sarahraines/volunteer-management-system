@@ -10,3 +10,4 @@ class Organization(models.Model):
 class FAQ(models.Model):
     question = models.CharField(max_length=256)
     answer = models.CharField(max_length=256)
+    org_id = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)

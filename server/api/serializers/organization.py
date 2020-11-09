@@ -10,7 +10,7 @@ class CauseSerializer(serializers.ModelSerializer):
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
-        fields = ['id', 'question', 'answer']
+        fields = ['id', 'question', 'answer', 'org_id']
 
 class OrganizationSerializer(serializers.ModelSerializer):
     causes = CauseSerializer(read_only=True, many=True)

@@ -12,7 +12,7 @@ import QAndAPage from './pages/QAndAPage';
 
 function App() {
 
-  const FAQ = () => <QAndAPage />
+  const FAQ = () => <QAndAPage orgId={1}/>
   return (
     <main>
       <Switch>

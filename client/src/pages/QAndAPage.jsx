@@ -4,12 +4,11 @@ import QAndAOrganizer from '../components/QAndAOrganizer';
 import './NewOrg.css';
 import { addFAQ,getFAQ } from '../api/authenticationApi';
 
-function QAndAPage() {
+function QAndAPage({orgId}) {
     const [qA, setQA] = useState([]);
 
     useEffect(() => {
-
-        getFAQ()
+        getFAQ(orgId)
         .then(res => {
           const faq = res.data;
           setQA(faq);
@@ -25,11 +24,11 @@ function QAndAPage() {
         }
     }, []);
     function addQAField(){
-        setQA([...qA, {id: qA.length, question: "", answer: "", updated: true}]);
+        setQA([...qA, {id: qA.length, org_id: orgId,  question: "", answer: "", updated: true}]);
     }
     function updateItem(i, question, answer, id){
         const qACopy = [...qA]
-        qACopy[i] = {id:id, question: question, answer: answer, updated: true}
+        qACopy[i] = {id:id, org_id: orgId, question: question, answer: answer, updated: true}
         setQA(qACopy)
     }
     function getUpdatedQA(qA){
