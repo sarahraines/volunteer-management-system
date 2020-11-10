@@ -4,15 +4,11 @@ import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
-<<<<<<< HEAD
 import Activate from './pages/Activate';
-=======
-// import ForgotPassword from './pages/ForgotPassword';
-import Event from './pages/Event';
->>>>>>> 36736440b75e6b8690e9078c21176578f87c2654
 import './App.css';
 
 function App() {
+
   return (
     <main>
       <Switch>

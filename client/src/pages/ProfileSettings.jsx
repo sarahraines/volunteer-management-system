@@ -16,7 +16,6 @@ function ProfileSettings() {
         setUser(response.data.user);
     }
 
-
     return <h1>Profile settings!</h1>;
 }
 

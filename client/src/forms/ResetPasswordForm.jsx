@@ -1,22 +1,26 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Input, Button } from 'antd';
+import { useDispatch } from 'react-redux';
+import { Alert, Form, Input, Button } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import { reset_password} from '../api/authenticationApi';
+import { reset_password } from '../api/authenticationApi';
+import { addAlert } from '../actionCreators.js';
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
 const ResetPasswordForm = () => {
     const history = useHistory();
+    const dispatch = useDispatch();
+    const [isAlertVisible, setIsAlertVisible] = useState(true);
 
     const onFinish = useCallback(async (values) => {
         try {
             await reset_password(values.old_password, values.new_password);
-            history.push("/");
+            dispatch(addAlert('Password reset success', 'success'));
         } catch (error) {
-            throw error;
+            dispatch(addAlert('Old password incorrect', 'error'));
         }
-    }, [ history]);
+    }, [dispatch, history]);
 
 
   return (
@@ -31,28 +35,28 @@ const ResetPasswordForm = () => {
                 name="old_password"
                 hasFeedback
                 rules={[
-                    { required: true, message: 'Password is a required field.' },
+                    { required: true, message: 'Old password is a required field.' },
                 ]}
                 
             >
                 <Input
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     type="password"
-                    placeholder="Old Password"
+                    placeholder="Old password"
                 />
             </Form.Item>
             <Form.Item
                 name="new_password"
                 hasFeedback
                 rules={[
-                    { required: true, message: 'Password is a required field.' },
-                    [{ min: 12, message: "Password must be at least 12 characters long."}],
+                    { required: true, message: 'New password is a required field.' },
+                    { min: 12, message: "Password must be at least 12 characters long."}
                 ]}
             >
                 <Input
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     type="password"
-                    placeholder="New Password"
+                    placeholder="New password"
                 />
             </Form.Item>
             <Form.Item
@@ -83,6 +87,9 @@ const ResetPasswordForm = () => {
                 </Button>
             </Form.Item>
         </Form>
+        {isAlertVisible ? (
+            <Alert message="Incorrect password" type="success" closable banner afterClose={setIsAlertVisible(false)} />
+        ) : null}
     </React.Fragment>
   );
 };
