@@ -22,9 +22,9 @@ export async function login(email, password) {
 }
 
 export async function reset_password(old_password, new_password) {
-  const email = localStorage.getItem("email");
-  const response = await axiosAPI.post("user/reset-password/", {
-    email,
+  const user_id = localStorage.getItem("user_id");
+  const response = await axiosAPI.post("users/reset-password/", {
+    user_id,
     old_password,
     new_password,
   });
@@ -32,19 +32,11 @@ export async function reset_password(old_password, new_password) {
   return response;
 }
 
-/* Currently don't need this
-export async function refreshToken(refresh) {
-  const response = await axiosAPI.post("token/refresh/", {
-    refresh,
-  });
-  setNewHeaders(response);
-  return response;
-}
-*/
-
-export async function logout() {
+export function logout() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user_id");
+  axiosAPI.defaults.headers['Authorization'] = null;
 }
 
 export const isAuthenticated = () => {

@@ -1,24 +1,29 @@
 import React from 'react';
 import { Route, Switch } from "react-router-dom";
-import PrivateRoute from './PrivateRoute';
 import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 // import ForgotPassword from './pages/ForgotPassword';
+import Event from './pages/Event';
 import './App.css';
-import ResetPassword from './pages/ResetPassword';
-
 
 function App() {
   return (
     <main>
       <Switch>
-          <PrivateRoute exact path="/" component={isAuthenticated() ? Home : Feed}/>
+          <Route exact path="/" 
+            render={() =>
+              isAuthenticated() ? (
+                <Feed/>
+              ) : (
+                <Home/>
+              )
+            }
+          />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          {/* <Route path="/forgot-password" component={ForgotPassword} /> */}
-          <Route path="/reset-password" component={ResetPassword} />
+          <Route path="/events" component={Event} />
       </Switch> 
   </main>
   );
