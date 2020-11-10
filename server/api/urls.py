@@ -5,8 +5,9 @@ from . import views
 urlpatterns = [
     path('token/obtain/', views.MyTokenObtainPairView.as_view(), name='token_create'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-    path('token/blacklist/', views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='token_blacklist'),
     path('users/create/', views.CreateUser.as_view(), name='create_user'),
+    path('users/reset-password/', views.ChangePassword.as_view(), name='reset_password')
+    path('token/blacklist/', views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='token_blacklist'),
     path('users/activate/', views.ActivateUser.as_view(), name='activate_user'),
     path('organization/create/', views.CreateOrganization.as_view(), name='create_organization'),
     path('causes/get/', views.GetCauses.as_view(), name='get_causes'),
