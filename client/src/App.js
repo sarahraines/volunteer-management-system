@@ -4,7 +4,7 @@ import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
-import Event from './pages/Event';
+import Activate from './pages/Activate';
 import './App.css';
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
           />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <Route path="/events" component={Event} />
+          <Route path="/activate" component={Activate} />
       </Switch> 
   </main>
   );

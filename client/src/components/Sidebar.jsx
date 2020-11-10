@@ -65,10 +65,10 @@ const Sidebar = ({setFeedContext}) =>  {
                 onSelect={onSelect}
             >
                 <Divider/>
-                <Item key="manage" icon={<SettingOutlined />}>
-                    Manage account settings
+                <Item key="settings" icon={<SettingOutlined />}>
+                    Manage user settings
                 </Item>
-                <Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}> 
+                <Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}>
                     Logout
                 </Item>
             </Menu>
