@@ -4,6 +4,7 @@ import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
+// import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
 import './App.css';
 
@@ -30,5 +31,4 @@ function App() {
 
 const Register = () => <Auth isRegister={true}/>;
 const Login = () => <Auth isRegister={false}/>;
-
 export default App;
