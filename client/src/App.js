@@ -24,6 +24,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/events" component={Event} />
+          <Route path="/feed" component={Feed} />
       </Switch> 
   </main>
   );
