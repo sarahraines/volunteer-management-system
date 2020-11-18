@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import User, Organization, Cause, FAQ
+from .models import User, Organization, Cause, FAQ, Event, Attendee, Member
+
 
 class UserAdmin(admin.ModelAdmin):
     model = User
@@ -12,7 +13,19 @@ class CauseAdmin(admin.ModelAdmin):
 class FAQAdmin(admin.ModelAdmin):
     model = FAQ
 
+class EventAdmin(admin.ModelAdmin):
+	model = Event
+
+class AttendeeAdmin(admin.ModelAdmin):
+	model = Attendee
+
+class MemberAdmin(admin.ModelAdmin):
+	model = Member
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Cause, CauseAdmin)
 admin.site.register(FAQ, FAQAdmin)
+admin.site.register(Event, EventAdmin)
+admin.site.register(Attendee, AttendeeAdmin)
+admin.site.register(Member, MemberAdmin)

@@ -33,8 +33,9 @@ class UpdateFAQ(APIView):
             serializer = FAQSerializer(data=item)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            org = Organization.objects.get(id = item['org_id'])
             faq, created = FAQ.objects.update_or_create(
-                id=item['id'], org_id= item['org_id'], defaults={"question": item['question'], "answer": item['answer']}
+                id=item['id'], org_id= org, defaults={"question": item['question'], "answer": item['answer']}
             )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
         

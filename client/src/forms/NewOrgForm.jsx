@@ -8,8 +8,7 @@ const {TextArea} = Input;
 
 const NewOrgForm = () => {
     const onFinish = useCallback(async (values) => {
-        console.log(values);
-        const response = await axiosAPI.post("organization/create/", {
+        await axiosAPI.post("organization/create/", {
             name: values.name,
             causes: values.causes,
             description: values.description,
@@ -31,12 +30,11 @@ const NewOrgForm = () => {
             console.error(error)
         }
     }
-    //console.log(axiosAPI.get("causes/get/"));
-    
-    //const filteredCauses = causes.data;
+
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
     }, [selectedCauses, causes]);
+
 
   return (
     <Form

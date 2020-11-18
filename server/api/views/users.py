@@ -2,7 +2,8 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from api.serializers import UserSerializer
+from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from api.models import User
 import logging
 
@@ -10,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class LogoutAndBlacklistRefreshTokenForUserView(APIView):
     permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
 
     def post(self, request):
         try:
@@ -36,3 +38,23 @@ class CreateUser(APIView):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ChangePassword(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        serializer = ChangePasswordSerializer(data=data)
+        if serializer.is_valid():
+            user = User.objects.get(pk=data['user_id'])
+            if user.check_password(data['old_password']) : 
+                user.set_password(data['new_password'])
+                user.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            #wrong password
+            return Response(serializer.data, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
