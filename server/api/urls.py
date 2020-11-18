@@ -13,5 +13,6 @@ urlpatterns = [
     path('events/get/', views.GetEvents.as_view(), name='get_events'),
     path('attendees/user_events/', views.GetAttendees.as_view(), name='get_attendees'),
     path('attendees/create/', views.AddAttendees.as_view(), name="add_attendees"),
-    path('attendees/delete/', views.DeleteAttendees.as_view(), name="delete_attendees")
+    path('attendees/delete/', views.DeleteAttendees.as_view(), name="delete_attendees"),
+    path('user/get-orgs/', views.GetOrgsFromMember.as_view(), name='get_orgs_from_member')
 ]

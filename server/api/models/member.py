@@ -9,6 +9,6 @@ MEMBER_TYPES = (
     )
 
 class Member(models.Model):
-    username = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    organizations = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     member_type = models.IntegerField(choices=MEMBER_TYPES)
