@@ -15,6 +15,7 @@ function EventOrganizer ({events, user_events}) {
 				<EventCard valInArr={i} 
 				id={item.id}
 				name={item.name}
+				virtual={item.virtual}
 				location={item.location}
 				begindate={item.begindate}
 				enddate={item.enddate}

@@ -3,7 +3,7 @@ import {Card, Button } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import '../pages/Event.css';
 
-function EventCard ({valInArr, id, name, location, begindate, enddate, causes, description, filter}){
+function EventCard ({valInArr, id, name, virtual, location, begindate, enddate, causes, description, filter}){
 
 	//setState hook onClick, on initial useState hook = filter value
 
@@ -40,6 +40,7 @@ function EventCard ({valInArr, id, name, location, begindate, enddate, causes, d
     return (
 		<div className='event-container'>
 			<Card title={name} bordered={true} style={{ width: 500 }}>
+				<p><b>Virtual: </b>{virtual ? "Yes" : "No"}</p>
                 <p><b>Location: </b>{location}</p>
                 <p><b>Date: </b>{begindate}-{enddate}</p>
                 <p><b>Causes: </b>{causes}</p>

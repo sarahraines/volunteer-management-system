@@ -4,8 +4,8 @@ from api.serializers import OrganizationSerializer
 
 class MemberSerializer(serializers.ModelSerializer):
     username = serializers.RelatedField(source='user', read_only=True)
-    organization = serializers.RelatedField(source='organization', read_only=True)
+    # organization = serializers.RelatedField(source='organization', read_only=True)
 
     class Meta:
         model = Member
-        fields = ['username', 'organization', 'user_type']
+        fields = ['username', 'organization', 'member_type']
