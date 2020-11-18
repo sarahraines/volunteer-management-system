@@ -39,7 +39,7 @@ const Sidebar = ({setFeedContext}) =>  {
         try{
              const response = await axiosAPI.get("user/get-orgs/", {
                  params: {
-                     user_id: localStorage.getItem("user_id"),  //'jasmine.lee.0',
+                     user_id: localStorage.getItem("user_id"), 
                  }
              });
             console.log(response.data);

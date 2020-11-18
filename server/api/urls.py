@@ -14,5 +14,6 @@ urlpatterns = [
     path('attendees/user_events/', views.GetAttendees.as_view(), name='get_attendees'),
     path('attendees/create/', views.AddAttendees.as_view(), name="add_attendees"),
     path('attendees/delete/', views.DeleteAttendees.as_view(), name="delete_attendees"),
-    path('user/get-orgs/', views.GetOrgsFromMember.as_view(), name='get_orgs_from_member')
+    path('user/get-orgs/', views.GetOrgsFromMember.as_view(), name='get_orgs_from_member'),
+    path('member/create/', views.CreateMember.as_view(), name='create_member')
 ]
