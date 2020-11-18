@@ -28,7 +28,6 @@ export async function reset_password(old_password, new_password) {
     old_password,
     new_password,
   });
-  setNewHeaders(response);
   return response;
 }
 

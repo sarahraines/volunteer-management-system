@@ -1,23 +1,34 @@
 import React, { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import { reset_password} from '../api/authenticationApi';
+import { reset_password } from '../api/authenticationApi';
+import { addAlert } from '../actionCreators.js';
+import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
 const ResetPasswordForm = () => {
-    const history = useHistory();
+    const dispatch = useDispatch();
 
     const onFinish = useCallback(async (values) => {
         try {
             await reset_password(values.old_password, values.new_password);
-            history.push("/");
+            dispatch(addAlert('Password reset success', 'success'));
         } catch (error) {
-            throw error;
+            dispatch(addAlert('Old password incorrect', 'error'));
         }
-    }, [ history]);
+    }, [dispatch]);
 
+    const sendForgotPasswordEmail = useCallback(async () => {
+        try {
+            const url = "users/forgot-password/?user_id=" + localStorage.getItem("user_id")
+            await axiosAPI.get(url);
+            dispatch(addAlert('Password reset link sent to email', 'success'));
+        } catch (error) {
+            dispatch(addAlert('Password reset email failed to send', 'error'));
+        }
+    }, [dispatch]);
 
   return (
     <React.Fragment>
@@ -31,28 +42,28 @@ const ResetPasswordForm = () => {
                 name="old_password"
                 hasFeedback
                 rules={[
-                    { required: true, message: 'Password is a required field.' },
+                    { required: true, message: 'Old password is a required field.' },
                 ]}
                 
             >
                 <Input
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     type="password"
-                    placeholder="Old Password"
+                    placeholder="Old password"
                 />
             </Form.Item>
             <Form.Item
                 name="new_password"
                 hasFeedback
                 rules={[
-                    { required: true, message: 'Password is a required field.' },
-                    [{ min: 12, message: "Password must be at least 12 characters long."}],
+                    { required: true, message: 'New password is a required field.' },
+                    { min: 12, message: "Password must be at least 12 characters long."}
                 ]}
             >
                 <Input
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     type="password"
-                    placeholder="New Password"
+                    placeholder="New password"
                 />
             </Form.Item>
             <Form.Item
@@ -81,6 +92,7 @@ const ResetPasswordForm = () => {
                 <Button type="primary" htmlType="submit" className="auth-form-button">
                     Submit
                 </Button>
+                Forgot password? <a onClick={sendForgotPasswordEmail}>Send a password reset email</a>
             </Form.Item>
         </Form>
     </React.Fragment>

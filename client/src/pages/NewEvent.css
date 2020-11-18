@@ -2,11 +2,14 @@
     width: 100%;
     max-width: 400px;
 }
+.event-container {
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px;
+    max-width: 450px;
+}
 .event-content {
     padding: 5vh 5vw;
     margin: 0 auto;
     height: auto;
-}
-.site-card-border-less-wrapper {
-  padding: 30px;
 }

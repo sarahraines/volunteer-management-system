@@ -65,8 +65,11 @@ const Sidebar = ({setFeedContext}) =>  {
                 selectedKeys={selectedKeys}
                 onSelect={onSelect}
             >
-                <Item key="create" icon={<PlusSquareOutlined />}>
+                <Item key="create-org" icon={<PlusSquareOutlined />}>
                     Create new organization
+                </Item>
+                <Item key="create-event" icon={<PlusSquareOutlined />}>
+                    Create new event
                 </Item>
                 <Item key="find" icon={<SearchOutlined />}>
                     Find service opportunities
@@ -88,10 +91,10 @@ const Sidebar = ({setFeedContext}) =>  {
                 onSelect={onSelect}
             >
                 <Divider/>
-                <Item key="manage" icon={<SettingOutlined />}>
-                    Manage account settings
+                <Item key="settings" icon={<SettingOutlined />}>
+                    Manage user settings
                 </Item>
-                <Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}> 
+                <Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}>
                     Logout
                 </Item>
             </Menu>
