@@ -4,7 +4,7 @@ from api.models import Event, Attendee
 class EventSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Event
-		fields = ['id', 'name', 'virtual', 'location', 'begindate', 'enddate', 'causes', 'description']
+		fields = ['id', 'organizations', 'name', 'virtual', 'location', 'begindate', 'enddate', 'causes', 'description']
 
 class AttendeeSerializer(serializers.ModelSerializer):
 	events = EventSerializer(read_only=True, many=True)

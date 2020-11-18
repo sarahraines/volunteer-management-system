@@ -30,12 +30,11 @@ const NewOrgForm = () => {
             console.error(error)
         }
     }
-    //console.log(axiosAPI.get("causes/get/"));
-    
-    //const filteredCauses = causes.data;
+
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
     }, [selectedCauses, causes]);
+
 
   return (
     <Form

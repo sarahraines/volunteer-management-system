@@ -1,6 +1,7 @@
 from django.db import models
+from api.models import User, Cause, Organization
 from django.conf import settings
-User = settings.AUTH_USER_MODEL
+
 
 class Event(models.Model):
     name = models.CharField(max_length=1000)
@@ -8,8 +9,9 @@ class Event(models.Model):
     location = models.CharField(max_length=1000)
     begindate = models.DateTimeField()
     enddate = models.DateTimeField()
-    causes = models.CharField(max_length=1000)
+    causes = models.ManyToManyField(Cause)
     description = models.TextField()
+    organizations = models.ManyToManyField(Organization)
     REQUIRED_FIELDS = ['name', 'virtual']
 
 class Attendee(models.Model):

@@ -65,8 +65,11 @@ const Sidebar = ({setFeedContext}) =>  {
                 selectedKeys={selectedKeys}
                 onSelect={onSelect}
             >
-                <Item key="create" icon={<PlusSquareOutlined />}>
+                <Item key="create-org" icon={<PlusSquareOutlined />}>
                     Create new organization
+                </Item>
+                <Item key="create-event" icon={<PlusSquareOutlined />}>
+                    Create new event
                 </Item>
                 <Item key="find" icon={<SearchOutlined />}>
                     Find service opportunities

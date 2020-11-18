@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Feed from './pages/Feed';
 // import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
+import NewEvent from './pages/NewEvent'
 import './App.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/events" component={Event} />
+          <Route path="/NewEvent" component={NewEvent} />
           <Route path="/feed" component={Feed} />
       </Switch> 
   </main>
