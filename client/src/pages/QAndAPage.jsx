@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import { Layout, Typography, Button } from 'antd';
-import QAndAOrganizer from '../components/QAndAOrganizer';
+import QAndA from '../components/QAndA';
 import './NewOrg.css';
 import { addFAQ,getFAQ } from '../api/authenticationApi';
 
@@ -14,11 +14,11 @@ function QAndAPage({orgId}) {
         .then(res => {
           const faq = res.data;
           console.log("getting org " + orgId);
-          console.log("setting data" + faq)
+          console.log(faq)
           setQA(faq);
         })
 
-    }, qA)
+    }, [orgId])
     const onFinish = useCallback(async (qA) => {
         try {
             const updatedQA = getUpdatedQA(qA);
@@ -45,7 +45,11 @@ function QAndAPage({orgId}) {
         <Layout style={{ height: "100vh" }}>
             <Layout.Content className="org-content">
                     <Typography.Title level={2}>Question And Answer Page</Typography.Title>
-                    <QAndAOrganizer qA={qA} updateItem={updateItem}/>
+                    {qA.map((item, i)=> 
+                        <div className="qa-container">
+                            <QAndA id={item.id} valInArr={i} updateItem={updateItem} question={item.question} answer={item.answer}/>
+                        </div>
+                    )}
                     <Button type="primary" onClick={addQAField} shape="circle"> + </Button>
                     <Button htmlType="submit" onClick={() => onFinish(qA)}> Submit </Button>
           </Layout.Content>
