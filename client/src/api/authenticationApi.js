@@ -31,7 +31,7 @@ export async function addFAQ(formVals) {
 export async function getFAQ(orgId) {
   const response =  await axiosAPI.get("organization/get-faq/", {
     params: {
-      org_id: 1,
+      org_id: orgId,
     }
   });
   // setNewHeaders(response);

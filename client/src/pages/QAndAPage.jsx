@@ -4,13 +4,16 @@ import QAndAOrganizer from '../components/QAndAOrganizer';
 import './NewOrg.css';
 import { addFAQ,getFAQ } from '../api/authenticationApi';
 
-function QAndAPage({orgId, qaData}) {
+function QAndAPage({orgId}) {
     const [qA, setQA] = useState([]);
-    console.log("getting org " + orgId);
+    if(isNaN(orgId)){
+        orgId = 2;
+    }    
     useEffect(() => {
         getFAQ(orgId)
         .then(res => {
           const faq = res.data;
+          console.log("getting org " + orgId);
           console.log("setting data" + faq)
           setQA(faq);
         })
