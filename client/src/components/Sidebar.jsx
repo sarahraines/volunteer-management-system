@@ -29,6 +29,34 @@ const Sidebar = ({setFeedContext}) =>  {
         setFeedContext(selectedKeys[0] ?? "");
     }, [selectedKeys, setFeedContext]);
 
+    const [organizations, setOrganizations] = useState([]);
+
+    useEffect(() => {
+        getOrganizations();
+    }, []);
+
+    const getOrganizations = async () => {
+        try{
+             const response = await axiosAPI.get("user/get-orgs/", {
+                 params: {
+                     user_id: localStorage.getItem("user_id"),  //'jasmine.lee.0',
+                 }
+             });
+            console.log(response.data);
+            setOrganizations(response.data);
+        } catch(error) {
+            console.error(error);
+        }
+    }
+
+    const organizationsList = (
+		organizations.map(org => 
+			<Item key={org.id}>
+                {org.name}
+            </Item>
+		)
+    );
+
     return (
         <div className="menu-container">
             <Menu
@@ -37,8 +65,11 @@ const Sidebar = ({setFeedContext}) =>  {
                 selectedKeys={selectedKeys}
                 onSelect={onSelect}
             >
-                <Item key="create" icon={<PlusSquareOutlined />}>
+                <Item key="create-org" icon={<PlusSquareOutlined />}>
                     Create new organization
+                </Item>
+                <Item key="create-event" icon={<PlusSquareOutlined />}>
+                    Create new event
                 </Item>
                 <Item key="find" icon={<SearchOutlined />}>
                     Find service opportunities
@@ -51,12 +82,7 @@ const Sidebar = ({setFeedContext}) =>  {
                 selectedKeys={selectedKeys}
                 onSelect={onSelect}
             >
-                <Item key="example1">
-                    Hack4Impact
-                </Item>
-                <Item key="example2">
-                    American Heart Association
-                </Item>
+                {organizationsList}
             </Menu>
             <Menu
                 mode="inline"
