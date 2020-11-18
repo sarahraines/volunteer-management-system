@@ -3,6 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.serializers import OrganizationSerializer, CauseSerializer
 from api.models import Organization, Cause
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CreateOrganization(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -10,6 +13,7 @@ class CreateOrganization(APIView):
 
     def post(self, request, format='json'):
         data = request.data
+        logger.warn(request.data)
         serializer = OrganizationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
