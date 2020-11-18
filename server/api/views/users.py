@@ -74,8 +74,7 @@ class ChangePassword(APIView):
                 user.set_password(data['new_password'])
                 user.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            #wrong password
-            return Response(serializer.data, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(serializer.data, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -109,3 +108,52 @@ class ActivateUser(APIView):
             return Response(None, status=status.HTTP_200_OK)
         else:
             return Response(None, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForgotPassword(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        if request.GET.get('user_id'):
+            try:
+                user = User.objects.get(pk=request.GET['user_id'])
+            except:
+                return Response(None, status=status.HTTP_200_OK)
+        elif request.GET.get('email'):
+            try:
+                user = User.objects.get(email=request.GET['email'])
+            except:
+                user = None
+        
+        if user is not None:
+            current_site = 'localhost:3000'
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = account_activation_token.make_token(user)
+
+            password_reset_url = f"http://{current_site}/reset-password?uid={uid}&token={token}"
+            mail_subject = 'Reset your password.'
+            message = render_to_string('reset_password.html', {
+                'user': user,
+                'password_reset_url': password_reset_url
+            })
+            email = EmailMessage(
+                mail_subject, message, to=[user.email]
+            )
+            email.send()
+            return Response(None, status=status.HTTP_200_OK)
+        return Response("There was ", status=status.HTTP_400_BAD_REQUEST) 
+
+
+class UpdateUser(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        user = User.objects.get(pk=data['user_id'])
+        serializer = UserSerializer(user, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

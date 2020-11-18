@@ -1,17 +1,15 @@
-import React, { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { Alert, Form, Input, Button } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { reset_password } from '../api/authenticationApi';
 import { addAlert } from '../actionCreators.js';
+import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
 const ResetPasswordForm = () => {
-    const history = useHistory();
     const dispatch = useDispatch();
-    const [isAlertVisible, setIsAlertVisible] = useState(true);
 
     const onFinish = useCallback(async (values) => {
         try {
@@ -20,8 +18,17 @@ const ResetPasswordForm = () => {
         } catch (error) {
             dispatch(addAlert('Old password incorrect', 'error'));
         }
-    }, [dispatch, history]);
+    }, [dispatch]);
 
+    const sendForgotPasswordEmail = useCallback(async () => {
+        try {
+            const url = "users/forgot-password/?user_id=" + localStorage.getItem("user_id")
+            await axiosAPI.get(url);
+            dispatch(addAlert('Password reset link sent to email', 'success'));
+        } catch (error) {
+            dispatch(addAlert('Password reset email failed to send', 'error'));
+        }
+    }, [dispatch]);
 
   return (
     <React.Fragment>
@@ -85,11 +92,9 @@ const ResetPasswordForm = () => {
                 <Button type="primary" htmlType="submit" className="auth-form-button">
                     Submit
                 </Button>
+                Forgot password? <a onClick={sendForgotPasswordEmail}>Send a password reset email</a>
             </Form.Item>
         </Form>
-        {isAlertVisible ? (
-            <Alert message="Incorrect password" type="success" closable banner afterClose={setIsAlertVisible(false)} />
-        ) : null}
     </React.Fragment>
   );
 };
