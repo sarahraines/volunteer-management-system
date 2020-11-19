@@ -13,6 +13,12 @@ const NewOrgForm = () => {
             causes: values.causes,
             description: values.description,
         });
+
+        await axiosAPI.post("member/create/", {
+            user_id: localStorage.getItem("user_id"),
+            organization: values.name,
+            member_type: 1,
+        });
     }, []);
     
     const [selectedCauses, setSelectedCauses] = useState([]);

@@ -3,13 +3,10 @@ import {Card, Button } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import '../pages/Event.css';
 
-function EventCard ({valInArr, id, name, virtual, location, begindate, enddate, causes, description, filter}){
+function EventCard ({item}){
 
-	//setState hook onClick, on initial useState hook = filter value
-
-	const filterValue = filter;
-
-	const [register, setRegister] = useState(filterValue); 
+	const [register, setRegister] = useState(false); 
+	const [filter, setFilter] = useState(false); 
 
 	useEffect(() => {
      	setRegister(filter);
@@ -18,35 +15,34 @@ function EventCard ({valInArr, id, name, virtual, location, begindate, enddate, 
 	const onClick = useCallback(async (event_id, register) => {
 		setRegister(!register)
 
-		if(register){
-			const response = await axiosAPI.post("attendees/delete/", {
-	        user_id: localStorage.getItem("user_id"),
-	        events: event_id,
+		if (register) {
+			await axiosAPI.post("attendees/delete/", {
+				user_id: localStorage.getItem("user_id"),
+				events: event_id,
 	        });
-		} else{
-			const response = await axiosAPI.post("attendees/create/", {
-	        user_id: localStorage.getItem("user_id"),
-	        events: event_id,
+		} else {
+			await axiosAPI.post("attendees/create/", {
+				user_id: localStorage.getItem("user_id"),
+				events: event_id,
 	        });
 		}
 
     }, []);
 
-    const buttonText = register ? "Unjoin" : "Join"
-
-    console.log("filter:", filter);
-	console.log("register:", register);
+	const buttonText = register ? "Unjoin" : "Join";
+	const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+	const begindate = new Date(item.begindate)
+	const enddate = new Date(item.enddate)
 
     return (
 		<div className='event-container'>
-			<Card title={name} bordered={true} style={{ width: 500 }}>
-				<p><b>Virtual: </b>{virtual ? "Yes" : "No"}</p>
-                <p><b>Location: </b>{location}</p>
-                <p><b>Date: </b>{begindate}-{enddate}</p>
-                <p><b>Causes: </b>{causes}</p>
-                <p><b>Description: </b>{description}</p>
+			<Card title={item.name} bordered={true} style={{ width: 500 }}>
+                <p><b>Location: </b>{item.location}</p>
+                <p><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</p>
+                <p><b>Causes: </b>{item.causes}</p>
+                <p><b>Description: </b>{item.description}</p>
             <Button type="primary" htmlType="submit" className="event-form-button"
-            onClick= {() => onClick(id, register)}>
+            onClick= {() => onClick(item.id, register)}>
             	{buttonText}
             </Button>
             </Card>

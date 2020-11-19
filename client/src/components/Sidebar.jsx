@@ -8,9 +8,13 @@ import './Sidebar.css';
 
 const { Divider, Item } = Menu;
 
-const Sidebar = ({selectedKeys, onSelect, setFeedContext}) =>  {
+const Sidebar = ({setFeedContext}) =>  {
     const history = useHistory();
+    const [selectedKeys, setSelectedKeys] = useState([]);
 
+    const onSelect = (latestSelectedKey) => {
+        setSelectedKeys([latestSelectedKey.key]);
+    }
 
     const onLogout = useCallback(async () => {
         await axiosAPI.post("token/blacklist/", {
@@ -34,10 +38,9 @@ const Sidebar = ({selectedKeys, onSelect, setFeedContext}) =>  {
         try{
              const response = await axiosAPI.get("user/get-orgs/", {
                  params: {
-                     user_id: localStorage.getItem("user_id"),  //'jasmine.lee.0',
+                     user_id: localStorage.getItem("user_id"), 
                  }
              });
-            console.log(response.data);
             setOrganizations(response.data);
         } catch(error) {
             console.error(error);
@@ -86,10 +89,10 @@ const Sidebar = ({selectedKeys, onSelect, setFeedContext}) =>  {
                 onSelect={onSelect}
             >
                 <Divider/>
-                <Item key="manage" icon={<SettingOutlined />}>
-                    Manage account settings
+                <Item key="settings" icon={<SettingOutlined />}>
+                    Manage user settings
                 </Item>
-                <Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}> 
+                <Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}>
                     Logout
                 </Item>
             </Menu>
