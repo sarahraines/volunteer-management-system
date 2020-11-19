@@ -10,6 +10,8 @@ django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 djangorestframework-simplejwt = "*"
+pytz = "*"
+six = "*"
 
 [requires]
 python_version = "3.8"

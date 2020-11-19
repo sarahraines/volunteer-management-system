@@ -5,7 +5,7 @@ import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
-import NewOrg from './pages/NewOrg';
+import Activate from './pages/Activate';
 // import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
 import NewEvent from './pages/NewEvent'
@@ -27,8 +27,7 @@ function App() {
           />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <Route path="/create-organization" component={NewOrg} />
-          {/* <Route path="/organization-onboarding" component={OrgOnboarding} /> */}
+          <Route path="/activate" component={Activate} />
           <Route path="/events" component={Event} />
           <Route path="/NewEvent" component={NewEvent} />
           <Route path="/feed" component={Feed} />
