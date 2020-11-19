@@ -3,7 +3,7 @@ import NewOrg from "../pages/NewOrg";
 import Settings from "../pages/Settings";
 import Event from "../pages/Event";
 import NewEvent from "../pages/NewEvent";
-
+import OrgPage from "../pages/NewOrg";
 
 const FeedContent = ({context}) => {
     switch(context) {
@@ -16,7 +16,7 @@ const FeedContent = ({context}) => {
         case "create-event":
             return (<NewEvent />);
         default:
-            return (<h1>Hello</h1>);
+            return (<OrgPage />); //(<h1>Hello</h1>);
     }
   }
   
