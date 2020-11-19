@@ -15,10 +15,11 @@ class CreateOrganization(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        logger.warn(request.data)
         serializer = OrganizationSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
+            org = serializer.save()
+            org.causes.set(data.get('causes'))
+            org.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

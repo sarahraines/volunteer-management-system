@@ -13,7 +13,6 @@ class FAQSerializer(serializers.ModelSerializer):
         fields = ['id', 'question', 'answer', 'org_id', 'is_public']
 
 class OrganizationSerializer(serializers.ModelSerializer):
-    causes = CauseSerializer(read_only=True, many=True)
     class Meta:
         model = Organization
         fields = ['id', 'name', 'causes', 'description']
