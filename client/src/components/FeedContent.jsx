@@ -1,7 +1,7 @@
 import React from "react";
 import NewOrg from "../pages/NewOrg";
 import NewEvent from "../pages/NewEvent";
-import QAndAPage from "../pages/QAndAPage"
+import OrgPage from "../pages/OrgPage"
 
 
 const FeedContent = ({selectedKeys, context}) => {
@@ -11,7 +11,7 @@ const FeedContent = ({selectedKeys, context}) => {
         case "create-event":
             return (<NewEvent />);
         default:
-            return <QAndAPage orgId={parseInt(selectedKeys[0])}/>
+            return <OrgPage orgId={parseInt(selectedKeys)}/>
     }
   }
   

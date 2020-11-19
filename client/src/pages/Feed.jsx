@@ -10,9 +10,9 @@ const Feed = () => {
   const setContextFromSidebar = (newContext) => {
     setContext(newContext);
   }
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState(0);
   const onSelect = (latestSelectedKey) => {
-    setSelectedKeys([latestSelectedKey.key]);
+    setSelectedKeys(latestSelectedKey.key);
 }
   return (
     <Layout style={{ height:"100vh" }}>
