@@ -42,11 +42,7 @@ class GetCauses(APIView):
         serializer = CauseSerializer(causes, many=True)
         return Response(serializer.data)
 
-<<<<<<< HEAD
 class UpsertFAQ(APIView):
-=======
-class UpdateFAQ(APIView):
->>>>>>> d1554ffff8bc727af7c17880c2777ea2622ea4a9
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def post(self, request, format='json'):
