@@ -14,6 +14,7 @@ const Sidebar = ({setFeedContext}) =>  {
 
     const onSelect = (latestSelectedKey) => {
         setSelectedKeys([latestSelectedKey.key]);
+        console.log(latestSelectedKey);
     }
 
     const onLogout = useCallback(async () => {

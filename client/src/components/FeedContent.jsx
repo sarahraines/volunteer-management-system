@@ -3,7 +3,7 @@ import NewOrg from "../pages/NewOrg";
 import Settings from "../pages/Settings";
 import Event from "../pages/Event";
 import NewEvent from "../pages/NewEvent";
-import QAndAPage from "../pages/QAndAPage"
+import OrgPage from "../pages/OrgPage"
 
 
 const FeedContent = ({context}) => {
@@ -17,7 +17,7 @@ const FeedContent = ({context}) => {
         case "create-event":
             return (<NewEvent />);
         default:
-            return <QAndAPage orgId={parseInt(context)}/>
+            return <OrgPage orgId={parseInt(context)}/>
     }
   }
   

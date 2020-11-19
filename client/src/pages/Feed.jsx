@@ -11,6 +11,7 @@ const Feed = () => {
   const [context, setContext] = useState([]);
   const setContextFromSidebar = (newContext) => {
     setContext(newContext);
+    console.log(newContext);
   }
   const alerts = useSelector(state => state.alerts, shallowEqual);
   const dispatch = useDispatch();

@@ -8,6 +8,7 @@ urlpatterns = [
     path('token/blacklist/', views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='token_blacklist'),
     path('organization/create/', views.CreateOrganization.as_view(), name='create_organization'),
     path('organization/get-faq/', views.GetFAQ.as_view(), name='get_faq'),
+    path('organization/get-info/', views.GetOrgInfo.as_view(), name='get_org_info'),
     path('causes/get/', views.GetCauses.as_view(), name='get_causes'),
     path('admin/get-orgs/', views.GetAdminOrganizations.as_view(), name='get_admin_organizations'),
     path('events/get/', views.GetEvents.as_view(), name='get_events'),
