@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker} from 'antd';
-import { CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import "antd/dist/antd.css";
 import "./NewEventForm.css"
 import axiosAPI from "../api/axiosApi";
@@ -12,17 +11,16 @@ const { RangePicker } = DatePicker;
 const NewEventForm = () => {
 
     const onFinish = useCallback(async (values) => {
-            console.log(values);
-            const response = await axiosAPI.post("event/create/", {
-                name: values.name,
-                virtual: values.virtual,
-                location: values.location,
-                causes: values.causes,
-                organizations: values.organizations,
-                date:values.date,
-                description: values.description,
-            });
-        }, []);
+        await axiosAPI.post("event/create/", {
+            name: values.name,
+            virtual: values.virtual,
+            location: values.location,
+            causes: values.causes,
+            organizations: values.organizations,
+            date:values.date,
+            description: values.description,
+        });
+    }, []);
 
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
@@ -155,4 +153,6 @@ const NewEventForm = () => {
     </Form>
   );
 };
+
+
 export default NewEventForm;

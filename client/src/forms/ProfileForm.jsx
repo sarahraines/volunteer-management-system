@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Form, Input, Button, Typography, DatePicker, Row, Col, Skeleton } from 'antd';
+import { Form, Input, Button, Typography, Row, Col } from 'antd';
 import { addAlert } from '../actionCreators.js';
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
@@ -42,7 +42,7 @@ const ProfileForm = ({user}) => {
         else {
             setIsEditable(true);
         }
-    }, [isEditable, setIsEditable, dispatch]);
+    }, [isEditable, setIsEditable, dispatch, email, firstName, lastName]);
 
     const layout = {
         labelCol: { span: 4 },

@@ -6,7 +6,7 @@ import '../pages/Event.css';
 function EventCard ({item}){
 
 	const [register, setRegister] = useState(false); 
-	const [filter, setFilter] = useState(false); 
+	const filter = false;
 
 	useEffect(() => {
      	setRegister(filter);

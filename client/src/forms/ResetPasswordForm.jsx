@@ -92,7 +92,10 @@ const ResetPasswordForm = () => {
                 <Button type="primary" htmlType="submit" className="auth-form-button">
                     Submit
                 </Button>
-                Forgot password? <a onClick={sendForgotPasswordEmail}>Send a password reset email</a>
+                Forgot password? 
+                <Button type="link" style={{ paddingLeft: 4, paddingRight: 4}} onClick={sendForgotPasswordEmail}>
+                    Send a password reset email
+                </Button>
             </Form.Item>
         </Form>
     </React.Fragment>
