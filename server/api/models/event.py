@@ -9,9 +9,9 @@ class Event(models.Model):
     location = models.CharField(max_length=1000)
     begindate = models.DateTimeField()
     enddate = models.DateTimeField()
-    causes = models.ManyToManyField(Cause)
+    causes = models.ManyToManyField('Cause')
     description = models.TextField()
-    organizations = models.ManyToManyField(Organization)
+    organizations = models.ManyToManyField('Organization')
     REQUIRED_FIELDS = ['name', 'virtual']
 
 class Attendee(models.Model):

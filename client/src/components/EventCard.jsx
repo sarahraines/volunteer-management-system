@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useEffect} from 'react';
-import {Card, Button } from 'antd';
+import {Card, Button, Typography } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import '../pages/Event.css';
 
@@ -39,7 +39,9 @@ function EventCard ({item}){
 			<Card title={item.name} bordered={true} style={{ width: 500 }}>
                 <p><b>Location: </b>{item.location}</p>
                 <p><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</p>
-                <p><b>Causes: </b>{item.causes}</p>
+                <p><b>Causes: </b>{item.causes.map(c => 
+                        <Typography.Paragraph level={2}>{c.name}</Typography.Paragraph>
+                    )}</p>
                 <p><b>Description: </b>{item.description}</p>
             <Button type="primary" htmlType="submit" className="event-form-button"
             onClick= {() => onClick(item.id, register)}>

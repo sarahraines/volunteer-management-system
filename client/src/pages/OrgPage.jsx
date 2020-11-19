@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Layout, Typography, Button } from 'antd';
+import { Layout, Typography, Button, Form } from 'antd';
 import './NewOrg.css';
 import QAndAPage from './QAndAPage';
+import EventCard from '../components/EventCard';
 import axiosAPI from '../api/axiosApi';
 import { Menu } from 'antd';
 const { Divider, Item } = Menu;
@@ -9,8 +10,10 @@ const { Divider, Item } = Menu;
 function OrgPage({orgId}) {
     
     const [org, setOrg] = useState(null);
+    const [eventsByOrg, setEventsByOrg] = useState([]); 
     useEffect(() => {
         getOrgInfo();
+        getEventsByOrg();
     }, [orgId]);
 
     var orgInfo;
@@ -30,6 +33,25 @@ function OrgPage({orgId}) {
     }
 
 
+    const getEventsByOrg = async () => {
+        try {
+            const response = await axiosAPI.get("events/get-by-org/", {
+                params: {
+                    orgId: orgId
+                }
+            });
+            console.log("events:",response.data);
+            setEventsByOrg(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const eventList = eventsByOrg.map(item => 
+        <EventCard key={item.id} item={item} />
+    );
+
+
     return (
         <Layout style={{ height: "100vh" }}>
             <Layout.Content className="org-content">
@@ -45,6 +67,16 @@ function OrgPage({orgId}) {
                     </>
                 }
                     <QAndAPage orgId={orgId} />
+
+                <Typography.Title level={4}>Find service opportunities</Typography.Title>
+            <Form
+                name="attendee"
+                className="attendee-form"
+                initialValues={{ remember: true }}
+            >
+                {eventList}
+            </Form>
+           
         </Layout.Content>
     </Layout>
     );

@@ -12,6 +12,7 @@ urlpatterns = [
     path('causes/get/', views.GetCauses.as_view(), name='get_causes'),
     path('admin/get-orgs/', views.GetAdminOrganizations.as_view(), name='get_admin_organizations'),
     path('events/get/', views.GetEvents.as_view(), name='get_events'),
+    path('events/get-by-org/', views.GetEventsByOrg.as_view(), name='get_events_by_org'),
     path('event/create/', views.CreateEvent.as_view(), name='create_event'),
     path('attendees/user_events/', views.GetAttendees.as_view(), name='get_attendees'),
     path('attendees/create/', views.AddAttendees.as_view(), name="add_attendees"),
