@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Button, Typography } from 'antd';
 import QAndA from '../components/QAndA';
 import axiosAPI from '../api/axiosApi';

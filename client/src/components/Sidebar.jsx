@@ -11,6 +11,7 @@ const { Divider, Item } = Menu;
 const Sidebar = ({setFeedContext}) =>  {
     const history = useHistory();
     const [selectedKeys, setSelectedKeys] = useState([]);
+    const [organizations, setOrganizations] = useState([]);
 
     const onSelect = (latestSelectedKey) => {
         setSelectedKeys([latestSelectedKey.key]);
@@ -29,13 +30,7 @@ const Sidebar = ({setFeedContext}) =>  {
         setFeedContext(selectedKeys[0] ?? "");
     }, [selectedKeys, setFeedContext]);
 
-    const [organizations, setOrganizations] = useState([]);
-
-    useEffect(() => {
-        getOrganizations();
-    }, []);
-
-    const getOrganizations = async () => {
+    const getOrganizations = useCallback(async () => {
         try {
              const response = await axiosAPI.get("user/get-orgs/", {
                  params: {
@@ -54,7 +49,11 @@ const Sidebar = ({setFeedContext}) =>  {
         } catch(error) {
             console.error(error);
         }
-    }
+    }, [setFeedContext])
+
+    useEffect(() => {
+        getOrganizations();
+    }, [getOrganizations]);
 
     const organizationsList = (
 		organizations.map(org => 

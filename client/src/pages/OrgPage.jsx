@@ -1,56 +1,49 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Layout, Typography, Button, Form } from 'antd';
+import { Layout, Typography, Form } from 'antd';
 import './NewOrg.css';
 import QAndAPage from './QAndAPage';
 import EventCard from '../components/EventCard';
 import axiosAPI from '../api/axiosApi';
-import { Menu } from 'antd';
-const { Divider, Item } = Menu;
 
 function OrgPage({orgId}) {
     
     const [org, setOrg] = useState(null);
-    const [eventsByOrg, setEventsByOrg] = useState([]); 
-    useEffect(() => {
-        getOrgInfo();
-        getEventsByOrg();
-    }, [orgId]);
+    const [eventsByOrg, setEventsByOrg] = useState([]);
 
-    var orgInfo;
-    const getOrgInfo = async () => {
-        try{
-            console.log("attempting request" + orgId)
+    const getOrgInfo = useCallback(async () => {
+        try {
             const response = await axiosAPI.get("organization/get-info/", {
                 params: {
                     orgId: orgId
                 }
             });
-            console.log(response.data)
             setOrg(response.data)
         } catch(error) {
             console.error(error);
         }
-    }
+    }, [orgId]);
 
-
-    const getEventsByOrg = async () => {
+    const getEventsByOrg = useCallback(async () => {
         try {
             const response = await axiosAPI.get("events/get-by-org/", {
                 params: {
                     orgId: orgId
                 }
             });
-            console.log("events:",response.data);
             setEventsByOrg(response.data);
         } catch (error) {
             console.error(error);
         }
-    }
+    }, [orgId]);
+
+    useEffect(() => {
+        getOrgInfo();
+        getEventsByOrg();
+    }, [orgId, getEventsByOrg, getOrgInfo]);
 
     const eventList = eventsByOrg.map(item => 
         <EventCard key={item.id} item={item} />
     );
-
 
     return (
         <Layout style={{ height: "100vh" }}>
