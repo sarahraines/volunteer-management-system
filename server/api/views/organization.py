@@ -20,6 +20,17 @@ class CreateOrganization(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class GetOrgInfo(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        logger.warn(request.GET['orgId'])
+        org_id = request.GET['orgId']
+        organization = Organization.objects.filter(id=org_id)[0]
+        serializer = OrganizationSerializer(organization)
+        return Response(serializer.data)
+
 class GetCauses(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
@@ -28,6 +39,7 @@ class GetCauses(APIView):
         causes = Cause.objects.all()
         serializer = CauseSerializer(causes, many=True)
         return Response(serializer.data)
+
 class UpdateFAQ(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()

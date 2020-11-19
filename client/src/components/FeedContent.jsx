@@ -17,7 +17,7 @@ const FeedContent = ({context}) => {
         case "create-event":
             return (<NewEvent />);
         default:
-            return <QAndAPage orgId={parseInt(context)}/>
+            return <OrgPage orgId={parseInt(context)}/>
     }
   }
   
