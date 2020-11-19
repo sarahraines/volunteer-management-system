@@ -35,7 +35,7 @@ const Sidebar = ({setFeedContext}) =>  {
     }, []);
 
     const getOrganizations = async () => {
-        try{
+        try {
              const response = await axiosAPI.get("user/get-orgs/", {
                  params: {
                      user_id: localStorage.getItem("user_id"), 

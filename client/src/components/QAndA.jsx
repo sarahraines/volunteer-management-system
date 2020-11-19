@@ -7,13 +7,15 @@ const { Paragraph } = Typography;
 
 
 function QAndA ({item, removeFaq}) {
-    const [questionStr, setQuestionStr] = useState(item?.question);
-    const [answerStr, setAnswerStr] = useState(item?.answer);
-    const updateQ = async (questionStr) => {
-        setQuestionStr(questionStr)
+    const [questionStr, setQuestionStr] = useState(item?.question || "");
+    const [answerStr, setAnswerStr] = useState(item?.answer || "");
+    const [isPublic, setIsPublic] = useState(!!item?.is_public);
+
+    const updateQ = async (newQuestionStr) => {
+        setQuestionStr(newQuestionStr)
         try {
             await axiosAPI.post("faq/upsert/", {
-                id: item?.id, question: questionStr, answer: answerStr
+                id: item?.id, question: newQuestionStr, answer: answerStr
             });
             message.success('Question updated');
         }
@@ -21,16 +23,28 @@ function QAndA ({item, removeFaq}) {
             message.error('Question failed to update');
         }
     }
-    const updateA = async (answerString) => {
-        setAnswerStr(answerString)
+    const updateA = async (newAnswerStr) => {
+        setAnswerStr(newAnswerStr)
         try {
             await axiosAPI.post("faq/upsert/", {
-                id: item?.id, question: questionStr, answer: answerStr
+                id: item?.id, question: questionStr, answer: newAnswerStr, is_public: isPublic
             });
             message.success('Answer updated');
         }
         catch {
             message.error('Answer failed to update');
+        }
+    }
+    const updatePublic = async (newIsPublic) => {
+        setIsPublic(newIsPublic)
+        try {
+            await axiosAPI.post("faq/upsert/", {
+                id: item?.id, question: questionStr, answer: answerStr, is_public: newIsPublic
+            });
+            message.success('FAQ updated');
+        }
+        catch {
+            message.error('FAQ failed to update');
         }
     }
     const onDelete = async () => {
@@ -53,14 +67,14 @@ function QAndA ({item, removeFaq}) {
             <div>
                 <Paragraph style={{ display: "inline-block", verticalAlign: "top", fontWeight: 700 }}>Question: </Paragraph>
                 {'  '}
-                <Paragraph style={{ display: "inline-block" }} editable={{ onChange: (questionStr) => updateQ(questionStr) }}>{questionStr}</Paragraph>
+                <Paragraph style={{ display: "inline-block" }} editable={{ onChange: (newQuestionStr) => updateQ(newQuestionStr) }}>{questionStr}</Paragraph>
             </div>
             <div>
                 <Paragraph style={{ display: "inline-block", verticalAlign: "top", fontWeight: 700 }}>Answer: </Paragraph>
                 {'  '}
-                <Paragraph style={{ display: "inline-block" }} editable={{ onChange: (answerStr) => updateA(answerStr) }}>{answerStr}</Paragraph>
+                <Paragraph style={{ display: "inline-block" }} editable={{ onChange: (newAnswerStr) => updateA(newAnswerStr) }}>{answerStr}</Paragraph>
             </div>
-            <Switch checkedChildren="Public" unCheckedChildren="Hidden" />
+            <Switch checkedChildren="Public" unCheckedChildren="Hidden" onChange={(newIsPublic) => updatePublic(newIsPublic)} defaultChecked={item?.is_public}/>
         </Card>
     )
 
