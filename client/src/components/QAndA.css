@@ -3,12 +3,12 @@
     margin: 0 auto;
     height: auto;
 }
-.org-container {
-    background: #fff;
-    padding: 25px;
-    max-width: 450px;
-    margin: 20 px;
+
+div.ant-typography-edit-content {
+    left: 0;
+    margin: 0;
 }
-.qa-container{
-    padding: 25px;
+
+.ant-card-actions > li {
+    margin: 4px;
 }

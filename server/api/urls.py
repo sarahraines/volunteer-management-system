@@ -7,7 +7,6 @@ urlpatterns = [
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('token/blacklist/', views.LogoutAndBlacklistRefreshTokenForUserView.as_view(), name='token_blacklist'),
     path('organization/create/', views.CreateOrganization.as_view(), name='create_organization'),
-    path('organization/faq/', views.UpdateFAQ.as_view(), name='update_faq'),
     path('organization/get-faq/', views.GetFAQ.as_view(), name='get_faq'),
     path('causes/get/', views.GetCauses.as_view(), name='get_causes'),
     path('admin/get-orgs/', views.GetAdminOrganizations.as_view(), name='get_admin_organizations'),
@@ -23,5 +22,7 @@ urlpatterns = [
     path('users/forgot-password/', views.ForgotPassword.as_view(), name='forgot_password'),
     path('users/update/', views.UpdateUser.as_view(), name='update_user'),
     path('users/get/', views.GetUser.as_view(), name="get_user"),
-    path('user/get-orgs/', views.GetOrgsFromMember.as_view(), name='get_orgs_from_member')
+    path('user/get-orgs/', views.GetOrgsFromMember.as_view(), name='get_orgs_from_member'),
+    path('faq/upsert/', views.UpsertFAQ.as_view(), name='upsert_faq'),
+    path('faq/delete/', views.DeleteFAQ.as_view(), name='delete_faq')
 ]

@@ -21,23 +21,6 @@ export async function login(email, password) {
   return response;
 }
 
-export async function addFAQ(formVals) {
-  const response = await axiosAPI.post("organization/faq/", {
-    formVals
-  });
-  setNewHeaders(response);
-  return response;
-}
-export async function getFAQ(orgId) {
-  const response =  await axiosAPI.get("organization/get-faq/", {
-    params: {
-      org_id: orgId,
-    }
-  });
-  // setNewHeaders(response);
-  return response;
-}
-
 export async function reset_password(old_password, new_password) {
   const user_id = localStorage.getItem("user_id");
   const response = await axiosAPI.post("users/reset-password/", {

@@ -41,7 +41,15 @@ const Sidebar = ({setFeedContext}) =>  {
                      user_id: localStorage.getItem("user_id"), 
                  }
              });
-            setOrganizations(response.data);
+            const organizations = response.data;
+            if (organizations.length > 0) {
+                setOrganizations(response.data);
+                setSelectedKeys([organizations[0].id.toString()])
+                setFeedContext(organizations[0].id.toString() ?? "");
+            } else {
+                setSelectedKeys(["create"])
+            }
+            
         } catch(error) {
             console.error(error);
         }

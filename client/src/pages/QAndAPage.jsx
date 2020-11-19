@@ -1,59 +1,52 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Layout, Typography, Button } from 'antd';
+import { Button, Typography } from 'antd';
 import QAndA from '../components/QAndA';
+import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
-import { addFAQ,getFAQ } from '../api/authenticationApi';
+
+const { Title } = Typography;
 
 function QAndAPage({orgId}) {
     const [qA, setQA] = useState([]);
-    if(isNaN(orgId)){
-        orgId = 2;
-    }    
-    useEffect(() => {
-        getFAQ(orgId)
-        .then(res => {
-          const faq = res.data;
-          console.log("getting org " + orgId);
-          console.log(faq)
-          setQA(faq);
-        })
 
-    }, [orgId])
-    const onFinish = useCallback(async (qA) => {
+    const getQA = async (orgId) => {
         try {
-            const updatedQA = getUpdatedQA(qA);
-            await addFAQ(updatedQA);
-        } catch (error) {
-            throw error;
+            const response =  await axiosAPI.get("organization/get-faq/", {
+                params: {
+                    org_id: orgId,
+                }
+            });
+            setQA(response.data);
+        } catch(error) {
+            console.error(error);
         }
-    }, []);
-    function addQAField(){
-        setQA([...qA, {id: qA.length, org_id: orgId,  question: "", answer: "", updated: true}]);
     }
-    function updateItem(i, question, answer, id){
-        const qACopy = [...qA]
-        qACopy[i] = {id:id, org_id: orgId, question: question, answer: answer, updated: true}
-        setQA(qACopy)
+
+    const removeFaq = (id) => {
+        setQA(qA.filter(faq => faq.id !== id));
     }
-    function getUpdatedQA(qA){
-        const updated = qA.filter(item => item.updated);
-        return updated;
+
+    useEffect(() => {
+        if (orgId) {
+            getQA(orgId);
+        }
+    }, [orgId]);
+
+    const addQAField = async () => {
+        const response = await axiosAPI.post("faq/upsert/", {
+            org_id: orgId, question: "", answer: ""
+        });
+        setQA([...qA, {id: response.data.id, question: "", answer: ""}]);
     }
-    
 
     return (
-        <Layout style={{ height: "100vh" }}>
-            <Layout.Content className="org-content">
-                    <Typography.Title level={2}>Question And Answer Page</Typography.Title>
-                    {qA.map((item, i)=> 
-                        <div className="qa-container">
-                            <QAndA id={item.id} valInArr={i} updateItem={updateItem} question={item.question} answer={item.answer}/>
-                        </div>
-                    )}
-                    <Button type="primary" onClick={addQAField} shape="circle"> + </Button>
-                    <Button htmlType="submit" onClick={() => onFinish(qA)}> Submit </Button>
-          </Layout.Content>
-      </Layout>
+        <div style={{ maxWidth: 300}}>
+            <Title level={4}>Frequently Asked Questions</Title>
+            {qA.map(item => 
+                <QAndA key={item.id} item={item} removeFaq={removeFaq}/>
+            )}
+            <Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>
+      </div>
     );
 };
 
