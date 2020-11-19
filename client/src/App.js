@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { Route, Switch } from "react-router-dom";
+import PrivateRoute from './PrivateRoute';
 import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home';
@@ -34,6 +35,7 @@ function App() {
   </main>
   );
 }
+
 
 const Register = () => <Auth isRegister={true}/>;
 const Login = () => <Auth isRegister={false}/>;

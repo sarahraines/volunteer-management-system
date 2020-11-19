@@ -10,11 +10,11 @@ const { Divider, Item } = Menu;
 
 const Sidebar = ({setFeedContext}) =>  {
     const history = useHistory();
-
     const [selectedKeys, setSelectedKeys] = useState([]);
 
     const onSelect = (latestSelectedKey) => {
         setSelectedKeys([latestSelectedKey.key]);
+        console.log(latestSelectedKey);
     }
 
     const onLogout = useCallback(async () => {
@@ -36,14 +36,21 @@ const Sidebar = ({setFeedContext}) =>  {
     }, []);
 
     const getOrganizations = async () => {
-        try{
+        try {
              const response = await axiosAPI.get("user/get-orgs/", {
                  params: {
                      user_id: localStorage.getItem("user_id"), 
                  }
              });
-            console.log(response.data);
-            setOrganizations(response.data);
+            const organizations = response.data;
+            if (organizations.length > 0) {
+                setOrganizations(response.data);
+                setSelectedKeys([organizations[0].id.toString()])
+                setFeedContext(organizations[0].id.toString() ?? "");
+            } else {
+                setSelectedKeys(["create"])
+            }
+            
         } catch(error) {
             console.error(error);
         }

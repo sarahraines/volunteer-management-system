@@ -37,7 +37,6 @@ export function logout() {
   localStorage.removeItem("user_id");
   axiosAPI.defaults.headers['Authorization'] = null;
 }
-
 export const isAuthenticated = () => {
   const token = localStorage.getItem("access_token");
   return !!token;

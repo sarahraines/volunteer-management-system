@@ -1,0 +1,14 @@
+.org-content {
+    padding: 5vh 5vw;
+    margin: 0 auto;
+    height: auto;
+}
+
+div.ant-typography-edit-content {
+    left: 0;
+    margin: 0;
+}
+
+.ant-card-actions > li {
+    margin: 4px;
+}

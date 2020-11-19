@@ -52,7 +52,7 @@ const retryDelay = () => {
 };
 
 axiosRetry(axiosInstance, {
-    retries: 1,
+    retries: 0,
     retryDelay,
     retryCondition: axiosRetry.isRetryableError,
 });
