@@ -1,41 +1,49 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select } from 'antd';
+import axiosAPI from "../api/axiosApi";
+import { addAlert } from '../actionCreators.js';
+import { useDispatch } from 'react-redux';
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
-import axiosAPI from "../api/axiosApi";
 
 const {TextArea} = Input;
 
 const NewOrgForm = () => {
-    const onFinish = useCallback(async (values) => {
-        await axiosAPI.post("organization/create/", {
-            name: values.name,
-            causes: values.causes,
-            description: values.description,
-        });
-
-        await axiosAPI.post("member/create/", {
-            user_id: localStorage.getItem("user_id"),
-            organization: values.name,
-            member_type: 1,
-        });
-    }, []);
-    
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
-
-    useEffect(() => {
-        getCauses();
-    }, []);
+    const dispatch = useDispatch();
 
     const getCauses = async () => {
-        try{
+        try {
             const response = await axiosAPI.get("causes/get/");
             setCauses(response.data);
         } catch (error) {
             console.error(error)
         }
     }
+
+    useEffect(() => {
+        getCauses();
+    }, []);
+
+    const onFinish = useCallback(async (values) => {
+        try {
+            await axiosAPI.post("organization/create/", {
+                name: values.name,
+                causes: values.causes,
+                description: values.description,
+            });
+            await axiosAPI.post("member/create/", {
+                user_id: localStorage.getItem("user_id"),
+                organization: values.name,
+                member_type: 1,
+            });
+            dispatch(addAlert('Organization created', 'success'));
+        }
+        catch {
+            dispatch(addAlert('Organization creation failed', 'error'));
+        }
+    }, [dispatch]);
 
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));

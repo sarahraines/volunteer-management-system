@@ -28,9 +28,9 @@ class GetOrgInfo(APIView):
     authentication_classes = ()
     
     def get(self, request):
-        logger.warn(request.GET['orgId'])
         org_id = request.GET['orgId']
-        organization = Organization.objects.filter(id=org_id)[0]
+        organization = Organization.objects.filter(pk=org_id).prefetch_related('causes').first()
+        logger.warn(organization)
         serializer = OrganizationSerializer(organization)
         return Response(serializer.data)
 

@@ -63,16 +63,22 @@ function QAndA ({isAdmin, item, removeFaq}) {
     }
 
     return (
+
         <Card style={{ marginTop: 8, marginBottom: 8 }} loading={!item} actions={isAdmin && [<DeleteOutlined onClick={onDelete} key="delete" />]}>
-            <div>
-                <Paragraph style={{ display: "inline-block", verticalAlign: "top", fontWeight: 700 }}>Question: </Paragraph>
+            <div style={{ display: "flex" }}>
+                <Paragraph style={{ float: "left", verticalAlign: "top", fontWeight: 700 }}>Question: </Paragraph>
                 {'  '}
-                <Paragraph style={{ display: "inline-block" }} editable={isAdmin? { onChange: (newQuestionStr) => updateQ(newQuestionStr) }: false}>{questionStr}</Paragraph>
+                <div style={{ marginLeft: 4, flexGrow: 100 }}>
+                    <Paragraph style={{ width: "100%" }} editable={{ onChange: (newQuestionStr) => updateQ(newQuestionStr) }}>{questionStr}</Paragraph>
+                </div>
             </div>
-            <div>
-                <Paragraph style={{ display: "inline-block", verticalAlign: "top", fontWeight: 700 }}>Answer: </Paragraph>
+            <div style={{ display: "flex" }}>
+                <Paragraph style={{ float: "left", verticalAlign: "top", fontWeight: 700 }}>Answer: </Paragraph>
                 {'  '}
-                <Paragraph style={{ display: "inline-block" }} editable={isAdmin  ? { onChange: (newAnswerStr) => updateA(newAnswerStr) }: false}>{answerStr}</Paragraph>
+
+                <div style={{ marginLeft: 4, flexGrow: 100 }}>
+                    <Paragraph style={{ width: "100%" }} editable={isAdmin ? { onChange: (newAnswerStr) => updateA(newAnswerStr) }: false}>{answerStr}</Paragraph>
+                </div>
             </div>
             {isAdmin &&
                 <Switch checkedChildren="Public" unCheckedChildren="Hidden" onChange={(newIsPublic) => updatePublic(newIsPublic)} defaultChecked={item?.is_public}/>

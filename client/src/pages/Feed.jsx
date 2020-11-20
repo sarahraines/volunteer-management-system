@@ -60,14 +60,14 @@ useEffect(() => {
 }, []);
 
   return (
-    <Layout style={{ height:"100vh" }}>
+    <Layout style={{ minHeight:"100vh" }}>
       <Sider width={240} style={{ background: '#fff' }}>
         <Sidebar selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} member={member} setFeedContext={setContextFromSidebar}/>
       </Sider>
       <Layout>
         {alertList}
-        <Layout style={{ padding: '24px' }}>
-          <Content style={{ background: '#fff', padding: 24, margin: 0 }}>
+        <Layout style={{ padding: '24px', height: "100%"  }}>
+          <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
             <FeedContent member={member} context={context}/>
           </Content>
         </Layout>
