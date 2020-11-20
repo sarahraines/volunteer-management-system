@@ -40,13 +40,13 @@ function QAndAPage({orgId}) {
     }
 
     return (
-        <div style={{ maxWidth: 300}}>
-            <Title level={4}>Frequently Asked Questions</Title>
+        <div>
+            <Title level={4}>Frequently asked questions</Title>
             {qA.map(item => 
                 <QAndA key={item.id} item={item} removeFaq={removeFaq}/>
             )}
             <Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>
-      </div>
+        </div>
     );
 };
 

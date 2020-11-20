@@ -1,14 +1,17 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Layout, Typography, Form } from 'antd';
-import './NewOrg.css';
+import { Typography, Form, Tabs } from 'antd';
 import QAndAPage from './QAndAPage';
-import EventCard from '../components/EventCard';
 import axiosAPI from '../api/axiosApi';
+import OrgEvents from './OrgEvents';
+import AboutUs from './AboutUs';
+import "./OrgPage.css";
+
+const { Title, Paragraph } = Typography;
+const { TabPane } = Tabs;
 
 function OrgPage({orgId}) {
-    
     const [org, setOrg] = useState(null);
-    const [eventsByOrg, setEventsByOrg] = useState([]);
+    const [activeKey, setActiveKey] = useState("home");
 
     const getOrgInfo = useCallback(async () => {
         try {
@@ -23,55 +26,28 @@ function OrgPage({orgId}) {
         }
     }, [orgId]);
 
-    const getEventsByOrg = useCallback(async () => {
-        try {
-            const response = await axiosAPI.get("events/get-by-org/", {
-                params: {
-                    orgId: orgId
-                }
-            });
-            setEventsByOrg(response.data);
-        } catch (error) {
-            console.error(error);
-        }
-    }, [orgId]);
-
     useEffect(() => {
-        getOrgInfo();
-        getEventsByOrg();
-    }, [orgId, getEventsByOrg, getOrgInfo]);
-
-    const eventList = eventsByOrg.map(item => 
-        <EventCard key={item.id} item={item} />
-    );
+        if (orgId) {
+            getOrgInfo();
+            setActiveKey("home")
+        }
+    }, [orgId, getOrgInfo]);
 
     return (
-        <Layout style={{ height: "100vh" }}>
-            <Layout.Content className="org-content">
-                {org != null &&
-                    <>
-                    <Typography.Title level={2}>{org.name}</Typography.Title>
-                    Organization Causes: 
-                    {org.causes.map(c => 
-                        <Typography.Paragraph level={2}>{c.name}</Typography.Paragraph>
-                    )}
-                    Organization Description:
-                    <Typography.Paragraph level={2}>{org.description}</Typography.Paragraph>
-                    </>
-                }
+        <React.Fragment>
+            {org && <Title style={{ textAlign: "center" }} level={2}>{org.name}</Title>}
+            <Tabs activeKey={activeKey} onChange={setActiveKey} style={{ height: "100%" }}>
+                <TabPane tab="Home" key="home" style={{ height: "100%" }}>
+                    <AboutUs org={org} />
+                </TabPane>
+                <TabPane tab="Events" key="events">
+                    <OrgEvents orgId={orgId} />
+                </TabPane>
+                <TabPane tab="FAQ" key="faq">
                     <QAndAPage orgId={orgId} />
-
-                <Typography.Title level={4}>Find service opportunities</Typography.Title>
-            <Form
-                name="attendee"
-                className="attendee-form"
-                initialValues={{ remember: true }}
-            >
-                {eventList}
-            </Form>
-           
-        </Layout.Content>
-    </Layout>
+                </TabPane>
+            </Tabs>
+        </React.Fragment>
     );
     
 };

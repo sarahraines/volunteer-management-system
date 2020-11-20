@@ -11,7 +11,6 @@ const Feed = () => {
   const [context, setContext] = useState([]);
   const setContextFromSidebar = (newContext) => {
     setContext(newContext);
-    console.log(newContext);
   }
   const alerts = useSelector(state => state.alerts, shallowEqual);
   const dispatch = useDispatch();
@@ -32,14 +31,14 @@ const Feed = () => {
   );
 
   return (
-    <Layout style={{ height:"100vh" }}>
+    <Layout style={{ minHeight:"100vh" }}>
       <Sider width={240} style={{ background: '#fff' }}>
         <Sidebar setFeedContext={setContextFromSidebar}/>
       </Sider>
       <Layout>
         {alertList}
-        <Layout style={{ padding: '24px' }}>
-          <Content style={{ background: '#fff', padding: 24, margin: 0 }}>
+        <Layout style={{ padding: '24px', height: "100%"  }}>
+          <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
             <FeedContent context={context}/>
           </Content>
         </Layout>

@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Menu } from 'antd';
-import { LogoutOutlined, PlusSquareOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
+import { Menu, Affix } from 'antd';
+import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, SearchOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axiosAPI from '../api/axiosApi';
 import { logout } from '../api/authenticationApi';
 import './Sidebar.css';
 
-const { Divider, Item } = Menu;
+const { Divider, Item, SubMenu } = Menu;
 
 const Sidebar = ({setFeedContext}) =>  {
     const history = useHistory();
@@ -15,7 +15,6 @@ const Sidebar = ({setFeedContext}) =>  {
 
     const onSelect = (latestSelectedKey) => {
         setSelectedKeys([latestSelectedKey.key]);
-        console.log(latestSelectedKey);
     }
 
     const onLogout = useCallback(async () => {
@@ -41,7 +40,6 @@ const Sidebar = ({setFeedContext}) =>  {
             if (organizations.length > 0) {
                 setOrganizations(response.data);
                 setSelectedKeys([organizations[0].id.toString()])
-                setFeedContext(organizations[0].id.toString() ?? "");
             } else {
                 setSelectedKeys(["create"])
             }
@@ -49,7 +47,7 @@ const Sidebar = ({setFeedContext}) =>  {
         } catch(error) {
             console.error(error);
         }
-    }, [setFeedContext])
+    }, [setOrganizations, setSelectedKeys])
 
     useEffect(() => {
         getOrganizations();
@@ -71,15 +69,17 @@ const Sidebar = ({setFeedContext}) =>  {
                 selectedKeys={selectedKeys}
                 onSelect={onSelect}
             >
-                <Item key="create-org" icon={<PlusSquareOutlined />}>
-                    Create new organization
-                </Item>
-                <Item key="create-event" icon={<PlusSquareOutlined />}>
-                    Create new event
-                </Item>
-                <Item key="find" icon={<SearchOutlined />}>
-                    Find service opportunities
-                </Item>
+                <SubMenu title="Take action" icon={<BulbOutlined />}>
+                    <Item className="action-submenu-item" key="create-event" icon={<PlusSquareOutlined />}>
+                        Create event
+                    </Item>
+                    <Item className="action-submenu-item" key="create-org" icon={<UsergroupAddOutlined />}>
+                        Create organization
+                    </Item>
+                    <Item className="action-submenu-item" key="find" icon={<SearchOutlined />}>
+                        Find service opportunities
+                    </Item>
+                </SubMenu>
                 <Divider/>
             </Menu>
             <Menu

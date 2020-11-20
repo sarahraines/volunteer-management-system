@@ -8,13 +8,10 @@ const OrgOnboarding = () => {
     const [currentInput, setCurrentInput] = useState("");
     function addValueToList(){
         setInputList([...inputList, currentInput.state.value]);
-        console.log(inputList);
     }
     const onFinish = useCallback(async (inputList) => {
         try {
-            console.log(inputList)
             // await addFormValues(inputList)
-            console.log("sent request")
         } catch (error) {
             throw error;
         }

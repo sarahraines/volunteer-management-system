@@ -1,25 +1,37 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker} from 'antd';
+import axiosAPI from "../api/axiosApi";
+import { useDispatch } from 'react-redux';
+import { addAlert } from '../actionCreators.js';
 import "antd/dist/antd.css";
 import "./NewEventForm.css"
-import axiosAPI from "../api/axiosApi";
 
 const {TextArea} = Input;
 
 const { RangePicker } = DatePicker;
 
 const NewEventForm = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const onFinish = useCallback(async (values) => {
-        await axiosAPI.post("event/create/", {
-            name: values.name,
-            virtual: values.virtual,
-            location: values.location,
-            causes: values.causes,
-            organizations: values.organizations,
-            date:values.date,
-            description: values.description,
-        });
+        setIsLoading(true);
+        try {
+            await axiosAPI.post("event/create/", {
+                name: values.name,
+                virtual: values.virtual,
+                location: values.location,
+                causes: values.causes,
+                organizations: values.organizations,
+                date:values.date,
+                description: values.description,
+            });
+            dispatch(addAlert('Event created', 'success'));
+        }
+        catch {
+            dispatch(addAlert('Event creation failed', 'error'));
+        }
+        setIsLoading(false);
     }, []);
 
     const [selectedCauses, setSelectedCauses] = useState([]);
@@ -57,7 +69,6 @@ const NewEventForm = () => {
                  }
              });
             setOrgs(response.data);
-            console.log(response.data);
         } catch (error) {
             console.error(error)
         }
@@ -104,25 +115,28 @@ const NewEventForm = () => {
         <Form.Item
             name="virtual"
             hasFeedback
-            rules={[{ required: true, message: 'Event type is required.' }]}
+            valuePropName="checked"
         >
-             <Switch checkedChildren="Virtual" unCheckedChildren="Non-Virtual" defaultChecked />
+             <Switch checkedChildren="Virtual" unCheckedChildren="Non-virtual" defaultChecked />
         </Form.Item>
         <Form.Item
             name="location"
             hasFeedback
+            rules={[{ required: true, message: 'Location is required.' }]}
         >
              <Input style={{ width: '100%' }} placeholder="Location" />
         </Form.Item>
         <Form.Item
             name="date"
             hasFeedback
+            rules={[{ required: true, message: 'Date is required.' }]}
         >
-              <RangePicker showTime />
+              <RangePicker style={{ width: '100%' }} showTime />
         </Form.Item>
          <Form.Item
             name="causes"
             hasFeedback
+            rules={[{ required: true, message: 'Causes are required.' }]}
         >
             <Select
                 mode="multiple"
@@ -142,11 +156,12 @@ const NewEventForm = () => {
         <Form.Item
             name="description"
             hasFeedback
+            rules={[{ required: true, message: 'Description is required.' }]}
         >
             <TextArea row={6} style={{ width: '100%' }} placeholder="Event description" />
         </Form.Item>
          <Form.Item>
-            <Button type="primary" htmlType="submit" className="event-form-button">
+            <Button type="primary" htmlType="submit" className="event-form-button" loading={isLoading}>
                 Create event
             </Button>
         </Form.Item>

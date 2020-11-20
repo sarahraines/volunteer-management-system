@@ -22,8 +22,7 @@ const Activate = () => {
         try {
             const queryString = window.location.search;
             const url = `users/activate/${queryString}`;
-            const response = await axiosAPI.get(url);
-            console.log(response)
+            await axiosAPI.get(url);
             setLoadingState(AuthState.SUCCESS);
         } catch (error) {
             setLoadingState(AuthState.FAILURE);

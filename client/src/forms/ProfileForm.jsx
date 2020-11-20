@@ -23,7 +23,6 @@ const ProfileForm = ({user}) => {
 
 
     const onFinish = useCallback(async (values) => {
-        console.log(values)
         if (isEditable) {
             try {
                 await axiosAPI.post("users/update/", {
