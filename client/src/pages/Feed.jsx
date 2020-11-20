@@ -14,7 +14,6 @@ const Feed = () => {
   const [selectedKeys, setSelectedKeys] = useState([]);
   const setContextFromSidebar = (newContext) => {
     setContext(newContext);
-    console.log(newContext);
   }
   const alerts = useSelector(state => state.alerts, shallowEqual);
   const dispatch = useDispatch();
@@ -46,7 +45,6 @@ const Feed = () => {
         const member = response.data;
         if (member.length > 0) {
             setMember(member)
-            console.log(member);
             setSelectedKeys([member[0]?.organizations.id.toString()])
             setContextFromSidebar(member[0]?.organizations.id.toString() ?? "");
         } else {
