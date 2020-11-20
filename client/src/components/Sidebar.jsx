@@ -8,11 +8,8 @@ import './Sidebar.css';
 
 const { Divider, Item } = Menu;
 
-const Sidebar = ({setFeedContext}) =>  {
+const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
     const history = useHistory();
-    const [selectedKeys, setSelectedKeys] = useState([]);
-    const [organizations, setOrganizations] = useState([]);
-
     const onSelect = (latestSelectedKey) => {
         setSelectedKeys([latestSelectedKey.key]);
         console.log(latestSelectedKey);
@@ -30,35 +27,10 @@ const Sidebar = ({setFeedContext}) =>  {
         setFeedContext(selectedKeys[0] ?? "");
     }, [selectedKeys, setFeedContext]);
 
-    const getOrganizations = useCallback(async () => {
-        try {
-             const response = await axiosAPI.get("user/get-orgs/", {
-                 params: {
-                     user_id: localStorage.getItem("user_id"), 
-                 }
-             });
-            const organizations = response.data;
-            if (organizations.length > 0) {
-                setOrganizations(response.data);
-                setSelectedKeys([organizations[0].id.toString()])
-                setFeedContext(organizations[0].id.toString() ?? "");
-            } else {
-                setSelectedKeys(["create"])
-            }
-            
-        } catch(error) {
-            console.error(error);
-        }
-    }, [setFeedContext])
-
-    useEffect(() => {
-        getOrganizations();
-    }, [getOrganizations]);
-
     const organizationsList = (
-		organizations.map(org => 
-			<Item key={org.id}>
-                {org.name}
+		member.map(member => 
+			<Item key={member?.organization?.id}>
+                {member?.organization?.name}
             </Item>
 		)
     );

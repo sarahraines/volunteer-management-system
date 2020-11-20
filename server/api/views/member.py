@@ -23,6 +23,15 @@ class CreateMember(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class GetMemberFromUser(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    def get(self, request):
+        user_id = request.GET['user_id']
+        members = Member.objects.filter(user_id=user_id)
+        serializer = MemberSerializer(members, many=True)
+        return Response(serializer.data)
+
 class GetOrgsFromMember(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()

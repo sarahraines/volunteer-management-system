@@ -6,7 +6,7 @@ import NewEvent from "../pages/NewEvent";
 import OrgPage from "../pages/OrgPage"
 
 
-const FeedContent = ({context}) => {
+const FeedContent = ({member, context}) => {
     switch(context) {
         case "create-org":
             return (<NewOrg />);
@@ -17,7 +17,9 @@ const FeedContent = ({context}) => {
         case "create-event":
             return (<NewEvent />);
         default:
-            return <OrgPage orgId={parseInt(context)}/>
+            const orgId = parseInt(context)
+            const orgMember = member.filter(m=>m.organization.id == orgId)[0]
+            return <OrgPage member={orgMember} orgId={orgId}/>
     }
   }
   

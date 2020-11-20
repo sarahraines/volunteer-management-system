@@ -25,6 +25,7 @@ urlpatterns = [
     path('users/update/', views.UpdateUser.as_view(), name='update_user'),
     path('users/get/', views.GetUser.as_view(), name="get_user"),
     path('user/get-orgs/', views.GetOrgsFromMember.as_view(), name='get_orgs_from_member'),
+    path('user/get-member/', views.GetMemberFromUser.as_view(), name='get_member_from_user'),
     path('faq/upsert/', views.UpsertFAQ.as_view(), name='upsert_faq'),
     path('faq/delete/', views.DeleteFAQ.as_view(), name='delete_faq')
 ]

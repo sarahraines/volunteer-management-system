@@ -6,7 +6,7 @@ import './QAndA.css';
 const { Paragraph } = Typography;
 
 
-function QAndA ({item, removeFaq}) {
+function QAndA ({isAdmin, item, removeFaq}) {
     const [questionStr, setQuestionStr] = useState(item?.question || "");
     const [answerStr, setAnswerStr] = useState(item?.answer || "");
     const [isPublic, setIsPublic] = useState(!!item?.is_public);
@@ -63,18 +63,20 @@ function QAndA ({item, removeFaq}) {
     }
 
     return (
-        <Card style={{ marginTop: 8, marginBottom: 8 }} loading={!item} actions={[<DeleteOutlined onClick={onDelete} key="delete" />]}>
+        <Card style={{ marginTop: 8, marginBottom: 8 }} loading={!item} actions={isAdmin && [<DeleteOutlined onClick={onDelete} key="delete" />]}>
             <div>
                 <Paragraph style={{ display: "inline-block", verticalAlign: "top", fontWeight: 700 }}>Question: </Paragraph>
                 {'  '}
-                <Paragraph style={{ display: "inline-block" }} editable={{ onChange: (newQuestionStr) => updateQ(newQuestionStr) }}>{questionStr}</Paragraph>
+                <Paragraph style={{ display: "inline-block" }} editable={isAdmin? { onChange: (newQuestionStr) => updateQ(newQuestionStr) }: false}>{questionStr}</Paragraph>
             </div>
             <div>
                 <Paragraph style={{ display: "inline-block", verticalAlign: "top", fontWeight: 700 }}>Answer: </Paragraph>
                 {'  '}
-                <Paragraph style={{ display: "inline-block" }} editable={{ onChange: (newAnswerStr) => updateA(newAnswerStr) }}>{answerStr}</Paragraph>
+                <Paragraph style={{ display: "inline-block" }} editable={isAdmin  ? { onChange: (newAnswerStr) => updateA(newAnswerStr) }: false}>{answerStr}</Paragraph>
             </div>
-            <Switch checkedChildren="Public" unCheckedChildren="Hidden" onChange={(newIsPublic) => updatePublic(newIsPublic)} defaultChecked={item?.is_public}/>
+            {isAdmin &&
+                <Switch checkedChildren="Public" unCheckedChildren="Hidden" onChange={(newIsPublic) => updatePublic(newIsPublic)} defaultChecked={item?.is_public}/>
+            }
         </Card>
     )
 

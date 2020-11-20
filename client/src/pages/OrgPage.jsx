@@ -5,23 +5,15 @@ import QAndAPage from './QAndAPage';
 import EventCard from '../components/EventCard';
 import axiosAPI from '../api/axiosApi';
 
-function OrgPage({orgId}) {
-    
+function OrgPage({member, orgId}) {
     const [org, setOrg] = useState(null);
     const [eventsByOrg, setEventsByOrg] = useState([]);
 
-    const getOrgInfo = useCallback(async () => {
-        try {
-            const response = await axiosAPI.get("organization/get-info/", {
-                params: {
-                    orgId: orgId
-                }
-            });
-            setOrg(response.data)
-        } catch(error) {
-            console.error(error);
+    const setMemberInfo = () => {
+        if(member){
+            setOrg(member.organization);
         }
-    }, [orgId]);
+    }
 
     const getEventsByOrg = useCallback(async () => {
         try {
@@ -37,9 +29,9 @@ function OrgPage({orgId}) {
     }, [orgId]);
 
     useEffect(() => {
-        getOrgInfo();
+        setMemberInfo()
         getEventsByOrg();
-    }, [orgId, getEventsByOrg, getOrgInfo]);
+    }, [ orgId, member]);
 
     const eventList = eventsByOrg.map(item => 
         <EventCard key={item.id} item={item} />
@@ -59,7 +51,7 @@ function OrgPage({orgId}) {
                     <Typography.Paragraph level={2}>{org.description}</Typography.Paragraph>
                     </>
                 }
-                    <QAndAPage orgId={orgId} />
+                    <QAndAPage isAdmin={member?.member_type} orgId={orgId} />
 
                 <Typography.Title level={4}>Find service opportunities</Typography.Title>
             <Form

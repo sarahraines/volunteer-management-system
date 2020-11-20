@@ -6,7 +6,7 @@ import './NewOrg.css';
 
 const { Title } = Typography;
 
-function QAndAPage({orgId}) {
+function QAndAPage({isAdmin, orgId}) {
     const [qA, setQA] = useState([]);
 
     const getQA = async (orgId) => {
@@ -43,7 +43,7 @@ function QAndAPage({orgId}) {
         <div style={{ maxWidth: 300}}>
             <Title level={4}>Frequently Asked Questions</Title>
             {qA.map(item => 
-                <QAndA key={item.id} item={item} removeFaq={removeFaq}/>
+                <QAndA isAdmin={isAdmin===1} key={item.id} item={item} removeFaq={removeFaq}/>
             )}
             <Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>
       </div>
