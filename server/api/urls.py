@@ -27,5 +27,7 @@ urlpatterns = [
     path('user/get-orgs/', views.GetOrgsFromMember.as_view(), name='get_orgs_from_member'),
     path('user/get-member/', views.GetMemberFromUser.as_view(), name='get_member_from_user'),
     path('faq/upsert/', views.UpsertFAQ.as_view(), name='upsert_faq'),
-    path('faq/delete/', views.DeleteFAQ.as_view(), name='delete_faq')
+    path('faq/delete/', views.DeleteFAQ.as_view(), name='delete_faq'),
+    path('clearances/add-user-file', views.AddUserFile.as_view(), name='add_user_file'),
+    path('clearances/add-org-file', views.AddOrgFile.as_view(), name='add_org_file')
 ]

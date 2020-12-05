@@ -2,7 +2,6 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.serializers import EventSerializer,  OrganizationSerializer, UserFileSerializer, OrgFileSerializer
-from api.models import Event, User, Attendee, Member, Organization, Cause
 
 class AddOrgFile(APIView):
     permission_classes = (permissions.AllowAny,)
