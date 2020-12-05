@@ -5,6 +5,7 @@ class OrgFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrgFile
         fields = ['id', 'organization', 'empty_form']
+        
 class UserFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserFile
