@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Organization, Cause, FAQ, Event, Attendee, Member
+from .models import User, Organization, Cause, FAQ, Event, Attendee, Member, OrgFile, UserFile
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -22,6 +22,12 @@ class AttendeeAdmin(admin.ModelAdmin):
 class MemberAdmin(admin.ModelAdmin):
 	model = Member
 
+class OrgFileAdmin(admin.ModelAdmin):
+	model = OrgFile
+
+class UserFileAdmin(admin.ModelAdmin):
+	model = UserFile
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Cause, CauseAdmin)
@@ -29,3 +35,5 @@ admin.site.register(FAQ, FAQAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Attendee, AttendeeAdmin)
 admin.site.register(Member, MemberAdmin)
+admin.site.register(OrgFile, OrgFileAdmin)
+admin.site.register(UserFile, UserFileAdmin)

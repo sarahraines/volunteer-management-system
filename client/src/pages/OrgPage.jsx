@@ -4,6 +4,7 @@ import QAndAPage from './QAndAPage';
 import axiosAPI from '../api/axiosApi';
 import OrgEvents from './OrgEvents';
 import AboutUs from './AboutUs';
+import Clearances from './Clearances';
 import "./OrgPage.css";
 
 const { Title, Paragraph } = Typography;
@@ -39,6 +40,9 @@ function OrgPage({member, orgId}) {
                 </TabPane>
                 <TabPane tab="FAQ" key="faq">
                     <QAndAPage isAdmin={member?.member_type} orgId={orgId} />
+                </TabPane>
+                <TabPane tab="Clearances" key="clearance">
+                    <Clearances isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
             </Tabs>
         </React.Fragment>

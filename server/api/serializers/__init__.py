@@ -4,3 +4,4 @@ from .change_password import ChangePasswordSerializer
 from .user import UserSerializer, MyTokenObtainPairSerializer
 from .event import EventSerializer, AttendeeSerializer
 from .member import MemberSerializer
+from .clearance import UserFileSerializer, OrgFileSerializer
