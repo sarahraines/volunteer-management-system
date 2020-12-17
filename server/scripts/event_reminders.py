@@ -25,7 +25,7 @@ def run():
 		subject = 'Volunteer Event Reminder'
 
 		message = ('Hello ' + fname + ','
-		'\n\nThis is your reminder to attend the following event\n\n'
+		'\n\nThis is your reminder to attend the following event.\n\n'
 		'Name: ' + name + 
 		'\nOrganization: ' + name + 
 		'\nLocation: ' + location + 

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'django_extensions',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -149,6 +150,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+CRONJOBS = [
+    ('*/60 * * * *', 'scripts.event_reminders.run')
 ]
 
 
