@@ -12,6 +12,8 @@ django-cors-headers = "*"
 djangorestframework-simplejwt = "*"
 pytz = "*"
 six = "*"
+django-crontab = "*"
+django-utils = "*"
 
 [requires]
 python_version = "3.8"
