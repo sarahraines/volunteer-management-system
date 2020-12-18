@@ -12,13 +12,17 @@ class AddOrgFile(APIView):
         print("add org file")
         print(request.POST.get('orgId'))
         print("org id printed")
-        data = request.data
-        print(data)
-        serializer = OrgFileSerializer(data=data)
-        if serializer.is_valid():
-            # serializer.save(username=user, events=event)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print(request)
+        print(request.FILES)
+        # data = request.data
+        # print(data)
+        # print(request)
+        # serializer = OrgFileSerializer(data=data)
+        # if serializer.is_valid():
+        #     # serializer.save(username=user, events=event)
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response('', status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AddUserFile(APIView):
     permission_classes = (permissions.AllowAny,)

@@ -14,7 +14,7 @@ function Clearances({isAdmin, orgId}) {
     previewFile(file) {
       console.log('Your upload file:', file);
       // Your process logic. Here we just mock to the same file
-        axiosAPI.post('clearances/upload-user-file', {
+        return axiosAPI.post('clearances/upload-user-file', {
             file,
             orgId 
         },  {
@@ -39,16 +39,18 @@ function Clearances({isAdmin, orgId}) {
         console.log(key[0] + ', ' + key[1]);
     }
       // Your process logic. Here we just mock to the same file
-        axiosAPI.post('clearances/upload-org-file', {
+        return axiosAPI.post('clearances/upload-org-file', {
             formData
         }
          ,{
             headers: {
-            'Content-Type': 'multipart/form-data'
+            // 'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
+
             }
         }
         )
-        .then(res => res.json())
+        // .then(res => res.json())
         // .then(({ thumbnail }) => thumbnail);
     },
   };
