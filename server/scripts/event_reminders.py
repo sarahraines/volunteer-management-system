@@ -27,7 +27,7 @@ def run():
 		message = ('Hello ' + fname + ','
 		'\n\nThis is your reminder to attend the following event.\n\n'
 		'Name: ' + name + 
-		'\nOrganization: ' + name + 
+		'\nOrganization: ' + org + 
 		'\nLocation: ' + location + 
 		'\nDate: ' + str(begindate) + '-' + str(enddate) + 
 		'\nCauses: ' + causes + 
