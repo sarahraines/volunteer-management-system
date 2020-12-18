@@ -9,7 +9,11 @@ class AddOrgFile(APIView):
     authentication_classes = ()
 
     def post(self, request, format='json'):
+        print("BACkEND")
+        print(request)
+        print(request.data)
         org = Organization.objects.filter(id=request.data['orgId'])[0]
+        print(request.data['orgId'])
         data = request.data
         serializer = OrgFileSerializer(data=data)
         if serializer.is_valid():
