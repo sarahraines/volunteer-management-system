@@ -28,7 +28,7 @@ function Clearances({isAdmin, orgId}) {
   };
 
   const orgProps = {
-    name: 'file',
+    listType: 'picture',
     previewFile: async function(file) {
       const formData = new FormData();
       formData.append('empty_form', file, "file.txt");
