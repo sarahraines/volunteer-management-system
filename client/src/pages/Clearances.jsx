@@ -29,45 +29,26 @@ function Clearances({isAdmin, orgId}) {
 
   const orgProps = {
     name: 'file',
-    async customRequest (file) {
-    const formData = new FormData();
-    formData.append('empty_form', new Blob([file], {type: "application/pdf"}), file.originFileObj?.name);
-    formData.append('orgId', orgId);
-    // Your process logic. Here we just mock to the same file
-      try {
-           return await axiosAPI.post('clearances/upload-org-file', formData,{
-              headers: {
-              // 'Content-Type': 'multipart/form-data'
-              'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
-  
-              }
-          }
-          )
-          .then(({ thumbnail }) => thumbnail);
-
-      } catch(err) {
-          console.log(err)
-      }
-    // async previewFile(file) {
-    //   const formData = new FormData();
-    //   formData.append('empty_form', file, "file.txt");
-    //   formData.append('orgId', orgId);
-    //   // Your process logic. Here we just mock to the same file
-    //     try {
-    //         return await axiosAPI.post('clearances/upload-org-file', formData,{
-    //             headers: {
-    //             // 'Content-Type': 'multipart/form-data'
-    //             'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
+    previewFile: async function(file) {
+      const formData = new FormData();
+      formData.append('empty_form', file, "file.txt");
+      formData.append('orgId', orgId);
+      // Your process logic. Here we just mock to the same file
+        try {
+            return await axiosAPI.post('clearances/upload-org-file', formData,{
+                headers: {
+                // 'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
     
-    //             }
-    //         }
-    //         )
-    //         // .then(res => res.json())
-    //         .then(({ thumbnail }) => thumbnail);
+                }
+            }
+            )
+            // .then(res => res.json())
+            .then(({ thumbnail }) => thumbnail);
 
-    //     } catch {
-    //         console.log("upload failed")
-    //     }
+        } catch {
+            console.log("upload failed")
+        }
         
     },
   };
