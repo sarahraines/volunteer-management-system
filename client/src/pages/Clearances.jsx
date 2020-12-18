@@ -33,16 +33,13 @@ function Clearances({isAdmin, orgId}) {
     previewFile(file) {
       console.log('Your upload file:', file);
       const formData = new FormData();
-      formData.append('file', file, "file.txt");
+      formData.append('empty_form', file, "file.txt");
       formData.append('orgId', orgId);
       for (var key of formData.entries()) {
         console.log(key[0] + ', ' + key[1]);
     }
       // Your process logic. Here we just mock to the same file
-        return axiosAPI.post('clearances/upload-org-file', {
-            formData
-        }
-         ,{
+          return axiosAPI.post('clearances/upload-org-file', formData,{
             headers: {
             // 'Content-Type': 'multipart/form-data'
             'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
@@ -50,8 +47,8 @@ function Clearances({isAdmin, orgId}) {
             }
         }
         )
-        // .then(res => res.json())
-        // .then(({ thumbnail }) => thumbnail);
+        .then(res => res)
+        .then(({ thumbnail }) => thumbnail);
     },
   };
 
