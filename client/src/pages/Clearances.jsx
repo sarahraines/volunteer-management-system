@@ -7,6 +7,7 @@ import { UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
+    const [fileList, setFileList] = useState([]);
     //front end demo https://codesandbox.io/s/s98mf
     const props = {
     action: '',
@@ -39,6 +40,21 @@ function Clearances({isAdmin, orgId}) {
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
         }
+        let fl = [...info.fileList];
+
+        // 1. Limit the number of uploaded files
+        // Only to show two recent uploaded files, and old ones will be replaced by the new
+        fl = fl.slice(-2);
+        fl = fl.map(file => {
+            if (file.response) {
+              // Component will show file.url as link
+              console.log(file)
+              file.url = "file.txt";
+            }
+            return file;
+          });
+      
+          setFileList(fl);
       },
     previewFile: async function(file) {
       const formData = new FormData();
