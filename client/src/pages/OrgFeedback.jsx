@@ -4,7 +4,7 @@ import "antd/dist/antd.css";
 import axiosAPI from "../api/axiosApi";
 
 
-const OrgFeedback = ({orgId}) => {
+const OrgFeedback = ({isAdmin, orgId}) => {
 
     const [info, setInfo] = useState([]); 
 
@@ -12,7 +12,9 @@ const OrgFeedback = ({orgId}) => {
         try {
             const response = await axiosAPI.get("eventFeedback/get-by-org/", {
                 params: {
-                    orgId: orgId
+                    orgId: orgId,
+                    isAdmin: isAdmin,
+                    userId: localStorage.getItem("user_id"), 
                 }
             });
             setInfo(response.data);

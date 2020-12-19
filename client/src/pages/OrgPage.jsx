@@ -42,7 +42,7 @@ function OrgPage({member, orgId}) {
                     <QAndAPage isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
                 <TabPane tab="Feedback" key="feedback">
-                    <OrgFeedback orgId={orgId} />
+                    <OrgFeedback isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
             </Tabs>
         </React.Fragment>
