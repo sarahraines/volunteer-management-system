@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import { Upload, Button, message, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
@@ -7,6 +7,21 @@ import { UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
+
+    const getOrgFiles = useCallback(async () => {
+        try {
+             const response = await axiosAPI.get("clearances/get-org-files/", {
+                 params: {
+                     orgId: orgId, 
+                 }
+             });
+            const files = response.data;
+            console.log("fetched files")
+            console.log(files);
+        } catch(error) {
+            console.error(error);
+        }
+    }, [])
     const [fileList, setFileList] = useState([]);
     //front end demo https://codesandbox.io/s/s98mf
     const props = {
@@ -27,9 +42,11 @@ function Clearances({isAdmin, orgId}) {
         .then(({ thumbnail }) => thumbnail);
     },
   };
+  useEffect(() => {
+    getOrgFiles()
+}, [orgId]);
 
   const orgProps = {
-    listType: 'picture',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     onChange( info) {
         if (info.file.status !== 'uploading') {
@@ -41,9 +58,6 @@ function Clearances({isAdmin, orgId}) {
           message.error(`${info.file.name} file upload failed.`);
         }
         let fl = [...info.fileList];
-
-        // 1. Limit the number of uploaded files
-        // Only to show two recent uploaded files, and old ones will be replaced by the new
         fl = fl.slice(-2);
         fl = fl.map(file => {
             if (file.response) {
@@ -62,7 +76,7 @@ function Clearances({isAdmin, orgId}) {
       formData.append('orgId', orgId);
       // Your process logic. Here we just mock to the same file
         try {
-            return await axiosAPI.post('clearances/upload-org-file', formData,{
+            return await axiosAPI.post('clearances/upload-org-file/', formData,{
                 headers: {
                 // 'Content-Type': 'multipart/form-data'
                 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'

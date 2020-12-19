@@ -19,6 +19,15 @@ class AddOrgFile(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class GetOrgFiles(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    def get(self, request, format='json'):
+        org = Organization.objects.filter(id=request.data['orgId'])[0]
+        org_files = OrgFile.objects.filter(organization=org)
+        serializer = OrgFileSerializer(org_files, many=True)
+        return Response(serializer.data)
+
 class AddUserFile(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
