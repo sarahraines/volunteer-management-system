@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Upload, Button, Typography } from 'antd';
+import { Upload, Button, message, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import { UploadOutlined } from '@ant-design/icons';
@@ -28,8 +28,18 @@ function Clearances({isAdmin, orgId}) {
   };
 
   const orgProps = {
-    listType: 'picture',
+    name: 'file',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    onChange( info) {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name} file uploaded successfully`);
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+        }
+      },
     previewFile: async function(file) {
       const formData = new FormData();
       formData.append('empty_form', file, "file.txt");
