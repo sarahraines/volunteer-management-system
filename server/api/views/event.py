@@ -1,7 +1,7 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.serializers import EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer
+from api.serializers import EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer
 from api.models import Event, User, Attendee, Member, Organization, Cause
 from collections import OrderedDict
 
@@ -85,10 +85,39 @@ class GetAdminOrganizations(APIView):
         serializer = OrganizationSerializer(orgs, many=True)
         return Response(serializer.data)
 
+class GetEventById(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
 
+    def get(self, request):
+        attendee_id = request.GET['attendee_id']
 
+        attendees = Attendee.objects.filter(id=attendee_id). \
+        values('events__name', 'events__location', 'events__begindate',  \
+        'events__enddate', 'events__causes__name', 'events__description',  \
+        'events__organizations__name', 'username__email', 'username__first_name', 'username__last_name')
 
+        return Response(attendees, status=status.HTTP_200_OK)
 
+class CreateEventFeedback(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
 
+    def post(self, request, format='json'):
+        data = request.data
+        
+        ids = Attendee.objects.filter(id=data['id']).values('events__id', 'username__id')
+        
+        event_id = ids[0]['events__id']
+        username_id = ids[0]['username__id']
 
+        event = Event.objects.filter(id=event_id)[0]
+        username = User.objects.filter(id=username_id)[0]
+
+        serializer = EventFeedbackSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save(username=username, event=event)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Event, Attendee
+from api.models import Event, Attendee, EventFeedback
 
 class EventSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -11,3 +11,8 @@ class AttendeeSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Attendee
 		fields = ['id', 'username', 'events']
+
+class EventFeedbackSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = EventFeedback
+		fields = ['id', 'username', 'event', 'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience']

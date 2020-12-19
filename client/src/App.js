@@ -8,6 +8,7 @@ import Activate from './pages/Activate';
 // import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
 import NewEvent from './pages/NewEvent'
+import EventFeedback from './pages/EventFeedback'
 import './App.css';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/events" component={Event} />
           <Route path="/NewEvent" component={NewEvent} />
           <Route path="/feed" component={Feed} />
+          <Route path="/EventFeedback" component={EventFeedback} />
       </Switch> 
   </main>
   );
