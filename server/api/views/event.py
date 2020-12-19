@@ -131,11 +131,7 @@ class GetEventFeedback(APIView):
         is_admin = request.GET['isAdmin']
         user_id = request.GET['userId']
 
-        print('user_id' + user_id)
-        print('is_admin' + is_admin)
-
         if str(is_admin)=='1':
-            print('here')
             feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
             'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
