@@ -3,7 +3,6 @@ import { Upload, Button, message, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import { UploadOutlined } from '@ant-design/icons';
-
 const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
@@ -47,11 +46,8 @@ function Clearances({isAdmin, orgId}) {
         .then(({ thumbnail }) => thumbnail);
     },
   };
-//   useEffect(() => {
-//     getOrgFiles()
-// }, [orgId]);
-
   const orgProps = {
+    listType: 'picture',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     onChange( info) {
         if (info.file.status !== 'uploading') {
@@ -63,6 +59,8 @@ function Clearances({isAdmin, orgId}) {
           message.error(`${info.file.name} file upload failed.`);
         }
         let fl = [...info.fileList];
+        // 1. Limit the number of uploaded files
+        // Only to show two recent uploaded files, and old ones will be replaced by the new
         fl = fl.slice(-2);
         fl = fl.map(file => {
             if (file.response) {
@@ -77,12 +75,11 @@ function Clearances({isAdmin, orgId}) {
       },
     previewFile: async function(file) {
       const formData = new FormData();
-      console.log("hitting preview file")
       formData.append('empty_form', file, file.name);
       formData.append('orgId', orgId);
       // Your process logic. Here we just mock to the same file
         try {
-            return await axiosAPI.post('clearances/upload-org-file/', formData,{
+            return await axiosAPI.post('clearances/upload-org-file', formData,{
                 headers: {
                 // 'Content-Type': 'multipart/form-data'
                 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
@@ -92,14 +89,12 @@ function Clearances({isAdmin, orgId}) {
             )
             // .then(res => res.json())
             .then(({ thumbnail }) => thumbnail);
-
         } catch {
             console.log("upload failed")
         }
         
     },
   };
-
     return (
         <div>
             <Title level={4}>Clearances</Title>
@@ -119,7 +114,6 @@ function Clearances({isAdmin, orgId}) {
         </div>
     );
 };
-
 // customRequest: async function (file) {
 //     const formData = new FormData();
 //     formData.append('empty_form', new Blob([file], {type: "image/png"}), file.originFileObj?.name);
@@ -135,7 +129,6 @@ function Clearances({isAdmin, orgId}) {
 //           }
 //           )
 //           // .then(({ thumbnail }) => thumbnail);
-
 //       } catch(err) {
 //           console.log(err)
 //       }
