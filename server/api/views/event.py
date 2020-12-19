@@ -1,9 +1,10 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.serializers import EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer
-from api.models import Event, User, Attendee, Member, Organization, Cause
+from api.serializers import UserSerializer, EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer
+from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback
 from collections import OrderedDict
+
 
 class AddAttendees(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -120,4 +121,19 @@ class CreateEventFeedback(APIView):
             serializer.save(username=username, event=event)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetEventFeedback(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        org_id = request.GET['orgId']
+        feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
+        'event__name', 'event__location', 'event__begindate', 'event__enddate', 
+        'username__email', 'username__first_name', 'username__last_name',
+        'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
+
+        feedback = list(feedback)
+
+        return Response(feedback, status=status.HTTP_200_OK)
 

@@ -15,6 +15,7 @@ urlpatterns = [
     path('events/get-by-org/', views.GetEventsByOrg.as_view(), name='get_events_by_org'),
     path('event/create/', views.CreateEvent.as_view(), name='create_event'),
     path('eventFeedback/create/', views.CreateEventFeedback.as_view(), name='create_event'),
+    path('eventFeedback/get-by-org/', views.GetEventFeedback.as_view(), name='get_by_org'),
     path('event/get-event-by-id/', views.GetEventById.as_view(), name='get-event-by-id'),
     path('attendees/user_events/', views.GetAttendees.as_view(), name='get_attendees'),
     path('attendees/create/', views.AddAttendees.as_view(), name="add_attendees"),
