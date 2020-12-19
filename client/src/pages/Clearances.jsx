@@ -49,7 +49,7 @@ function Clearances({isAdmin, orgId}) {
             if (file.response) {
               // Component will show file.url as link
               console.log(file)
-              file.url = "file.txt";
+              file.url = "http://localhost:8080/"+ file.name;
             }
             return file;
           });
@@ -58,7 +58,7 @@ function Clearances({isAdmin, orgId}) {
       },
     previewFile: async function(file) {
       const formData = new FormData();
-      formData.append('empty_form', file, "file.txt");
+      formData.append('empty_form', file, file.name);
       formData.append('orgId', orgId);
       // Your process logic. Here we just mock to the same file
         try {
