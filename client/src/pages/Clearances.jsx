@@ -29,6 +29,7 @@ function Clearances({isAdmin, orgId}) {
 
   const orgProps = {
     listType: 'picture',
+    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     previewFile: async function(file) {
       const formData = new FormData();
       formData.append('empty_form', file, "file.txt");
