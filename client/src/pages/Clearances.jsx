@@ -29,7 +29,7 @@ function Clearances({isAdmin, orgId}) {
   };
 
   const orgProps = {
-    name: 'file',
+    listType: 'picture',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     onChange( info) {
         if (info.file.status !== 'uploading') {
