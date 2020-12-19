@@ -7,7 +7,7 @@ const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
 
-    const getOrgFiles = useCallback(async () => {
+    const getOrgFiles = useCallback(async (orgId) => {
         try {
              const response = await axiosAPI.get("clearances/get-org-files/", {
                  params: {
@@ -23,7 +23,7 @@ function Clearances({isAdmin, orgId}) {
     }, [])
 
     useEffect(() => {
-        getOrgFiles()
+        getOrgFiles(orgId)
     }, [orgId]);
 
     const [fileList, setFileList] = useState([]);
