@@ -24,6 +24,7 @@ class GetOrgFiles(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
+        # org = Organization.objects.filter(id=request.data['orgId'])[0]
         print("get org files request")
         print(request)
         org = Organization.objects.filter(id=request.GET['orgId'])[0]

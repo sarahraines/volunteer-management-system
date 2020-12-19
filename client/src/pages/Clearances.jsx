@@ -10,7 +10,6 @@ function Clearances({isAdmin, orgId}) {
 
     const getOrgFiles = useCallback(async () => {
         try {
-            console.log("orgId" +orgId);
              const response = await axiosAPI.get("clearances/get-org-files/", {
                  params: {
                      orgId: orgId, 
@@ -23,6 +22,11 @@ function Clearances({isAdmin, orgId}) {
             console.error(error);
         }
     }, [])
+
+    useEffect(() => {
+        getOrgFiles()
+    }, [orgId]);
+
     const [fileList, setFileList] = useState([]);
     //front end demo https://codesandbox.io/s/s98mf
     const props = {
