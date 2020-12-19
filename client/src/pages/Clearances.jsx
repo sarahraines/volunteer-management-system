@@ -10,6 +10,7 @@ function Clearances({isAdmin, orgId}) {
 
     const getOrgFiles = useCallback(async () => {
         try {
+            console.log("orgId" +orgId);
              const response = await axiosAPI.get("clearances/get-org-files/", {
                  params: {
                      orgId: orgId, 
@@ -42,9 +43,9 @@ function Clearances({isAdmin, orgId}) {
         .then(({ thumbnail }) => thumbnail);
     },
   };
-  useEffect(() => {
-    getOrgFiles()
-}, [orgId]);
+//   useEffect(() => {
+//     getOrgFiles()
+// }, [orgId]);
 
   const orgProps = {
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
@@ -72,6 +73,7 @@ function Clearances({isAdmin, orgId}) {
       },
     previewFile: async function(file) {
       const formData = new FormData();
+      console.log("hitting preview file")
       formData.append('empty_form', file, file.name);
       formData.append('orgId', orgId);
       // Your process logic. Here we just mock to the same file

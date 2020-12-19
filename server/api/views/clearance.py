@@ -9,6 +9,7 @@ class AddOrgFile(APIView):
     authentication_classes = ()
 
     def post(self, request, format='json'):
+        print("adding org file")
         print(request.data)
         org = Organization.objects.filter(id=request.data['orgId'])[0]
         print(request.data['orgId'])
@@ -23,7 +24,9 @@ class GetOrgFiles(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
-        org = Organization.objects.filter(id=request.data['orgId'])[0]
+        print("get org files request")
+        print(request)
+        org = Organization.objects.filter(id=request.GET['orgId'])[0]
         org_files = OrgFile.objects.filter(organization=org)
         serializer = OrgFileSerializer(org_files, many=True)
         return Response(serializer.data)
