@@ -2,10 +2,12 @@ import React, {useState, useCallback, useEffect} from 'react';
 import { Upload, Button, message, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
-import { UploadOutlined } from '@ant-design/icons';
+import { FileDoneOutlined, UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
+    const [fileList, setFileList] = useState([]);
+
 
     const getOrgFiles = useCallback(async (orgId) => {
         try {
@@ -17,16 +19,34 @@ function Clearances({isAdmin, orgId}) {
             const files = response.data;
             console.log("fetched files")
             console.log(files);
+            // setFileList({
+            //     uid: '1',
+            //     name: 'file3',
+            //     status: 'done',
+            //     url: 'http://www.baidu.com/xxx.png',
+            //   },)
+            // files.forEach((file, i)=> setFileList([...setFileList, {"uid": i, "name": file.name, "status": "done",  "url": 'http://www.baidu.com/xxx.png',  }]) )
+            // setFileList(files)
+            const fl = files.map(file => {
+                  return {
+                      url : "url",
+                      uid: 1,
+                      name: "file3",
+                      status: "done"
+                  }
+              });
+            setFileList(fl)
+            console.log("file list")
+            console.log(fileList)
         } catch(error) {
             console.error(error);
         }
-    }, [])
+    }, [orgId])
 
     useEffect(() => {
         getOrgFiles(orgId)
     }, [orgId]);
 
-    const [fileList, setFileList] = useState([]);
     //front end demo https://codesandbox.io/s/s98mf
     const props = {
     action: '',
@@ -46,6 +66,7 @@ function Clearances({isAdmin, orgId}) {
         .then(({ thumbnail }) => thumbnail);
     },
   };
+  
   const orgProps = {
     listType: 'picture',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
@@ -72,7 +93,9 @@ function Clearances({isAdmin, orgId}) {
           });
       
           setFileList(fl);
+
       },
+      defaultFileList: fileList,
     previewFile: async function(file) {
       const formData = new FormData();
       formData.append('empty_form', file, file.name);
@@ -114,22 +137,4 @@ function Clearances({isAdmin, orgId}) {
         </div>
     );
 };
-// customRequest: async function (file) {
-//     const formData = new FormData();
-//     formData.append('empty_form', new Blob([file], {type: "image/png"}), file.originFileObj?.name);
-//     formData.append('orgId', orgId);
-//     // Your process logic. Here we just mock to the same file
-//       try {
-//            await axiosAPI.post('clearances/upload-org-file', formData,{
-//               headers: {
-//               // 'Content-Type': 'multipart/form-data'
-//               'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
-  
-//               }
-//           }
-//           )
-//           // .then(({ thumbnail }) => thumbnail);
-//       } catch(err) {
-//           console.log(err)
-//       }
 export default Clearances;
