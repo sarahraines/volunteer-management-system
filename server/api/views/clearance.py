@@ -56,9 +56,13 @@ class AddUserFile(APIView):
         data = request.data
         print("request.data")
         print(request.data)
+        org_file = OrgFile.objects.filter(id=request.data['org_file_id'])[0]
+        print(OrgFile.objects.filter(id=request.data['org_file_id']))
+        user = User.objects.filter(id=request.data.get('user_id'))[0]
         serializer = UserFileSerializer(data=data)
         if serializer.is_valid():
-            # serializer.save(username=user, events=event)
+            print("request.data valid")
+            serializer.save(org_file=org_file, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

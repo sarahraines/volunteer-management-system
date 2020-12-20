@@ -14,8 +14,10 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         previewFile(file) {
           console.log('Your upload file:', file);
             const formData = new FormData();
+            console.log('file list', fileList[0].uid)
+            formData.append('org_file_id', fileList[0].uid);
+            formData.append('user_id', localStorage.getItem("user_id"))
             formData.append('filled_form', file, file.name);
-            formData.append('orgId', orgId);
     
             return axiosAPI.post('clearances/upload-user-file', formData, {
                 headers: {
