@@ -2,8 +2,8 @@ import React, {useState, useCallback, useEffect} from 'react';
 import { Upload, Button, message, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
-import { UploadOutlined } from '@ant-design/icons';
 import UserFilesTable from './UserFilesTable';
+import { FileDoneOutlined, UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
@@ -16,13 +16,12 @@ function Clearances({isAdmin, orgId}) {
                  }
              });
             const files = response.data;
-            setFileList(files)
-            console.log("fetched files")
-            console.log(files);
+            const formattedFiles = files.map(file => ({uid: file.id, name: file.empty_form.split('/').slice(-1).pop(), status: "done", url: file.empty_form}));
+            setFileList(formattedFiles);
         } catch(error) {
             console.error(error);
         }
-    }, [])
+    }, [orgId]);
 
     useEffect(() => {
         getOrgFiles(orgId)
@@ -73,10 +72,10 @@ function Clearances({isAdmin, orgId}) {
         .then(({ thumbnail }) => thumbnail);
     },
   };
-
   const orgProps = {
     listType: 'picture',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    fileList: fileList,
     onChange( info) {
         if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);
