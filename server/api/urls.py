@@ -30,5 +30,6 @@ urlpatterns = [
     path('faq/delete/', views.DeleteFAQ.as_view(), name='delete_faq'),
     path('clearances/upload-user-file', views.AddUserFile.as_view(), name='upload_user_file'),
     path('clearances/upload-org-file', views.AddOrgFile.as_view(), name='upload_org_file'),
-    path('clearances/get-org-files/', views.GetOrgFiles.as_view(), name='get_org_files')
+    path('clearances/get-org-files/', views.GetOrgFiles.as_view(), name='get_org_files'),
+    path('clearances/get-user-files-for-org/', views.GetUserFilesForOrg.as_view(), name='get_user_files_for_org')
 ]

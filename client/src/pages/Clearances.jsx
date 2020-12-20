@@ -36,7 +36,6 @@ function Clearances({isAdmin, orgId}) {
         } else if (info.file.status === 'error') {
           message.error(`${info.file.name} file upload failed.`);
         }
-  
     }
   const orgProps = {
     listType: 'picture',

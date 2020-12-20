@@ -14,8 +14,10 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         previewFile(file) {
           console.log('Your upload file:', file);
             const formData = new FormData();
-            console.log('file list', fileList[0].uid)
-            formData.append('org_file_id', fileList[0].uid);
+            // console.log('file list', file.uid)
+            console.log("org id" +orgId)
+            console.log("org id above")
+            formData.append('org_file_id', orgId);
             formData.append('user_id', localStorage.getItem("user_id"))
             formData.append('filled_form', file, file.name);
     
@@ -38,13 +40,14 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         {
           title: 'Upload Completed File',
           key: 'upload',
-          render: (text, record) => (
-            <Upload {...props}>
+          render: () => (
+            <Upload {...props} >
                 <Button icon={<UploadOutlined/>}>Upload</Button>  
             </Upload>
           ),
         },
     ];
+    console.log(fileList)
     
     const data = fileList.map((file,i) => ({"key": i, "file": file.name}))
     
