@@ -10,8 +10,11 @@
     "antd": "^4.7.0",
     "axios": "^0.20.0",
     "axios-retry": "^3.1.9",
+    "install": "^0.13.0",
+    "plotly.js": "^1.58.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-plotly.js": "^2.5.1",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
@@ -19,7 +22,7 @@
     "shortid": "^2.2.16"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --max_old_space_size=4096 start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

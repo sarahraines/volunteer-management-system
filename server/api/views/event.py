@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from api.serializers import UserSerializer, EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer
 from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback
 from collections import OrderedDict
+from django.db.models import Count
 
 
 class AddAttendees(APIView):
@@ -145,4 +146,22 @@ class GetEventFeedback(APIView):
         feedback = list(feedback)
 
         return Response(feedback, status=status.HTTP_200_OK)
+
+class GetAttendeeCountsByEvent(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        orgId = request.GET['orgId'];
+        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('events__name').annotate(Count('events__name'))
+        attendees = list(attendees)
+
+        x = []
+        y = []
+        data = (x, y)
+        for i in range(len(attendees)):
+            x.append(attendees[i]['events__name'])
+            y.append(attendees[i]['events__name__count'])
+
+        return Response(data, status=status.HTTP_200_OK)
 
