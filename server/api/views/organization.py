@@ -2,8 +2,9 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.serializers import OrganizationSerializer, CauseSerializer, FAQSerializer
-from api.models import Organization, Cause, FAQ
+from api.models import Organization, Cause, FAQ, Member
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 import logging
 import json
 
@@ -81,3 +82,20 @@ class DeleteFAQ(APIView):
         faq = get_object_or_404(FAQ, pk=id)
         faq.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+class GetMemberCountsByOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        orgId = request.GET['orgId'];
+        members = Member.objects.filter(organization__id=orgId).values('member_type').annotate(Count('member_type'))
+        members = list(members)
+
+        y = [0, 0]
+
+        for i in range(len(members)): 
+            y[i] = members[i]['member_type__count']
+
+        return Response(y, status=status.HTTP_200_OK)
+
