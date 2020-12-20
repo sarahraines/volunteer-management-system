@@ -17,31 +17,12 @@ function Clearances({isAdmin, orgId}) {
                  }
              });
             const files = response.data;
-            console.log("fetched files")
-            console.log(files);
-            // setFileList({
-            //     uid: '1',
-            //     name: 'file3',
-            //     status: 'done',
-            //     url: 'http://www.baidu.com/xxx.png',
-            //   },)
-            // files.forEach((file, i)=> setFileList([...setFileList, {"uid": i, "name": file.name, "status": "done",  "url": 'http://www.baidu.com/xxx.png',  }]) )
-            // setFileList(files)
-            const fl = files.map(file => {
-                  return {
-                      url : "url",
-                      uid: 1,
-                      name: "file3",
-                      status: "done"
-                  }
-              });
-            setFileList(fl)
-            console.log("file list")
-            console.log(fileList)
+            const formattedFiles = files.map(file => ({uid: file.id, name: file.empty_form.split('/').slice(-1).pop(), status: "done", url: file.empty_form}));
+            setFileList(formattedFiles);
         } catch(error) {
             console.error(error);
         }
-    }, [orgId])
+    }, [orgId]);
 
     useEffect(() => {
         getOrgFiles(orgId)
@@ -70,6 +51,7 @@ function Clearances({isAdmin, orgId}) {
   const orgProps = {
     listType: 'picture',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    fileList: fileList,
     onChange( info) {
         if (info.file.status !== 'uploading') {
           console.log(info.file, info.fileList);
@@ -95,7 +77,6 @@ function Clearances({isAdmin, orgId}) {
           setFileList(fl);
 
       },
-      defaultFileList: fileList,
     previewFile: async function(file) {
       const formData = new FormData();
       formData.append('empty_form', file, file.name);
