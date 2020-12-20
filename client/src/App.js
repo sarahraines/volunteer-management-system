@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from "react-router-dom";
 import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
-import Home from './pages/Home';
+import Home from './pages/Home/Home';
 import Feed from './pages/Feed';
 import Activate from './pages/Activate';
 // import ForgotPassword from './pages/ForgotPassword';
