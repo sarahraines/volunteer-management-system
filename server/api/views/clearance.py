@@ -34,10 +34,28 @@ class GetOrgFiles(APIView):
         return Response(serializer.data)
 
 class AddUserFile(APIView):
+    # permission_classes = (permissions.AllowAny,)
+    # authentication_classes = ()
+
+    # def post(self, request, format='json'):
+    #     # print("adding org file")
+    #     # print(request.data)
+    #     # org = Organization.objects.filter(id=request.data['orgId'])[0]
+    #     # print(request.data['orgId'])
+    #     data = request.data
+    #     serializer = UserFileSerializer(data=data)
+    #     if serializer.is_valid():
+    #         # serializer.save(organization = org)
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def post(self, request, format='json'):
         data = request.data
+        print("request.data")
+        print(request.data)
         serializer = UserFileSerializer(data=data)
         if serializer.is_valid():
             # serializer.save(username=user, events=event)
