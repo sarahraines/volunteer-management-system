@@ -1,8 +1,8 @@
 import React from 'react';
 import { Layout, Typography } from 'antd';
 import AuthForm from '../forms/AuthForm';
-import LoginLogo from '../svg/login.svg';
-import RegisterLogo from '../svg/register.svg';
+import LoginLogo from '../assets/login.svg';
+import RegisterLogo from '../assets/register.svg';
 import './Auth.css';
 
 const Auth = ({isRegister}) => {

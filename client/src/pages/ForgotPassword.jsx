@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Typography } from 'antd';
-import RegisterLogo from '../svg/register.svg';
+import RegisterLogo from '../assets/register.svg';
 import './Auth.css';
 // import ForgotPasswordForm from '../forms/ForgotPasswordForm';
 

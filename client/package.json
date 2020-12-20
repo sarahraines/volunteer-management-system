@@ -4,12 +4,14 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
+    "@craco/craco": "^6.0.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "antd": "^4.7.0",
     "axios": "^0.20.0",
     "axios-retry": "^3.1.9",
+    "craco-less": "^1.17.1",
     "enquire-js": "^0.2.1",
     "rc-queue-anim": "^1.8.5",
     "rc-scroll-anim": "^2.7.6",
@@ -17,15 +19,15 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "4.0.1",
     "redux": "^4.0.5",
     "shortid": "^2.2.16"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "rcraco test",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": "react-app"

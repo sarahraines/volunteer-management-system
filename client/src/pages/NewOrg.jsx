@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from 'antd';
-import OrganizationLogo from '../svg/create_org.svg';
+import OrganizationLogo from '../assets/create_org.svg';
 import NewOrgForm from '../forms/NewOrgForm';
 import './NewOrg.css';
 
