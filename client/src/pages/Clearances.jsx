@@ -45,9 +45,6 @@ function Clearances({isAdmin, orgId}) {
     onChange(info) {
        messageHandler(info)
         let fl = [...info.fileList];
-        // 1. Limit the number of uploaded files
-        // Only to show two recent uploaded files, and old ones will be replaced by the new
-        fl = fl.slice(-2);
         fl = fl.map(file => {
             if (file.response) {
               // Component will show file.url as link
@@ -63,12 +60,10 @@ function Clearances({isAdmin, orgId}) {
       const formData = new FormData();
       formData.append('empty_form', file, file.name);
       formData.append('orgId', orgId);
-      // Your process logic. Here we just mock to the same file
         try {
             return await axiosAPI.post('clearances/upload-org-file', formData,{
                 headers: {
                 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
-    
                 }
             }
             )
