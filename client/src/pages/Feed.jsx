@@ -22,8 +22,6 @@ const Feed = () => {
     setTimeout(() => dispatch(removeAlert(id)), 500);
   }, [dispatch]);
 
-
-
   const alertList = alerts.map(alert => 
     <Alert
       key={alert.id}
@@ -45,19 +43,18 @@ const Feed = () => {
         const member = response.data;
         if (member.length > 0) {
             setMember(member)
-            setSelectedKeys([member[0]?.organizations.id.toString()])
-            setContextFromSidebar(member[0]?.organizations.id.toString() ?? "");
+            setSelectedKeys([member[0]?.organization?.id.toString()])
         } else {
             setSelectedKeys(["create"])
         }
     } catch(error) {
         console.error(error);
     }
-}, [setContextFromSidebar])
+  }, [setSelectedKeys, setMember])
 
-useEffect(() => {
-  getMember()
-}, []);
+  useEffect(() => {
+    getMember()
+  }, [getMember]);
 
   return (
     <Layout style={{ minHeight:"100vh" }}>

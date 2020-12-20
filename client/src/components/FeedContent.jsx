@@ -18,7 +18,7 @@ const FeedContent = ({member, context}) => {
             return (<NewEvent />);
         default:
             const orgId = parseInt(context)
-            const orgMember = member.filter(m=>m.organization.id == orgId)[0]
+            const orgMember = member.filter(m => m.organization.id === orgId)[0]
             return <OrgPage member={orgMember} orgId={orgId}/>
     }
   }

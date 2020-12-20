@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Menu, Affix } from 'antd';
+import React, { useCallback, useEffect } from 'react';
+import { Menu } from 'antd';
 import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, SearchOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axiosAPI from '../api/axiosApi';

@@ -1,31 +1,25 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import { Typography, Form, Tabs } from 'antd';
+import React, {useState, useEffect} from 'react';
+import { Typography, Tabs } from 'antd';
 import QAndAPage from './QAndAPage';
-import axiosAPI from '../api/axiosApi';
 import OrgEvents from './OrgEvents';
 import AboutUs from './AboutUs';
 import "./OrgPage.css";
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 const { TabPane } = Tabs;
 
 function OrgPage({member, orgId}) {
-
     const [org, setOrg] = useState(null);
     const [activeKey, setActiveKey] = useState("home");
 
-    const setMemberInfo = () => {
-        if(member){
-            setOrg(member.organization);
-        }
-    }
-
     useEffect(() => {
         if (orgId) {
-            setMemberInfo();
+            if (member) {
+                setOrg(member.organization);
+            }
             setActiveKey("home")
         }
-    }, [orgId]);
+    }, [setActiveKey, orgId, member]);
 
     return (
         <React.Fragment>

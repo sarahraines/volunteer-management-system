@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Form, Typography} from 'antd';
+import {Typography} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';

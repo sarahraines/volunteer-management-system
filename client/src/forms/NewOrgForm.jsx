@@ -6,25 +6,29 @@ import { useDispatch } from 'react-redux';
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
 
-const {TextArea} = Input;
+const { TextArea } = Input;
 
 const NewOrgForm = () => {
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
     const dispatch = useDispatch();
 
-    const getCauses = async () => {
+    const getCauses = useCallback(async () => {
         try {
             const response = await axiosAPI.get("causes/get/");
             setCauses(response.data);
         } catch (error) {
             console.error(error)
         }
-    }
+    }, [setCauses]);
 
     useEffect(() => {
         getCauses();
-    }, []);
+    }, [getCauses]);
+
+    const filteredCauses = useMemo(() => {
+        return causes.filter(o => !selectedCauses.includes(o));
+    }, [selectedCauses, causes]);
 
     const onFinish = useCallback(async (values) => {
         try {
@@ -45,59 +49,54 @@ const NewOrgForm = () => {
         }
     }, [dispatch]);
 
-    const filteredCauses = useMemo(() => {
-        return causes.filter(o => !selectedCauses.includes(o));
-    }, [selectedCauses, causes]);
-
-
-  return (
-    <Form
-        name="org"
-        className="org-form"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-    >   
-        <Form.Item
-            name="name"
-            hasFeedback
-            rules={[{ required: true, message: 'Organization name is required.' }]}
-        >
-            <Input style={{ width: '100%' }} placeholder="Organization name" maxLength={128} />
-        </Form.Item>
-        <Form.Item
-            name="causes"
-            hasFeedback
-        >
-            <Select
-                mode="multiple"
-                placeholder="Charitable cause(s)"
-                value={selectedCauses}
-                onChange={setSelectedCauses}
-                style={{ width: '100%' }}
+    return (
+        <Form
+            name="org"
+            className="org-form"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+        >   
+            <Form.Item
+                name="name"
+                hasFeedback
+                rules={[{ required: true, message: 'Organization name is required.' }]}
             >
-                
-            {filteredCauses.map(item => (
-                <Select.Option key={item.id} value={item.id}>
-                    {item.name}
-                </Select.Option>
-            ))}
-            </Select>
-        </Form.Item>
-        
-        <Form.Item
-            name="description"
-            hasFeedback
-            rules={[{ required: true, message: 'Organization description is required.' }]}
-        >
-            <TextArea row={6} style={{ width: '100%' }} placeholder="Describe your organization..." />
-        </Form.Item>
-        <Form.Item>
-            <Button type="primary" htmlType="submit" className="org-form-button">
-                Create organization
-            </Button>
-        </Form.Item>
-    </Form>
-  );
+                <Input style={{ width: '100%' }} placeholder="Organization name" maxLength={128} />
+            </Form.Item>
+            <Form.Item
+                name="causes"
+                hasFeedback
+            >
+                <Select
+                    mode="multiple"
+                    placeholder="Charitable cause(s)"
+                    value={selectedCauses}
+                    onChange={setSelectedCauses}
+                    style={{ width: '100%' }}
+                >
+                    
+                {filteredCauses.map(item => (
+                    <Select.Option key={item.id} value={item.id}>
+                        {item.name}
+                    </Select.Option>
+                ))}
+                </Select>
+            </Form.Item>
+            
+            <Form.Item
+                name="description"
+                hasFeedback
+                rules={[{ required: true, message: 'Organization description is required.' }]}
+            >
+                <TextArea row={6} style={{ width: '100%' }} placeholder="Describe your organization..." />
+            </Form.Item>
+            <Form.Item>
+                <Button type="primary" htmlType="submit" className="org-form-button">
+                    Create organization
+                </Button>
+            </Form.Item>
+        </Form>
+    );
 };
 
 export default NewOrgForm;

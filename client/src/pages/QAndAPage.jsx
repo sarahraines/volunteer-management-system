@@ -45,7 +45,7 @@ function QAndAPage({isAdmin, orgId}) {
             {qA.map(item => 
                 <QAndA isAdmin={isAdmin===1} key={item.id} item={item} removeFaq={removeFaq}/>
             )}
-            <Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>
+            {isAdmin === 1 && (<Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>)}
         </div>
     );
 };

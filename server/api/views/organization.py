@@ -23,16 +23,17 @@ class CreateOrganization(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GetOrgInfo(APIView):
+class GetCausesByOrg(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     
     def get(self, request):
-        org_id = request.GET['orgId']
-        organization = Organization.objects.filter(pk=org_id).prefetch_related('causes').first()
-        logger.warn(organization)
-        serializer = OrganizationSerializer(organization)
-        return Response(serializer.data)
+        if request.GET.get('orgId'):
+            org_id = request.GET['orgId']
+            causes = Cause.objects.filter(organization=org_id).all()
+            serializer = CauseSerializer(causes, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST)
 
 class GetCauses(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -41,11 +42,12 @@ class GetCauses(APIView):
     def get(self, request):
         causes = Cause.objects.all()
         serializer = CauseSerializer(causes, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UpsertFAQ(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
+
     def post(self, request, format='json'):
         data = request.data
         id = data.get('id')
@@ -68,8 +70,8 @@ class GetFAQ(APIView):
     
     def get(self, request):
         org_id = request.GET['org_id']
-        causes = FAQ.objects.filter(org_id=org_id)
-        serializer = FAQSerializer(causes, many=True)
+        faq = FAQ.objects.filter(org_id=org_id)
+        serializer = FAQSerializer(faq, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class DeleteFAQ(APIView):

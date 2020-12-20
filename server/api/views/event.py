@@ -4,30 +4,29 @@ from rest_framework.response import Response
 from api.serializers import EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer
 from api.models import Event, User, Attendee, Member, Organization, Cause
 from collections import OrderedDict
+from django.shortcuts import get_object_or_404
 
-class AddAttendees(APIView):
+class AddAttendee(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
     def post(self, request, format='json'):
         data = request.data
         serializer = AttendeeSerializer(data=data)
-        user = User.objects.filter(id=data['user_id'])[0]
-        event = Event.objects.filter(id=data['events'])
         if serializer.is_valid():
-            serializer.save(username=user, events=event)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class DeleteAttendees(APIView):
+class DeleteAttendee(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
     def post(self, request, format='json'):
         data = request.data
-        event = Event.objects.filter(id=data['events'])[0]
-        attendee = Attendee.objects.filter(username=data['user_id'], events=event).delete()
-        return Response("deleted", status=status.HTTP_200_OK)   
+        event = get_object_or_404(Event, pk=data['events'])
+        Attendee.objects.filter(username=data['user_id'], events=event).delete()
+        return Response(None, status=status.HTTP_200_OK)   
 
 class GetEvents(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -36,26 +35,19 @@ class GetEvents(APIView):
     def get(self, request):
         events = Event.objects.all()
         serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class GetEventsByOrg(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     
     def get(self, request):
-        orgId = request.GET['orgId']
-        events = Event.objects.filter(organizations__in=[orgId])
-        serializer = EventSerializer(events, many=True)
-        return Response(serializer.data)
-
-class GetAttendees(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-    
-    def get(self, request):
-        attendees = Attendee.objects.all()
-        serializer = AttendeeSerializer(attendees, many=True)
-        return Response(serializer.data)
+        if request.GET.get('orgId'):
+            orgId = request.GET['orgId']
+            events = Event.objects.filter(organizations__in=[orgId])
+            serializer = EventSerializer(events, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
 class CreateEvent(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -63,9 +55,12 @@ class CreateEvent(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        data['begindate']=data['date'][0]
-        data['enddate']=data['date'][1]
-        del data['date']
+        try:
+            data['begindate']=data['date'][0]
+            data['enddate']=data['date'][1]
+            del data['date']
+        except: 
+            return Response("Incorrect date format", status=status.HTTP_400_BAD_REQUEST)
         serializer = EventSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useEffect} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Card, Button, Typography, message} from 'antd';
 import axiosAPI from "../api/axiosApi";
 import './EventCard.css';
@@ -6,14 +6,8 @@ import './EventCard.css';
 const { Paragraph } = Typography;
 
 function EventCard ({item}){
-
 	const [register, setRegister] = useState(false); 
 	const [isLoading, setIsLoading] = useState(false);
-	// const filter = false;
-
-	// useEffect(() => {
-    //  	setRegister(filter);
-  	// }, [filter])
 
 	const onClick = useCallback(async (event_id, register) => {
 		setIsLoading(true);
@@ -21,13 +15,13 @@ function EventCard ({item}){
 			if (register) {
 				await axiosAPI.post("attendees/delete/", {
 					user_id: localStorage.getItem("user_id"),
-					events: event_id,
+					event: event_id,
 				});
 				message.success("Joined event")
 			} else {
 				await axiosAPI.post("attendees/create/", {
 					user_id: localStorage.getItem("user_id"),
-					events: event_id,
+					event: event_id,
 				});
 				message.success("Unjoined event");
 			}
