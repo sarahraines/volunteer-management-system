@@ -3,6 +3,7 @@ import { Typography, Tabs } from 'antd';
 import QAndAPage from './QAndAPage';
 import OrgEvents from './OrgEvents';
 import AboutUs from './AboutUs';
+import MemberPage from './MemberPage';
 import "./OrgPage.css";
 
 const { Title } = Typography;
@@ -11,6 +12,7 @@ const { TabPane } = Tabs;
 function OrgPage({member, orgId}) {
     const [org, setOrg] = useState(null);
     const [activeKey, setActiveKey] = useState("home");
+    const isAdmin = member?.member_type === 1;
 
     useEffect(() => {
         if (orgId) {
@@ -34,6 +36,11 @@ function OrgPage({member, orgId}) {
                 <TabPane tab="FAQ" key="faq">
                     <QAndAPage isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
+                {isAdmin &&
+                     <TabPane tab="Members" key="members">
+                        <MemberPage orgId={orgId} />
+                    </TabPane>
+                }
             </Tabs>
         </React.Fragment>
     );

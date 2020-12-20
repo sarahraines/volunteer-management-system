@@ -18,8 +18,12 @@ const FeedContent = ({member, context}) => {
             return (<NewEvent />);
         default:
             const orgId = parseInt(context)
-            const orgMember = member.filter(m => m.organization.id === orgId)[0]
-            return <OrgPage member={orgMember} orgId={orgId}/>
+            if (isNaN(orgId)) {
+                return (<NewOrg />);
+            } else {
+                const orgMember = member.filter(m => m.organization.id === orgId)[0]
+                return <OrgPage member={orgMember} orgId={orgId}/>
+            } 
     }
   }
   

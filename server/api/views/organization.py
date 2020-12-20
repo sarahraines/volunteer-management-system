@@ -1,8 +1,8 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.serializers import OrganizationSerializer, CauseSerializer, FAQSerializer
-from api.models import Organization, Cause, FAQ
+from api.serializers import OrganizationSerializer, CauseSerializer, FAQSerializer, MemberSerializer
+from api.models import Organization, Cause, FAQ, Member
 from django.shortcuts import get_object_or_404
 import logging
 import json
@@ -83,3 +83,13 @@ class DeleteFAQ(APIView):
         faq = get_object_or_404(FAQ, pk=id)
         faq.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+class GetMembersFromOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        org_id = request.GET['org_id']
+        members = Member.objects.filter(organization__id=org_id)
+        serializer = MemberSerializer(members, many=True)
+        return Response(serializer.data)

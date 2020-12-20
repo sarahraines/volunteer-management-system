@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.serializers import MemberSerializer, OrganizationSerializer
 from api.models import Organization, Cause, Member, User
+from django.shortcuts import get_object_or_404
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,7 +20,7 @@ class CreateMember(APIView):
         }
         serializer = MemberSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(user_id=user, organization=organization)
+            serializer.save(user=user, organization=organization)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -28,7 +29,7 @@ class GetMemberFromUser(APIView):
     authentication_classes = ()
     def get(self, request):
         user_id = request.GET['user_id']
-        members = Member.objects.filter(user_id=user_id)
+        members = Member.objects.filter(user=user_id)
         serializer = MemberSerializer(members, many=True)
         return Response(serializer.data)
 
@@ -38,6 +39,16 @@ class GetOrgsFromMember(APIView):
     
     def get(self, request):
         user_id = request.GET['user_id']
-        organizations = Organization.objects.filter(member__user_id=user_id)
+        organizations = Organization.objects.filter(member__user=user_id)
         serializer = OrganizationSerializer(organizations, many=True)
         return Response(serializer.data)
+
+class DeleteMember(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def delete(self, request):
+        member_id = request.GET.get('member_id')
+        member = get_object_or_404(Member, id=member_id)
+        member.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
