@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Table, Typography, Button, Popconfirm, Tooltip, message } from 'antd';
+import { Table, Typography, Button, Popconfirm, Tooltip, message, Row, Modal, Select } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 
@@ -9,7 +10,8 @@ function MemberPage({orgId}) {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const currentUser = localStorage.getItem("user_id");
-    console.log(members)
+    const [showModal, setShowModal] = useState(false);
+    const [invitedMembers, setInvitedMembers] = useState([]);
 
     const getMembers = async (orgId) => {
         try {
@@ -102,13 +104,35 @@ function MemberPage({orgId}) {
     ];
 
     return (
-        <div>
-            <Title level={4}>Members</Title>
-            <Button type="primary" icon={<DownloadOutlined />} size={size}>
-                Download
-            </Button>
-            <Table columns={columns} dataSource={members} loading={loading}/>
-        </div>
+        <React.Fragment>
+            <div>
+                <Row justify="space-between" style={{ marginBottom: 8 }}>
+                    <Title level={4}>Members</Title>
+                    <Button type="primary" icon={<PlusOutlined />} size="large" onClick={() => setShowModal(true)}>
+                        Invite new members
+                    </Button>
+                </Row>
+                <Table columns={columns} dataSource={members} loading={loading}/>
+            </div>
+            <Modal
+                visible={showModal}
+                title="Invite new members"
+                onOk={() => {}}
+                onCancel={() => setShowModal(false)}
+                footer={[
+                    <Button key="back">
+                        Close
+                    </Button>,
+                    <Button key="submit" type="primary" loading={false}>
+                        Send
+                    </Button>,
+                ]}
+                >
+            <Select mode="tags" style={{ width: '100%' }} onChange={value => setInvitedMembers(value)} tokenSeparators={[',']}>
+                {[]}
+            </Select>
+            </Modal>
+        </React.Fragment>
     );
 };
 
