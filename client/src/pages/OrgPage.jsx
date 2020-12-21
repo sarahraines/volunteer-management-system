@@ -4,6 +4,8 @@ import QAndAPage from './QAndAPage';
 import OrgEvents from './OrgEvents';
 import AboutUs from './AboutUs';
 import MemberPage from './MemberPage';
+import OrgFeedback from './OrgFeedback'; 
+import Analytics from './Analytics'; 
 import "./OrgPage.css";
 
 const { Title } = Typography;
@@ -35,6 +37,12 @@ function OrgPage({member, orgId}) {
                 </TabPane>
                 <TabPane tab="FAQ" key="faq">
                     <QAndAPage isAdmin={member?.member_type} orgId={orgId} />
+                </TabPane>
+                <TabPane tab="Feedback" key="feedback">
+                    <OrgFeedback isAdmin={member?.member_type} orgId={orgId} />
+                </TabPane>
+                <TabPane tab="Analytics" key="analytics">
+                    <Analytics orgId={orgId} />
                 </TabPane>
                 {isAdmin &&
                      <TabPane tab="Members" key="members">
