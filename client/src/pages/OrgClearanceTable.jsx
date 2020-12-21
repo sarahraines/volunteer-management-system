@@ -6,6 +6,25 @@ import { UploadOutlined } from '@ant-design/icons';
 
 function OrgClearanceTable({orgId}) {
     const [rows, setRows] = useState([]);
+    function acceptOrReject(value, record) {
+        console.log(value.target.value)
+        console.log(record.key)
+
+        const s = (value.target.value ==="accept")
+
+        try {
+            const response =  axiosAPI.post("clearances/set-status-user-file/", 
+                {
+                    id: record.key, 
+                    status: s,
+                 }
+        );
+        }catch(error){
+            console.error(error)
+        }
+    
+
+    };
     const getUserFiles = useCallback(async (orgId) => {
         try {
              const response = await axiosAPI.get("clearances/get-user-files-for-org/", {
@@ -15,7 +34,7 @@ function OrgClearanceTable({orgId}) {
              });
             const files = response.data;
             console.log(files[0].user)
-            const result = files.map((file,i) => ({key: i, user: file.user, file: file.filled_form.split('/').slice(-1).pop() }))
+            const result = files.map((file,i) => ({key: file.id, user: file.user, file: file.filled_form.split('/').slice(-1).pop() }))
             setRows(result)
             console.log(files);
 
@@ -43,10 +62,10 @@ function OrgClearanceTable({orgId}) {
         {
           title: 'Action',
           key: 'action',
-          render: () => (
-          <Radio.Group  buttonStyle="solid">
-          <Radio.Button value="a">Accept</Radio.Button>
-          <Radio.Button value="b">Reject</Radio.Button>
+          render: (text, record, index) => (
+          <Radio.Group  onChange={(value) => acceptOrReject(value, record)} buttonStyle="solid">
+          <Radio.Button value="accept">Accept</Radio.Button>
+          <Radio.Button value="reject">Reject</Radio.Button>
         </Radio.Group>)
           ,
         },

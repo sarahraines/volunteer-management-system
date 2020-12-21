@@ -42,10 +42,20 @@ class GetUserFilesForOrg(APIView):
         print(request.GET['orgId'])
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
         print(org)
-        user_files = UserFile.objects.all().prefetch_related(Prefetch('org_file', queryset=OrgFile.objects.filter(organization = org)))
+        user_files = UserFile.objects.all().prefetch_related(Prefetch('org_file', queryset=OrgFile.objects.filter(organization = org))).prefetch_related('user')
         serializer = UserFileSerializer(user_files, many=True)
         return Response(serializer.data)
-
+class SetStatusUserFile(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    def post(self, request, format='json'):
+        data = request.data
+        user_file = UserFile.objects.filter(id=request.data['id'])[0]
+        serializer = UserFileSerializer(user_file, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AddUserFile(APIView):

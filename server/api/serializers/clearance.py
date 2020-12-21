@@ -10,4 +10,4 @@ class UserFileSerializer(serializers.ModelSerializer):
     print("user file serializer")
     class Meta:
         model = UserFile
-        fields = ['id', 'org_file', 'user', 'filled_form']
+        fields = ['id', 'org_file', 'user', 'filled_form', 'status']

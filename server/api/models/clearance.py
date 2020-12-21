@@ -9,3 +9,5 @@ class UserFile(models.Model):
     org_file = models.ForeignKey(OrgFile, null=True, blank=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=False, blank=True, on_delete=models.CASCADE)
     filled_form = models.FileField()
+    status = models.BooleanField(default=False)
+
