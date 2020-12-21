@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, message, Typography, Table, Tag, Space } from 'antd';
+import { Upload, Button, Table, Tag, Space } from 'antd';
+import {StatusTag} from '../components/StatusTag';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import { UploadOutlined } from '@ant-design/icons';
@@ -15,11 +16,22 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                  }
              });
             const files = response.data;
+            console.log("files", files)
+
+            function getStatus(status) {
+                if (status) {
+                    return "Complete";
+                } else if (!status) {
+                    return "Pending";
+                }
+            }
+
             const formattedFiles = files.map(file => ({
                 uid: file.id, 
                 orgFormId: file.org_file, 
                 name: file.filled_form.split('/').slice(-1).pop(), 
-                status: "done", url: file.filled_form
+                status: getStatus(file.status),
+                url: file.filled_form
             }));
             setUserFileList(formattedFiles);
         } catch(error) {
@@ -54,6 +66,13 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
             render: text => <a href={"http://localhost:8080/" +text}>{text}</a>,
         },
         {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            // render: (text, record) => console.log("record", record)
+            render: (text, record) => <StatusTag status={record.status} />
+        },
+        {
             title: 'Upload New File',
             key: 'upload',
             render: (record) => (
@@ -78,17 +97,28 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         },
     ];
 
-    function getUserFileForOrgFile(oFormId) {
+    function getUserFileForOrgFile(infoType, oFormId) {
+        console.log("ufl", (userFileList.filter(ufile => ufile.orgFormId == oFormId)))
         if ((userFileList.filter(ufile => ufile.orgFormId == oFormId)).length > 0) {
-            return userFileList.filter(ufile => ufile.orgFormId == oFormId)[0].name;
+            const userFile = userFileList.filter(ufile => ufile.orgFormId == oFormId)[0]
+            if (infoType == "name") {
+                return userFile.name;
+            } else if (infoType == "status") {
+                return userFile.status
+            }
         }
-        return (null);
+
+        if (infoType == "status") {
+            return "Incomplete";
+        }
+        return (null)
     }
     
     const data = fileList.map((file,i) => ({
         "key": file.uid, 
-        "uploaded_file": getUserFileForOrgFile(file.uid),
-        "file": file.name
+        "file": file.name,
+        "uploaded_file": getUserFileForOrgFile("name", file.uid),
+        "status": getUserFileForOrgFile("status", file.uid)
     }))
 
     return (
