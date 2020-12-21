@@ -18,6 +18,7 @@ function Clearances({isAdmin, orgId}) {
              });
             const files = response.data;
             const formattedFiles = files.map(file => ({uid: file.id, name: file.empty_form.split('/').slice(-1).pop(), status: "done", url: file.empty_form}));
+            console.log("Formatted Files", formattedFiles)
             setFileList(formattedFiles);
         } catch(error) {
             console.error(error);
@@ -52,8 +53,8 @@ function Clearances({isAdmin, orgId}) {
             }
             return file;
         });
-      
-          setFileList(fl);
+            setFileList(fl);
+            console.log("file list here", fileList)
     },
     previewFile: async function(file) {
       const formData = new FormData();

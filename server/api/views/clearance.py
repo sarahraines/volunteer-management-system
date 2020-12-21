@@ -34,6 +34,16 @@ class GetOrgFiles(APIView):
         serializer = OrgFileSerializer(org_files, many=True)
         return Response(serializer.data)
 
+class GetUserFiles(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    def get(self, request, format='json'):
+        print("get user files request")
+        user = User.objects.filter(id=request.GET['userId'])[0]
+        user_files = UserFile.objects.filter(user=user)
+        serializer = UserFileSerializer(user_files, many=True)
+        return Response(serializer.data)
+
 class GetUserFilesForOrg(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
@@ -45,6 +55,7 @@ class GetUserFilesForOrg(APIView):
         user_files = UserFile.objects.all().prefetch_related(Prefetch('org_file', queryset=OrgFile.objects.filter(organization = org))).prefetch_related('user')
         serializer = UserFileSerializer(user_files, many=True)
         return Response(serializer.data)
+
 class SetStatusUserFile(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
@@ -69,7 +80,7 @@ class AddUserFile(APIView):
         print(user)
         serializer = UserFileSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(org_file=org_file, user=user)
+            serializer.save(org_file=org_file, user=user, status=False)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

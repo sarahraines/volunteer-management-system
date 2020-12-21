@@ -31,6 +31,7 @@ urlpatterns = [
     path('clearances/upload-user-file', views.AddUserFile.as_view(), name='upload_user_file'),
     path('clearances/upload-org-file', views.AddOrgFile.as_view(), name='upload_org_file'),
     path('clearances/get-org-files/', views.GetOrgFiles.as_view(), name='get_org_files'),
+    path('clearances/get-user-files/', views.GetUserFiles.as_view(), name='get_user_files'),
     path('clearances/get-user-files-for-org/', views.GetUserFilesForOrg.as_view(), name='get_user_files_for_org'),
     path('clearances/set-status-user-file/', views.SetStatusUserFile.as_view(), name='set_status_user_file')
     
