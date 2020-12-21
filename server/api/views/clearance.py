@@ -52,10 +52,11 @@ class GetUserFilesForOrg(APIView):
         print(request.GET['orgId'])
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
         print(org)
-        user_files = UserFile.objects.all().prefetch_related(Prefetch('org_file', queryset=OrgFile.objects.filter(organization = org))).prefetch_related('user')
-        serializer = UserFileSerializer(user_files, many=True)
-        return Response(serializer.data)
-
+        user_files = UserFile.objects.all().prefetch_related(Prefetch('org_file', queryset=OrgFile.objects.filter(organization = org))).prefetch_related('user').values(
+            'user__email','org_file', 'filled_form', 'status', 'id' )
+        user_files = list(user_files)
+        return Response(user_files)
+        
 class SetStatusUserFile(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()

@@ -33,10 +33,9 @@ function OrgClearanceTable({orgId}) {
                  }
              });
             const files = response.data;
-            console.log(files[0].user)
-            const result = files.map((file,i) => ({key: file.id, user: file.user, file: file.filled_form.split('/').slice(-1).pop(),  status: file.status }))
+            const result = files.map((file,i) => ({key: file.id, user: file.user__email, file: file.filled_form.split('/').slice(-1).pop(),  status: file.status }))
             setRows(result)
-            console.log(files);
+            console.log(result)
 
         } catch(error) {
             console.error(error);
