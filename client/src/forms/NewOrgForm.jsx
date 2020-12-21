@@ -41,6 +41,7 @@ const NewOrgForm = () => {
                 user_id: localStorage.getItem("user_id"),
                 organization: values.name,
                 member_type: 1,
+                status: 0
             });
             dispatch(addAlert('Organization created', 'success'));
         }

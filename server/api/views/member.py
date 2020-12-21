@@ -16,7 +16,8 @@ class CreateMember(APIView):
         user = User.objects.filter(id=request.data.get('user_id'))[0]
         organization = Organization.objects.filter(name=request.data.get('organization'))[0]
         data = {
-            'member_type': request.data.get('member_type')
+            'member_type': request.data.get('member_type'),
+            'status': request.data.get('status')
         }
         serializer = MemberSerializer(data=data)
         if serializer.is_valid():
@@ -52,3 +53,15 @@ class DeleteMember(APIView):
         member = get_object_or_404(Member, id=member_id)
         member.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+class InviteMembers(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def post(self, request):
+        org_id = request.GET.get('org_id')
+        members = request.GET.get('members')
+        member_type = request.GET.get('member_type')
+        return Response(None, status=status.HTTP_200_OK)
+

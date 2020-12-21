@@ -18,6 +18,7 @@ urlpatterns = [
     path('attendees/create/', views.AddAttendee.as_view(), name="add_attendees"),
     path('attendees/delete/', views.DeleteAttendee.as_view(), name="delete_attendees"),
     path('member/create/', views.CreateMember.as_view(), name='create_member'),
+    path('member/invite/', views.InviteMembers.as_view(), name='invite_members'),
     path('member/delete/', views.DeleteMember.as_view(), name='delete_member'),
     path('users/activate/', views.ActivateUser.as_view(), name='activate_user'),
     path('users/create/', views.CreateUser.as_view(), name='create_user'),
