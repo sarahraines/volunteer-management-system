@@ -76,9 +76,14 @@ class AddUserFile(APIView):
     def post(self, request, format='json'):
         data = request.data
         org_file = OrgFile.objects.filter(id=request.data['org_file_id'])[0]
-        print(org_file)
         user = User.objects.filter(id=request.data.get('user_id'))[0]
-        print(user)
+
+        # delete old user file associated with that org file
+        user_files = UserFile.objects.filter(user=user, org_file=org_file)
+        if (len(user_files) > 0):
+            user_files[0].delete()
+
+        # add new user file
         serializer = UserFileSerializer(data=data)
         if serializer.is_valid():
             serializer.save(org_file=org_file, user=user, status=False)
