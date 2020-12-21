@@ -15,6 +15,7 @@ six = "*"
 django-crontab = "*"
 django-utils = "*"
 django-extensions = "*"
+django-request-token = "*"
 
 [requires]
 python_version = "3.8"

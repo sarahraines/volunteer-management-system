@@ -11,12 +11,8 @@ function MemberPage({orgId}) {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const currentUser = localStorage.getItem("user_id");
-    const [showModal, setShowModal] = useState(false);
-    const [modalButtonLoading, setModalButtonLoading] = useState(false);
-    const [invitedMembers, setInvitedMembers] = useState([]);
-    const [memberType, setMemberType] = useState(0);
-
-    const getMembers = async (orgId) => {
+    
+    const getMembers = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("organization/get-members/", {
                 params: {
@@ -29,27 +25,8 @@ function MemberPage({orgId}) {
         } catch(error) {
             console.error(error);
         }
-    }
+    }, [orgId]);
 
-    const inviteMembers = useCallback(async () => {
-        try {
-            setModalButtonLoading(true);
-            const response =  await axiosAPI.post("member/invite/", {
-                params: {
-                    members: invitedMembers,
-                    member_type: memberType,
-                    org_id: orgId,
-                }
-            });
-            setInvitedMembers([]);
-            getMembers();
-            message.success("Members invited");
-        } catch(error) {
-            console.error(error);
-            message.error("Members could not be invited.");
-        }
-        setModalButtonLoading(false);
-    }, [invitedMembers, memberType, orgId, setModalButtonLoading]);
 
     const deleteMember = useCallback(async (memberId) => {
         try {
@@ -128,37 +105,8 @@ function MemberPage({orgId}) {
 
     return (
         <React.Fragment>
-            <div>
-                <Row justify="space-between" style={{ marginBottom: 8 }}>
-                    <Title level={4}>Members</Title>
-                    <Button type="primary" icon={<PlusOutlined />} size="large" onClick={() => setShowModal(true)}>
-                        Invite new members
-                    </Button>
-                </Row>
-                <Table columns={columns} dataSource={members} loading={loading}/>
-            </div>
-            <Modal
-                visible={showModal}
-                title="Invite new members"
-                onOk={() => {}}
-                onCancel={() => setShowModal(false)}
-                footer={[
-                    <Button key="back" onClick={() => setShowModal(false)}>
-                        Close
-                    </Button>,
-                    <Button key="submit" type="primary" loading={modalButtonLoading} onClick={inviteMembers}>
-                        Send
-                    </Button>,
-                ]}
-            >
-                <Select title="hello:" defaultValue={0} style={{ width: '100%', marginBottom: 8 }} onChange={setMemberType} placeholder="Member Type">
-                    <Option value={0}>Member</Option>
-                    <Option value={1}>Admin</Option>
-                </Select>
-                <Select mode="tags" style={{ width: '100%' }} onChange={value => setInvitedMembers(value)} tokenSeparators={[',']} placeholder="Emails" allowClear>
-                    {[]}
-                </Select>
-            </Modal>
+            <Title level={4}>Members</Title>
+            <Table columns={columns} dataSource={members} loading={loading}/>
         </React.Fragment>
     );
 };

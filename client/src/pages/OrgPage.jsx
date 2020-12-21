@@ -6,6 +6,7 @@ import AboutUs from './AboutUs';
 import MemberPage from './MemberPage';
 import OrgFeedback from './OrgFeedback'; 
 import Analytics from './Analytics'; 
+import InvitePage from './InvitePage'; 
 import "./OrgPage.css";
 
 const { Title } = Typography;
@@ -47,6 +48,11 @@ function OrgPage({member, orgId}) {
                 {isAdmin &&
                      <TabPane tab="Members" key="members">
                         <MemberPage orgId={orgId} />
+                    </TabPane>
+                }
+                {isAdmin &&
+                     <TabPane tab="Invites" key="invites">
+                        <InvitePage orgId={orgId} />
                     </TabPane>
                 }
             </Tabs>

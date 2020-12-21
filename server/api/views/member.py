@@ -1,9 +1,15 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.serializers import MemberSerializer, OrganizationSerializer
-from api.models import Organization, Cause, Member, User
+from api.serializers import MemberSerializer, OrganizationSerializer, InviteeSerializer
+from api.models import Organization, Cause, Member, User, Invitee
 from django.shortcuts import get_object_or_404
+from django.core.mail import send_mass_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
+from api.tokens import account_activation_token
+from request_token.models import RequestToken
 import logging
 
 logger = logging.getLogger(__name__)
@@ -58,10 +64,74 @@ class DeleteMember(APIView):
 class InviteMembers(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
-    
-    def post(self, request):
-        org_id = request.GET.get('org_id')
-        members = request.GET.get('members')
-        member_type = request.GET.get('member_type')
-        return Response(None, status=status.HTTP_200_OK)
 
+    def post(self, request, format='json'):
+        emails = []
+        data = request.data
+        logger.error(data)
+        email_addresses = data['emails']
+        member_type = data['member_type']
+        org_id = data['org_id']
+        organization = Organization.objects.get(pk=org_id)
+        for address in email_addresses:
+            invitee_data = {
+                'email': address,
+                'member_type': member_type,
+                'organization': organization,
+                'status': 10
+            }
+            serializer = InviteeSerializer(data=invitee_data)
+            if serializer.is_valid():
+                invitee, _ = Invitee.objects.update_or_create(
+                    email=address,
+                    organization=organization,
+                    defaults={
+                        "member_type": member_type,
+                        "status": 10
+                    }
+                )
+                current_site = 'localhost:3000'
+                token = RequestToken.objects.create_token(
+                    scope="invitation",
+                    login_mode=RequestToken.LOGIN_MODE_NONE,
+                    data={
+                        'iid': invitee.id
+                    }
+                )
+
+                activation_url = f"http://{current_site}/invite?token={token.jwt()}"
+                mail_subject = 'You\'ve been invited!'
+                from_email = 'vol.mgmt.system@gmail.com'
+                message = render_to_string('invite_organization.html', {
+                    'organization': organization.name,
+                    'activation_url': activation_url
+                })
+                email = (mail_subject, message, from_email, [address])
+
+                emails.append(email)
+        send_mass_mail(emails)
+        return Response(None, status=status.HTTP_201_CREATED)
+
+
+class GetInvitesByOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        org_id = request.GET['org_id']
+        invites = Invitee.objects.filter(organization__id=org_id)
+        serializer = InviteeSerializer(invites, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DeleteInvite(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def delete(self, request):
+        invite_id = request.GET.get('invite_id')
+        invite = get_object_or_404(Invitee, id=invite_id)
+        invite.delete()
+        token = get_object_or_404(RequestToken, data__iid=int(invite_id))
+        token.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)

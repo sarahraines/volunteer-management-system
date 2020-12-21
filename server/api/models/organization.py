@@ -1,8 +1,10 @@
 from django.db import models
 from api.models import User
 
+
 class Cause(models.Model):
     name = models.CharField(max_length=128)
+
 
 class Organization(models.Model):
     name = models.CharField(max_length=128)
