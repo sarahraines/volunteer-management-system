@@ -1,6 +1,3 @@
-.event-form {
-    max-width: 400px;
-}
 .event-form-forgot {
     float: right;
 }
@@ -9,4 +6,8 @@
 }
 .event-form-button {
     width: 100%;
+}
+
+.event-form {
+    width: 400px;
 }

@@ -15,4 +15,4 @@ class FAQSerializer(serializers.ModelSerializer):
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ['id', 'name', 'causes', 'description']
+        fields = ['id', 'name', 'causes', 'description', 'email', 'website', 'phone', 'address']

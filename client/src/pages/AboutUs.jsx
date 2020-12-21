@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Typography, Skeleton, Tag, Descriptions, Button, PageHeader, Input } from 'antd';
+import { Typography, Skeleton, Tag, Descriptions, PageHeader, Input } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
-import { FacebookOutlined, InstagramOutlined, PlusOutlined, TwitterOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
 
 const { Paragraph, Title } = Typography;
@@ -92,19 +92,12 @@ const AboutUs = ({org}) => {
                 title={`About ${org?.name}`}
                 className="site-page-header"
                 tags={tags}
-                extra={[
-                    <Button key="instagram" type="primary" icon={<InstagramOutlined />} />,
-                    <Button key="facebook" type="primary" icon={<FacebookOutlined />} />,
-                    <Button key="twitter" type="primary" icon={<TwitterOutlined />} />
-                ]}
             >
                   <Descriptions>
-                    <Descriptions.Item label="Website"><a href="https://www.aclu.org/">https://www.aclu.org/</a></Descriptions.Item>
-                    <Descriptions.Item label="Telephone">212-549-2500</Descriptions.Item>
-                    <Descriptions.Item label="Contact"><a href="mailto:contact@aclu.org">contact@aclu.org</a></Descriptions.Item>
-                    <Descriptions.Item label="Address">
-                        125 Broad Street, 18th Floor New York NY 10004
-                    </Descriptions.Item>
+                    {org?.website && <Descriptions.Item label="Website"><a href={org.website}>{org.website}</a></Descriptions.Item>}
+                    {org?.phone && <Descriptions.Item label="Telephone">{org.phone}</Descriptions.Item>}
+                    {org?.email && <Descriptions.Item label="Email"><a href={`mailto:${org.email}`}>{org.email}</a></Descriptions.Item>}
+                    {org?.address && <Descriptions.Item label="Street Address">{org.address}</Descriptions.Item>}
                 </Descriptions>
                 <Paragraph editable>{org?.description}</Paragraph>
             </PageHeader>

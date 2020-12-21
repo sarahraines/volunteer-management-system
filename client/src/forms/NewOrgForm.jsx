@@ -36,6 +36,10 @@ const NewOrgForm = () => {
                 name: values.name,
                 causes: values.causes,
                 description: values.description,
+                website: values.website,
+                phone: values.phone,
+                address: values.address,
+                email: values.email
             });
             await axiosAPI.post("member/create/", {
                 user_id: localStorage.getItem("user_id"),
@@ -73,7 +77,6 @@ const NewOrgForm = () => {
                     placeholder="Charitable cause(s)"
                     value={selectedCauses}
                     onChange={setSelectedCauses}
-                    style={{ width: '100%' }}
                 >
                     
                 {filteredCauses.map(item => (
@@ -83,7 +86,30 @@ const NewOrgForm = () => {
                 ))}
                 </Select>
             </Form.Item>
-            
+            <Form.Item
+                name="website"
+            >
+                <Input style={{ width: '100%' }} placeholder="Website" />
+            </Form.Item>
+            <Form.Item
+                name="phone"
+            >
+                <Input style={{ width: '100%' }} placeholder="Telephone" />
+            </Form.Item>
+            <Form.Item
+                name="email"
+                hasFeedback
+                rules={[
+                    { type: 'email', message: 'Not a valid email.' }
+                ]}
+            >
+                <Input placeholder="Email" />
+            </Form.Item>
+            <Form.Item
+                name="address"
+            >
+                <TextArea style={{ width: '100%' }} placeholder="Street Address" autoSize />
+            </Form.Item>
             <Form.Item
                 name="description"
                 hasFeedback
