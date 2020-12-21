@@ -8,7 +8,7 @@ function OrgClearanceTable({orgId}) {
     const [rows, setRows] = useState([]);
     function acceptOrReject(value, record) {
         console.log(value.target.value)
-        console.log(record.key)
+        console.log(record)
 
         const s = (value.target.value ==="accept")
 
@@ -34,7 +34,7 @@ function OrgClearanceTable({orgId}) {
              });
             const files = response.data;
             console.log(files[0].user)
-            const result = files.map((file,i) => ({key: file.id, user: file.user, file: file.filled_form.split('/').slice(-1).pop() }))
+            const result = files.map((file,i) => ({key: file.id, user: file.user, file: file.filled_form.split('/').slice(-1).pop(),  status: file.status }))
             setRows(result)
             console.log(files);
 
@@ -63,7 +63,7 @@ function OrgClearanceTable({orgId}) {
           title: 'Action',
           key: 'action',
           render: (text, record, index) => (
-          <Radio.Group  onChange={(value) => acceptOrReject(value, record)} buttonStyle="solid">
+          <Radio.Group  defaultValue={record.status? "accept": "reject"} onChange={(value) => acceptOrReject(value, record)} buttonStyle="solid">
           <Radio.Button value="accept">Accept</Radio.Button>
           <Radio.Button value="reject">Reject</Radio.Button>
         </Radio.Group>)
