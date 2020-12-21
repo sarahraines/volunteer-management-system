@@ -14,6 +14,7 @@ pytz = "*"
 six = "*"
 django-crontab = "*"
 django-utils = "*"
+django-extensions = "*"
 
 [requires]
 python_version = "3.8"

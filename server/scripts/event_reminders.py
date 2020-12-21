@@ -45,7 +45,6 @@ def run():
 		values('id', 'events__name', 'events__location', 'events__begindate',  \
 		'events__enddate', 'events__causes__name', 'events__description',  \
 		'events__organizations__name', 'username__email', 'username__first_name')
-	print(attendees)
 	for item in attendees:
 		name = item['events__name']
 		location = item['events__location']
