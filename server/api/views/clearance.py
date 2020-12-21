@@ -52,7 +52,7 @@ class GetUserFilesForOrg(APIView):
         print(request.GET['orgId'])
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
         print(org)
-        user_files = UserFile.objects.all().prefetch_related(Prefetch('org_file', queryset=OrgFile.objects.filter(organization = org))).prefetch_related('user').values(
+        user_files = UserFile.objects.filter(org_file__organization = org).prefetch_related('org_file').prefetch_related('user').values(
             'user__email','org_file', 'filled_form', 'status', 'id' )
         user_files = list(user_files)
         return Response(user_files)
