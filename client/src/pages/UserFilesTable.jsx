@@ -15,8 +15,12 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                  }
              });
             const files = response.data;
-            const formattedFiles = files.map(file => ({uid: file.id, orgFormId: file.org_file, name: file.filled_form.split('/').slice(-1).pop(), status: "done", url: file.filled_form}));
-            console.log("User Formatted Files", formattedFiles)
+            const formattedFiles = files.map(file => ({
+                uid: file.id, 
+                orgFormId: file.org_file, 
+                name: file.filled_form.split('/').slice(-1).pop(), 
+                status: "done", url: file.filled_form
+            }));
             setUserFileList(formattedFiles);
         } catch(error) {
             console.error(error);
@@ -34,7 +38,6 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
             getUserFiles(orgId)
             messageHandler(info)
         },
-        
     };
     
     const columns = [
@@ -53,13 +56,9 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         {
             title: 'Upload New File',
             key: 'upload',
-            render: (text, record, index) => (
+            render: (record) => (
                 <Upload {...props} 
                     beforeUpload={file => {
-                        console.log("key:", record.key)
-                        console.log("file:", record.file)
-                        console.log("index:", index)
-
                         const formData = new FormData();
                         formData.append('org_file_id', record.key);
                         formData.append('user_id', localStorage.getItem("user_id"))
@@ -72,34 +71,12 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                         })
                         .then(({ thumbnail }) => thumbnail);
                     }}
-                    // onChange={info => {
-                    //     console.log("onChange info",info)
-                    //     console.log("onChange info.file.name",[info.file])
-
-                    //     try {
-                    //         const response = await axiosAPI.get("clearances/get-user-files/", {
-                    //             params: {
-                    //                 orgFileId: record.key, 
-                    //             }
-                    //         });
-                    //        const files = response.data;
-                    //        const formattedFiles = files.map(file => ({uid: file.id, name: file.empty_form.split('/').slice(-1).pop(), status: "done", url: file.empty_form}));
-                    //        setFileList(formattedFiles);
-                    //     } catch(error) {
-                    //        console.error(error);
-                    //     }
-                    // }}
                 >
-                    <Button icon={<UploadOutlined/> } onClick = {
-                        (e) => {
-                            
-                        }}
-                    > Upload </Button>  
+                    <Button icon={<UploadOutlined/>}> Upload </Button>  
                 </Upload>
             ),
         },
     ];
-    console.log(fileList)
 
     function getUserFileForOrgFile(oFormId) {
         if ((userFileList.filter(ufile => ufile.orgFormId == oFormId)).length > 0) {
@@ -111,7 +88,8 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
     const data = fileList.map((file,i) => ({
         "key": file.uid, 
         "uploaded_file": getUserFileForOrgFile(file.uid),
-        "file": file.name}))
+        "file": file.name
+    }))
 
     return (
         <div>

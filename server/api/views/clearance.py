@@ -10,10 +10,7 @@ class AddOrgFile(APIView):
     authentication_classes = ()
 
     def post(self, request, format='json'):
-        print("adding org file")
-        print(request.data)
         org = Organization.objects.filter(id=request.data['orgId'])[0]
-        print(request.data['orgId'])
         data = request.data
         serializer = OrgFileSerializer(data=data)
         if serializer.is_valid():
@@ -25,11 +22,7 @@ class GetOrgFiles(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
-        # org = Organization.objects.filter(id=request.data['orgId'])[0]
-        print("get org files request")
-        print(request.GET['orgId'])
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        print(org)
         org_files = OrgFile.objects.filter(organization=org)
         serializer = OrgFileSerializer(org_files, many=True)
         return Response(serializer.data)
@@ -38,7 +31,6 @@ class GetUserFiles(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
-        print("get user files request")
         user = User.objects.filter(id=request.GET['userId'])[0]
         user_files = UserFile.objects.filter(user=user)
         serializer = UserFileSerializer(user_files, many=True)
@@ -48,10 +40,7 @@ class GetUserFilesForOrg(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
-        # org = Organization.objects.filter(id=request.data['orgId'])[0]
-        print(request.GET['orgId'])
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        print(org)
         user_files = UserFile.objects.filter(org_file__organization = org).prefetch_related('org_file').prefetch_related('user').values(
             'user__email','org_file', 'filled_form', 'status', 'id' )
         user_files = list(user_files)
