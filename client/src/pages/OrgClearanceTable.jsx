@@ -39,6 +39,7 @@ function OrgClearanceTable({orgId}) {
                 status: file.status 
             }))
 
+            console.log(result)
             setRows(result)
         } catch(error) {
             console.error(error);

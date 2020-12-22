@@ -102,7 +102,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         }
 
         if (infoType == "status") {
-            return "Rejected";
+            return "None";
         }
         return (null)
     }
