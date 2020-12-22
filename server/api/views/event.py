@@ -181,7 +181,7 @@ class GetAttendeeCountsByEvent(APIView):
         data = (x, y)
         for i in range(len(attendees)):
             x.append(attendees[i]['events__name'])
-            y.append(attendees[i]['events__name__count'] + 10)
+            y.append(attendees[i]['events__name__count'])
 
         return Response(data, status=status.HTTP_200_OK)
 

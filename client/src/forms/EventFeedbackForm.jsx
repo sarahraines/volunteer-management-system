@@ -25,6 +25,7 @@ const EventFeedbackForm = () => {
                 better:values.better,
                 experience:values.experience,
             });
+            console.log('here feedback'); 
             dispatch(addAlert('Feedback submitted', 'success'));
         }
         catch {
