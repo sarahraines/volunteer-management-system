@@ -54,6 +54,7 @@
             "index": "pypi",
             "version": "==3.1.0"
         },
+<<<<<<< HEAD
         "django-request-token": {
             "hashes": [
                 "sha256:529bd539aa08272d66b9df0bcb131f223725b1062e0b65064d3fc4151dfe8803",
@@ -62,6 +63,8 @@
             "index": "pypi",
             "version": "==0.12"
         },
+=======
+>>>>>>> clearance/change-status
         "django-utils": {
             "hashes": [
                 "sha256:98b59b368d499b4d1b6dc66f15c0a136833bea12e0b299efdbfd754dc04c79d5"

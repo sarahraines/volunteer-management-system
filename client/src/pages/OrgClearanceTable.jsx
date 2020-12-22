@@ -10,13 +10,13 @@ function OrgClearanceTable({orgId}) {
         console.log(value.target.value)
         console.log(record)
 
-        const s = (value.target.value === "accept")
+        const status = value.target.value
 
         try {
             const response = axiosAPI.post("clearances/set-status-user-file/", 
                 {
                     id: record.key, 
-                    status: s,
+                    status: status,
                 }
         );
         } catch(error){
@@ -66,9 +66,9 @@ function OrgClearanceTable({orgId}) {
             title: 'Action',
             key: 'action',
             render: (text, record, index) => (
-                <Radio.Group defaultValue={record.status? "accept": "reject"} onChange={(value) => acceptOrReject(value, record)} buttonStyle="solid">
-                <Radio.Button value="accept">Accept</Radio.Button>
-                <Radio.Button value="reject">Reject</Radio.Button>
+                <Radio.Group defaultValue={record.status} onChange={(value) => acceptOrReject(value, record)} buttonStyle="solid">
+                <Radio.Button value="Complete">Accept</Radio.Button>
+                <Radio.Button value="Rejected">Reject</Radio.Button>
                 </Radio.Group>
             ),
         },
