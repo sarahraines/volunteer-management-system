@@ -75,7 +75,7 @@ class AddUserFile(APIView):
         # add new user file
         serializer = UserFileSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(org_file=org_file, user=user, status=False)
+            serializer.save(org_file=org_file, user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

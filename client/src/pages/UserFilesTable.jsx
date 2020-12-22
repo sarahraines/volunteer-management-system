@@ -18,19 +18,11 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
             const files = response.data;
             console.log("files", files)
 
-            function getStatus(status) {
-                if (status) {
-                    return "Complete";
-                } else if (!status) {
-                    return "Pending";
-                }
-            }
-
             const formattedFiles = files.map(file => ({
                 uid: file.id, 
                 orgFormId: file.org_file, 
                 name: file.filled_form.split('/').slice(-1).pop(), 
-                status: getStatus(file.status),
+                status: file.status,
                 url: file.filled_form
             }));
             setUserFileList(formattedFiles);
@@ -82,6 +74,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                         formData.append('org_file_id', record.key);
                         formData.append('user_id', localStorage.getItem("user_id"))
                         formData.append('filled_form', file, file.name);
+                        formData.append('status', 'Pending');
 
                         return axiosAPI.post('clearances/upload-user-file', formData, {
                             headers: {
@@ -109,7 +102,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         }
 
         if (infoType == "status") {
-            return "Incomplete";
+            return "Rejected";
         }
         return (null)
     }
