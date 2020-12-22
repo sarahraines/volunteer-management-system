@@ -109,7 +109,7 @@ class GetMemberCountsByOrg(APIView):
         y = [0, 0]
 
         for i in range(len(members)): 
-            y[i] = members[i]['member_type__count']
+            y[i] = members[i]['member_type__count'] + 10
 
         return Response(y, status=status.HTTP_200_OK)
 

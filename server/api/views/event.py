@@ -8,15 +8,40 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count
 
 
+# class AddAttendee(APIView):
+#     permission_classes = (permissions.AllowAny,)
+#     authentication_classes = ()
+
+#     def post(self, request, format='json'):
+#         data = request.data
+#         serializer = AttendeeSerializer(data=data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class DeleteAttendee(APIView):
+#     permission_classes = (permissions.AllowAny,)
+#     authentication_classes = ()
+
+#     def post(self, request, format='json'):
+#         data = request.data
+#         event = get_object_or_404(Event, pk=data['events'])
+#         Attendee.objects.filter(username=data['user_id'], events=event).delete()
+#         return Response(None, status=status.HTTP_200_OK)   
+
 class AddAttendee(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
     def post(self, request, format='json'):
         data = request.data
+        print(data)
         serializer = AttendeeSerializer(data=data)
+        user = User.objects.filter(id=data['user_id'])[0]
+        event = Event.objects.filter(id=data['event'])
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(username=user, events=event)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -26,9 +51,9 @@ class DeleteAttendee(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        event = get_object_or_404(Event, pk=data['events'])
-        Attendee.objects.filter(username=data['user_id'], events=event).delete()
-        return Response(None, status=status.HTTP_200_OK)   
+        event = Event.objects.filter(id=data['event'])[0]
+        attendee = Attendee.objects.filter(username=data['user_id'], events=event).delete()
+        return Response("deleted", status=status.HTTP_200_OK)   
 
 class GetEvents(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -156,7 +181,7 @@ class GetAttendeeCountsByEvent(APIView):
         data = (x, y)
         for i in range(len(attendees)):
             x.append(attendees[i]['events__name'])
-            y.append(attendees[i]['events__name__count'])
+            y.append(attendees[i]['events__name__count'] + 10)
 
         return Response(data, status=status.HTTP_200_OK)
 

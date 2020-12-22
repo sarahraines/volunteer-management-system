@@ -17,13 +17,13 @@ function EventCard ({item}){
 					user_id: localStorage.getItem("user_id"),
 					event: event_id,
 				});
-				message.success("Joined event")
+				message.success("Unjoined event")
 			} else {
 				await axiosAPI.post("attendees/create/", {
 					user_id: localStorage.getItem("user_id"),
 					event: event_id,
 				});
-				message.success("Unjoined event");
+				message.success("Joined event");
 			}
 			setRegister(!register)
 		}
