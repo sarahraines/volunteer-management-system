@@ -1,6 +1,7 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import { Upload, Button, Table, Tag, Space } from 'antd';
 import {StatusTag} from '../components/StatusTag';
+import {StatusFilter} from '../components/StatusFilter';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import { UploadOutlined } from '@ant-design/icons';
@@ -114,16 +115,47 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         return (null)
     }
     
-    const data = fileList.map((file,i) => ({
-        "key": file.uid, 
-        "file": file.name,
-        "uploaded_file": getUserFileForOrgFile("name", file.uid),
-        "status": getUserFileForOrgFile("status", file.uid)
-    }))
+    const [data, setData] = useState([]);
+
+    function getAllData() {
+        setData(
+            fileList.map((file,i) => ({
+                "key": file.uid, 
+                "file": file.name,
+                "uploaded_file": getUserFileForOrgFile("name", file.uid),
+                "status": getUserFileForOrgFile("status", file.uid)
+            }))
+        );
+    }
+
+    const handleFilter = key => {
+        const selected = parseInt(key);
+        if (selected === 4) {
+            data = getAllData()
+        }
+    
+        const statusMap = {
+          1: "Incomplete",
+          2: "Pending Approval",
+          3: "Complete"
+        };
+    
+        const selectedStatus = statusMap[selected];
+    
+        const filteredData = data.filter(
+          ({ status }) => status === selectedStatus
+        );
+        setData(filteredData)
+      };
 
     return (
         <div>
-           <Table columns={columns} dataSource={data}/>
+            <header style={{float: 'right'}}>
+                <StatusFilter
+                    filterBy={handleFilter}
+                />
+            </header>
+            <Table columns={columns} dataSource={data}/>
         </div>
     );
 };
