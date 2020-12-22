@@ -23,6 +23,8 @@ class CreateMember(APIView):
 
     def post(self, request, format='json'):
         user = User.objects.filter(id=request.data.get('user_id'))[0]
+        print(Organization.objects.filter(name=request.data.get('organization')).values('name'))
+        print(request.data.get('organization'))
         organization = Organization.objects.filter(name=request.data.get('organization'))[0]
         data = {
             'member_type': request.data.get('member_type'),

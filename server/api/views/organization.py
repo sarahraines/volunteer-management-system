@@ -51,6 +51,7 @@ class UpsertFAQ(APIView):
 
     def post(self, request, format='json'):
         data = request.data
+        print('data: ' + str(request.data))
         id = data.get('id')
         no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
         if id:
@@ -63,6 +64,7 @@ class UpsertFAQ(APIView):
             serializer.save()
             return Response(serializer.data, status=no_error_status)
 
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class GetFAQ(APIView):

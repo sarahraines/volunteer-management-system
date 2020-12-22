@@ -8,7 +8,7 @@ const { Title } = Typography;
 
 function QAndAPage({isAdmin, orgId}) {
     const [qA, setQA] = useState([]);
-
+    console.log('isAdmin', isAdmin); 
     const getQA = async (orgId) => {
         try {
             const response =  await axiosAPI.get("organization/get-faq/", {
@@ -34,18 +34,19 @@ function QAndAPage({isAdmin, orgId}) {
 
     const addQAField = async () => {
         const response = await axiosAPI.post("faq/upsert/", {
-            org_id: orgId, question: "", answer: ""
+            org_id: orgId, question: "question", answer: "answer"
         });
-        setQA([...qA, {id: response.data.id, question: "", answer: ""}]);
+        setQA([...qA, {id: response.data.id, question: "question", answer: "answer"}]);
     }
+
 
     return (
         <div>
             <Title level={4}>Frequently asked questions</Title>
             {qA.map(item => 
-                <QAndA isAdmin={isAdmin===1} key={item.id} item={item} removeFaq={removeFaq}/>
+                <QAndA isAdmin={isAdmin} key={item.id} item={item} removeFaq={removeFaq}/>
             )}
-            {isAdmin === 1 && (<Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>)}
+            {isAdmin && (<Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>)}
         </div>
     );
 };

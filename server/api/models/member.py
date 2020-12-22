@@ -23,7 +23,7 @@ class Member(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     member_type = models.IntegerField(choices=MEMBER_TYPES)
-    status = models.IntegerField(choices=MEMBER_STATUS)
+    status = models.IntegerField(choices=MEMBER_STATUS, default=0)
 
 
 class Invitee(models.Model):
