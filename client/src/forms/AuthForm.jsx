@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { addAlert, removeAlert } from '../actionCreators.js';
-import { Form, Input, Button, Alert } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { register, login } from '../api/authenticationApi';
 import "antd/dist/antd.css";
@@ -11,19 +9,17 @@ import "./AuthForm.css"
 
 const AuthForm = ({isRegister}) => {
     const history = useHistory();
-    const dispatch = useDispatch();
 
     const onFinish = useCallback(async (values) => {
         try {
             if (isRegister) {
                 await register(values.email, values.first_name, values.last_name, values.password)
-                addAlert({alert_type: "success", message: "Account registered. Check your email to activate your account."})
             } else {
                 await login(values.email, values.password);
                 history.push("/");
             }
         } catch (error) {
-            addAlert({alert_type: "error", message: isRegister ? error.message : error.message})
+            console.error(error)
         }
     }, [isRegister, history]);
 

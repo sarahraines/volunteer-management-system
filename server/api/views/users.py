@@ -3,15 +3,16 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer
+from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.models import User
+from api.models import User, Invitee, Member
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from api.tokens import account_activation_token
+from django.shortcuts import get_object_or_404
 import logging
 
 logger = logging.getLogger(__name__)
@@ -59,6 +60,44 @@ class CreateUser(APIView):
             )
             email.send()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CreateUserFromInvite(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            user = User.objects.create_user(
+                email=data['email'],
+                password=data['password'],
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                is_active=True
+            )
+            logger.error(data)
+            invite_id = data['invite_id']
+            invite = get_object_or_404(Invitee, id=invite_id)
+            logger.error(invite)
+            member_data = {
+                'user': user,
+                'member_type': invite.member_type,
+                'organization': invite.organization,
+                'status': 0
+            }
+            member_serializer = MemberSerializer(data=member_data)
+            if member_serializer.is_valid():
+                Member.objects.create(
+                    user=member_data['user'],
+                    member_type=member_data['member_type'],
+                    organization=member_data['organization'],
+                    status=member_data['status']
+                )
+                invite.delete()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(member_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ChangePassword(APIView):

@@ -4,6 +4,7 @@ import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
 import Home from './pages/Home/Home';
 import Feed from './pages/Feed';
+import InviteNoAuth from './pages/InviteNoAuth';
 import Activate from './pages/Activate';
 // import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
@@ -28,6 +29,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/activate" component={Activate} />
+          <Route path="/invite" component={InviteNoAuth} />
           <Route path="/events" component={Event} />
           <Route path="/NewEvent" component={NewEvent} />
           <Route path="/feed" component={Feed} />
