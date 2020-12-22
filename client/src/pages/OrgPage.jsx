@@ -6,6 +6,8 @@ import OrgEvents from './OrgEvents';
 import AboutUs from './AboutUs';
 import OrgFeedback from './OrgFeedback'; 
 import Analytics from './Analytics'; 
+import Clearances from './Clearances';
+import OrgClearanceTable from './OrgClearanceTable'
 import "./OrgPage.css";
 
 const { Title, Paragraph } = Typography;
@@ -28,6 +30,7 @@ function OrgPage({member, orgId}) {
             setActiveKey("home")
         }
     }, [orgId]);
+    const isAdmin = member?.member_type
 
     return (
         <React.Fragment>
@@ -40,7 +43,7 @@ function OrgPage({member, orgId}) {
                     <OrgEvents orgId={orgId} />
                 </TabPane>
                 <TabPane tab="FAQ" key="faq">
-                    <QAndAPage isAdmin={member?.member_type} orgId={orgId} />
+                    <QAndAPage isAdmin={isAdmin} orgId={orgId} />
                 </TabPane>
                 <TabPane tab="Feedback" key="feedback">
                     <OrgFeedback isAdmin={member?.member_type} orgId={orgId} />
@@ -48,6 +51,15 @@ function OrgPage({member, orgId}) {
                 <TabPane tab="Analytics" key="analytics">
                     <Analytics orgId={orgId} />
                 </TabPane>
+                <TabPane tab="Clearances" key="clearance">
+                    <Clearances isAdmin={isAdmin} orgId={orgId} />
+                </TabPane>
+                {isAdmin &&
+                    <TabPane tab="Clearance Table" key="clearance_table">
+                        <OrgClearanceTable orgId={orgId} />
+                    </TabPane> 
+                }
+                
             </Tabs>
         </React.Fragment>
     );
