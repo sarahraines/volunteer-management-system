@@ -10,12 +10,12 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
     const [userFileList, setUserFileList] = useState([]);
     const getUserFiles = useCallback(async (orgId) => {
         try {
-             const response = await axiosAPI.get("clearances/get-user-files/", {
-                 params: {
-                     userId: localStorage.getItem("user_id"), 
-                     orgId: orgId
-                 }
-             });
+            const response = await axiosAPI.get("clearances/get-user-files/", {
+                params: {
+                    userId: localStorage.getItem("user_id"), 
+                    orgId: orgId
+                }
+            });
             const files = response.data;
             console.log("files", files)
 
@@ -105,7 +105,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
             if (infoType == "name") {
                 return userFile.name;
             } else if (infoType == "status") {
-                return userFile.status
+                return userFile.status;
             }
         }
 
@@ -118,40 +118,42 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
     const [data, setData] = useState([]);
 
     function getAllData() {
-        setData(
-            fileList.map((file,i) => ({
-                "key": file.uid, 
-                "file": file.name,
-                "uploaded_file": getUserFileForOrgFile("name", file.uid),
-                "status": getUserFileForOrgFile("status", file.uid)
-            }))
-        );
+        console.log('get all data', fileList)
+        return fileList.map((file,i) => ({
+            "key": file.uid, 
+            "file": file.name,
+            "uploaded_file": getUserFileForOrgFile("name", file.uid),
+            "status": getUserFileForOrgFile("status", file.uid)
+        }))
     }
 
-    const handleFilter = key => {
+    function handleFilter(key) {
         const selected = parseInt(key);
         if (selected === 4) {
-            data = getAllData()
+            const d = getAllData() 
+            console.log("d", d)
+            setData(d)
+        } else {
+            const statusMap = {
+                1: "Incomplete",
+                2: "Pending Approval",
+                3: "Complete"
+            };
+        
+            const selectedStatus = statusMap[selected];
+        
+            const filteredData = data.filter(
+                ({ status }) => status === selectedStatus
+            );
+            setData(filteredData)
         }
-    
-        const statusMap = {
-          1: "Incomplete",
-          2: "Pending Approval",
-          3: "Complete"
-        };
-    
-        const selectedStatus = statusMap[selected];
-    
-        const filteredData = data.filter(
-          ({ status }) => status === selectedStatus
-        );
-        setData(filteredData)
-      };
+    };
 
     return (
         <div>
             <header style={{float: 'right'}}>
                 <StatusFilter
+                    orgId={orgId}
                     filterBy={handleFilter}
                 />
             </header>
