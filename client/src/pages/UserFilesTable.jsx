@@ -9,7 +9,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
     const [userFileList, setUserFileList] = useState([]);
     const getUserFiles = useCallback(async (orgId) => {
         try {
-             const response = await axiosAPI.get("clearances/get-user-files/", {
+             const response = await axiosAPI.get("clearances/get-user-files", {
                  params: {
                      userId: localStorage.getItem("user_id"), 
                      orgId: orgId
@@ -54,7 +54,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
     
     const columns = [
         {
-            title: 'Uncompleted File',
+            title: 'Incompleted File',
             dataIndex: 'file',
             key: 'file',
             render: text => <a href={"http://localhost:8080/" +text}>{text}</a>,
@@ -95,6 +95,25 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                 </Upload>
             ),
         },
+        {
+            title: 'Delete Upload',
+            key: 'delete_upload',
+            render: (record) => (
+                <Button 
+                    onClick={e => {
+                        const formData = new FormData();
+                        formData.append('org_file_id', record.key);
+                        formData.append('user_id', localStorage.getItem("user_id"))
+
+                        axiosAPI.post('clearances/delete-user-file', formData)
+                        .then(({ thumbnail }) => thumbnail);
+
+                        getUserFiles(orgId)
+                    }}
+                    danger
+                > Delete </Button>  
+            ),
+        },
     ];
 
     function getUserFileForOrgFile(infoType, oFormId) {
@@ -114,7 +133,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         return (null)
     }
     
-    const data = fileList.map((file,i) => ({
+    let data = fileList.map((file,i) => ({
         "key": file.uid, 
         "file": file.name,
         "uploaded_file": getUserFileForOrgFile("name", file.uid),

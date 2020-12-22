@@ -51,13 +51,13 @@ function OrgClearanceTable({orgId}) {
    
     const columns = [
         {
-            title: 'User',
+            title: 'User Email',
             dataIndex: 'user',
             key: 'user',
             render: text => <p>{text}</p>,
         },
         {
-            title: 'File',
+            title: 'Completed File',
             dataIndex: 'file',
             key: 'file',
             render: text => <a href={"http://localhost:8080/" +text}>{text}</a>,

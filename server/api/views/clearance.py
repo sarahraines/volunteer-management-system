@@ -79,7 +79,19 @@ class AddUserFile(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class DeleteUserFile(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    def post(self, request, format='json'):
+        data = request.data
+        org_file = OrgFile.objects.filter(id=request.data['org_file_id'])[0]
+        user = User.objects.filter(id=request.data.get('user_id'))[0]
 
+        # delete old user file associated with that org file
+        user_files = UserFile.objects.filter(user=user, org_file=org_file)
+        if (len(user_files) > 0):
+            user_files[0].delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 
 
