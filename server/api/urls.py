@@ -30,6 +30,7 @@ urlpatterns = [
     path('member/create/', views.CreateMember.as_view(), name='create_member'),
     path('member/invite/', views.InviteMembers.as_view(), name='invite_members'),
     path('member/delete/', views.DeleteMember.as_view(), name='delete_member'),
+    path('member/email/', views.EmailMembers.as_view(), name='email_members'),
     path('users/activate/', views.ActivateUser.as_view(), name='activate_user'),
     path('users/create/', views.CreateUser.as_view(), name='create_user'),
     path('users/create-from-invite/', views.CreateUserFromInvite.as_view(), name='create_user_from_invite'),
@@ -46,6 +47,6 @@ urlpatterns = [
     path('clearances/get-org-files/', views.GetOrgFiles.as_view(), name='get_org_files'),
     path('clearances/get-user-files/', views.GetUserFiles.as_view(), name='get_user_files'),
     path('clearances/get-user-files-for-org/', views.GetUserFilesForOrg.as_view(), name='get_user_files_for_org'),
-    path('clearances/set-status-user-file/', views.SetStatusUserFile.as_view(), name='set_status_user_file')
+    path('clearances/set-status-user-file/', views.SetStatusUserFile.as_view(), name='set_status_user_file'),
     
 ]

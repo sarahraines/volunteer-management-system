@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Form, Input, Button, Radio} from 'antd';
 import axiosAPI from "../api/axiosApi";
 import { useDispatch } from 'react-redux';
@@ -32,7 +32,7 @@ const EventFeedbackForm = () => {
             dispatch(addAlert('Feedback submission failed', 'error'));
         }
         setIsLoading(false);
-    }, []);
+    }, [dispatch]);
 
     const [info, setInfo] = useState([]);
 

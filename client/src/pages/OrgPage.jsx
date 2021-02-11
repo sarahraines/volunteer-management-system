@@ -9,6 +9,7 @@ import Analytics from './Analytics';
 import InvitePage from './InvitePage'; 
 import Clearances from './Clearances';
 import OrgClearanceTable from './OrgClearanceTable'
+import NewEmail from './NewEmail'
 import "./OrgPage.css";
 
 const { Title } = Typography;
@@ -64,6 +65,11 @@ function OrgPage({member, orgId}) {
                      <TabPane tab="Invites" key="invites">
                         <InvitePage orgId={orgId} />
                     </TabPane>
+                }
+                {isAdmin &&
+                    <TabPane tab="Communication" key="member_emails">
+                        <NewEmail orgId={orgId} />
+                    </TabPane> 
                 }
             </Tabs>
         </React.Fragment>
