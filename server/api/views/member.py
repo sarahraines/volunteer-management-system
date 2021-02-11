@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from api.serializers import MemberSerializer, OrganizationSerializer, InviteeSerializer, UserSerializer
 from api.models import Organization, Cause, Member, User, Invitee
 from django.shortcuts import get_object_or_404
-from django.core.mail import send_mass_mail
+from django.core.mail import send_mass_mail, send_mail
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
@@ -196,3 +196,21 @@ class AcceptInvite(APIView):
             invite.delete()
             return Response(None, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EmailMembers(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        subject = data['subject']
+        body = data['body']
+        members = data['membersList']
+        email_list = []
+        for member in members:
+            email_list.append(member['user']['email'])
+        print(email_list)
+
+        send_mail(subject, body, 'vol.mgmt.system@gmail.com', email_list, fail_silently=False)
+
+        return Response(None, status=status.HTTP_200_OK)

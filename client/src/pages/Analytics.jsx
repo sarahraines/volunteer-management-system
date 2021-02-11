@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Form, Typography, Calendar, Table} from 'antd';
+import {Typography} from 'antd';
 import "antd/dist/antd.css";
 import axiosAPI from "../api/axiosApi";
 import Plot from 'react-plotly.js';
@@ -25,7 +25,7 @@ const Analytics = ({orgId}) => {
 
     useEffect(() => {
         getAnalyticsByOrg();
-    }, [orgId]); 
+    }, [orgId, getAnalyticsByOrg]); 
 
     const [attendeeCount, setAttendeeCount] = useState([]); 
 
@@ -41,11 +41,11 @@ const Analytics = ({orgId}) => {
         } catch (error) {
             console.error(error);
         }
-    }, [setAttendeeCount, attendeeCount]);
+    }, [setAttendeeCount, attendeeCount, orgId]);
 
     useEffect(() => {
         getAnalyticsByEvent();
-    }, [orgId]); 
+    }, [orgId, getAnalyticsByEvent]); 
 
    
     return (

@@ -1,0 +1,14 @@
+.email-container {
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px;
+    max-width: 450px;
+}
+.member-table {
+    height: auto;
+}
+
+.org-form {
+    height: auto; 
+    width: auto; 
+}
