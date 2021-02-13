@@ -1,0 +1,15 @@
+.event-feedback-logo {
+    width: 100%;
+    max-width: 800px;
+}
+.event-feedback-container {
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px;
+    max-width: 800px;
+}
+.event-feedback-content {
+    padding: 5vh 5vw;
+    margin: 0 auto;
+    height: auto;
+}

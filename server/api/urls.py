@@ -48,5 +48,4 @@ urlpatterns = [
     path('clearances/get-user-files/', views.GetUserFiles.as_view(), name='get_user_files'),
     path('clearances/get-user-files-for-org/', views.GetUserFilesForOrg.as_view(), name='get_user_files_for_org'),
     path('clearances/set-status-user-file/', views.SetStatusUserFile.as_view(), name='set_status_user_file'),
-    
 ]
