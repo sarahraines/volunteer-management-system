@@ -6,6 +6,17 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+django = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+djangorestframework-simplejwt = "*"
+pytz = "*"
+six = "*"
+django-crontab = "*"
+django-utils = "*"
+django-extensions = "*"
+django-request-token = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
