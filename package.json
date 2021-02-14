@@ -8,6 +8,6 @@
   },
   "scripts": {
     "start": "echo start",
-    "build": "cd client && yarn build"
+    "build": "cd client && yarn install && yarn build"
   }
 }
