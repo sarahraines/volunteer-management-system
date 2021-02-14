@@ -183,4 +183,4 @@ STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, '..', '..', 'client', 'build')
 ]
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, '..', 'static')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, '..', 'assets')
