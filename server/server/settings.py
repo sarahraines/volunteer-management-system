@@ -27,7 +27,7 @@ SECRET_KEY = '3yyu_^a%4h6ubyg$uj+#_u7l5s!31vns8eu4_3qr3478mpy_op'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.volunteersense.com']
 
 AUTH_USER_MODEL = "api.User"
 
