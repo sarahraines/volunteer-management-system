@@ -14,10 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.conf import settings
+from django.contrib.staticfiles.views import serve
+from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-]
+    re_path(r'^(?!/?assets/)(?P<path>.*\..*)$',
+        RedirectView.as_view(url='/assets/%(path)s', permanent=False)),
+    re_path(r'^(?!/?assets/).*$', serve, kwargs={'path': 'index.html'}),
+    
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

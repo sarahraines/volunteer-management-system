@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {},
   "scripts": {
-    "start": "cd client && yarn build"
+    "start": "echo start",
+    "build": "cd client && yarn build"
   }
 }
