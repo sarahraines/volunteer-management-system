@@ -17,6 +17,7 @@ django-utils = "*"
 django-extensions = "*"
 django-request-token = "*"
 gunicorn = "*"
+dj-database-url = "*"
 
 [requires]
 python_version = "3.8"
