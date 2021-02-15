@@ -23,9 +23,9 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    re_path(r'^(?!/?assets/)(?!/?admin/)(?!/?api/)(?P<path>.*\..*)$',
+    re_path(r'^(?!/?assets/)(?!/?admin/)(?!/?api/)(?!/?media/)(?P<path>.*\..*)$',
         RedirectView.as_view(url='/assets/%(path)s', permanent=False)),
-    re_path(r'^(?!/?assets/)(?!/?admin/)(?!/?api/).*$', serve, kwargs={'path': 'index.html'}),
+    re_path(r'^(?!/?assets/)(?!/?admin/)(?!/?api/)(?!/?media/).*$', serve, kwargs={'path': 'index.html'}),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

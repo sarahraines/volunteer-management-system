@@ -22,3 +22,6 @@ psycopg2 = "*"
 
 [requires]
 python_version = "3.8"
+
+[packages.django-storages]
+extras = [ "google",]

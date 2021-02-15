@@ -190,3 +190,9 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, '..', 'assets')
+
+### File storage
+
+if os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'):
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = 'volunteersense'
