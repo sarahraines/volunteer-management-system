@@ -11,10 +11,10 @@ class Organization(models.Model):
     causes = models.ManyToManyField('Cause')
     description = models.TextField()
     members = models.ManyToManyField(User, through='Member')
-    email = models.EmailField(max_length=256)
-    website = models.CharField(max_length=256)
-    phone = models.CharField(max_length=32)
-    address = models.TextField()
+    email = models.EmailField(max_length=256, null=True)
+    website = models.CharField(max_length=256, null=True)
+    phone = models.CharField(max_length=32, null=True)
+    address = models.TextField(null=True)
 
 
 class FAQ(models.Model):

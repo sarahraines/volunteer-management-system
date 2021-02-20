@@ -13,7 +13,7 @@ const OrgEvents = ({orgId}) => {
         try {
             const response = await axiosAPI.get("events/get-by-org/", {
                 params: {
-                    orgId: orgId
+                    orgId: orgId,
                 }
             });
             setEvents(response.data);

@@ -6,7 +6,7 @@ from api.models import Event, User, Attendee, Member, Organization, Cause, Event
 from collections import OrderedDict
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-
+from django.utils import timezone
 
 # class AddAttendee(APIView):
 #     permission_classes = (permissions.AllowAny,)
@@ -60,7 +60,8 @@ class GetEvents(APIView):
     authentication_classes = ()
     
     def get(self, request):
-        events = Event.objects.all()
+        date = timezone.now()
+        events = Event.objects.filter(enddate__gte=date).order_by('begindate')
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -70,8 +71,9 @@ class GetEventsByOrg(APIView):
     
     def get(self, request):
         if request.GET.get('orgId'):
+            date = timezone.now()
             orgId = request.GET['orgId']
-            events = Event.objects.filter(organizations__in=[orgId])
+            events = Event.objects.filter(organizations__in=[orgId]).filter(enddate__gte=date).order_by('begindate')
             serializer = EventSerializer(events, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
