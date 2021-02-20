@@ -154,34 +154,24 @@ class GetEventFeedback(APIView):
 
         if str(is_admin)=='1':
             feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
-            'event__name', 'event__location', 'event__begindate', 'event__enddate', 
+            'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
         else:
             feedback = EventFeedback.objects.filter(event__organizations__id=org_id, username__id=user_id).values(
-            'event__name', 'event__location', 'event__begindate', 'event__enddate', 
+            'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
 
-        feedback = list(feedback)
+        overall = dict(EventFeedback.OVERALL_CHOICES)
+        satisfaction = dict(EventFeedback.SATISFACTION_CHOICES)
+        likely = dict(EventFeedback.LIKELY_CHOICES)
 
+        for f in feedback:
+            f['key'] = f['id']
+            f['name'] = f['username__first_name'] + ' ' + f['username__last_name']
+            f['overall'] = overall[f['overall']]
+            f['satisfaction'] = satisfaction[f['satisfaction']]
+            f['likely'] = likely[f['likely']]
         return Response(feedback, status=status.HTTP_200_OK)
-
-class GetAttendeeCountsByEvent(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-
-    def get(self, request):
-        orgId = request.GET['orgId']
-        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('events__name').annotate(Count('events__name'))
-        attendees = list(attendees)
-
-        x = []
-        y = []
-        data = (x, y)
-        for i in range(len(attendees)):
-            x.append(attendees[i]['events__name'])
-            y.append(attendees[i]['events__name__count'])
-
-        return Response(data, status=status.HTTP_200_OK)
 

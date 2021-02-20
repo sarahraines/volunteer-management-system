@@ -6,7 +6,6 @@ import Home from './pages/Home/Home';
 import Feed from './pages/Feed';
 import InviteNoAuth from './pages/InviteNoAuth';
 import Activate from './pages/Activate';
-// import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
 import NewEvent from './pages/NewEvent'
 import EventFeedback from './pages/EventFeedback'
