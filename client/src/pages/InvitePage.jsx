@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Table, Typography, Button, Popconfirm, Tooltip, message, Row, Modal, Select } from 'antd';
+import { Table, Typography, Button, Popconfirm, message, Row, Modal, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';

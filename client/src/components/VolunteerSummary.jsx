@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Table} from 'antd';
 
-function VolunteerBreakdown({ data}) {
+function VolunteerSummary({ data}) {
 
     const columns = [
         {
@@ -12,17 +12,23 @@ function VolunteerBreakdown({ data}) {
             render: (text: string) => <b>{text}</b>,
         },
         {
-          title: 'Count',
-          dataIndex: 'count',
-          key: 'count',
+          title: 'Nonprofits',
+          dataIndex: 'nonprofits',
+          key: 'nonprofits',
           ellipsis: true,
         },
         {
-          title: 'Hours',
-          dataIndex: 'hours',
-          key: 'hours',
+          title: 'Events',
+          dataIndex: 'events',
+          key: 'events',
           ellipsis: true,
         },
+        {
+            title: 'Hours',
+            dataIndex: 'hours',
+            key: 'hours',
+            ellipsis: true,
+          },
       ];
 
 
@@ -34,8 +40,12 @@ function VolunteerBreakdown({ data}) {
             <Table 
                 dataSource={data} 
                 columns={columns}
-                expandedRowRender = {record => <p style={{ margin: 0 }}><b>Volunteer Names: </b>{record.name}</p>}
-                rowExpandable = {record => record.label !== 'Total'}
+                expandedRowRender = {record => 
+                    <p style={{ margin: 0 }}>
+                        <b>Nonprofits: </b>{record.nonprofits_list}<br/>
+                        <b>Events: </b>{record.events_list}<br/>
+                    </p>
+                }
                 pagination={false}
             />
             <br/>
@@ -44,4 +54,4 @@ function VolunteerBreakdown({ data}) {
     )
 
 
-} export default VolunteerBreakdown;
+} export default VolunteerSummary;

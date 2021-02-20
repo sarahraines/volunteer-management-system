@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { Menu } from 'antd';
-import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, SearchOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, SearchOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axiosAPI from '../api/axiosApi';
 import { logout } from '../api/authenticationApi';
@@ -52,6 +52,9 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
                     </Item>
                     <Item className="action-submenu-item" key="find" icon={<SearchOutlined />}>
                         Find service opportunities
+                    </Item>
+                    <Item className="action-submenu-item" key="view-analytics" icon={<BarChartOutlined />}>
+                        View analytics
                     </Item>
                 </SubMenu>
                 <Divider/>

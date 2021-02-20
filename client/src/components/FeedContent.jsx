@@ -4,6 +4,7 @@ import Settings from "../pages/Settings";
 import Event from "../pages/Event";
 import NewEvent from "../pages/NewEvent";
 import OrgPage from "../pages/OrgPage"
+import VolunteerAnalytics from "../pages/VolunteerAnalytics"
 
 
 const FeedContent = ({member, context}) => {
@@ -16,6 +17,8 @@ const FeedContent = ({member, context}) => {
             return (<Settings />);
         case "create-event":
             return (<NewEvent />);
+        case "view-analytics":
+            return (<VolunteerAnalytics />); 
         default:
             const orgId = parseInt(context)
             if (isNaN(orgId)) {
