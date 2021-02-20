@@ -30,7 +30,7 @@ function VolunteerBreakdown({ data}) {
 
     return (
         <React.Fragment>
-            <Typography.Title level={5}>Event Leaderboard</Typography.Title>
+            <Typography.Title level={5}>Volunteer Breakdown</Typography.Title>
             <Table 
                 dataSource={data} 
                 columns={columns}
