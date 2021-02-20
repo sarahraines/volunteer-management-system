@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Card, Button, Typography, message} from 'antd';
 import axiosAPI from "../api/axiosApi";
 import './EventCard.css';
@@ -6,7 +6,7 @@ import './EventCard.css';
 const { Paragraph } = Typography;
 
 function EventCard ({item}){
-	const [register, setRegister] = useState(false); 
+	const [register, setRegister] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const onClick = useCallback(async (event_id, register) => {
@@ -34,6 +34,29 @@ function EventCard ({item}){
 		setIsLoading(false);
     }, []);
 
+	const getRegisterStatus = useCallback(async () => {
+        try {
+			console.log("event id");
+			console.log(item.id);
+            const response = await axiosAPI.get("events/get-register-status/", {
+                params: {
+					user_id: localStorage.getItem("user_id"),
+					event: item.id
+                }
+            });
+			setRegister(false);
+			if (response.data == 1) {
+				setRegister(true);
+			}
+        } catch (error) {
+            console.error(error);
+        }
+    }, []);
+	
+	useEffect(() => {
+        getRegisterStatus();
+    }, [getRegisterStatus]);
+	
 	const buttonText = register ? "Unjoin" : "Join";
 	const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 	const begindate = new Date(item.begindate)

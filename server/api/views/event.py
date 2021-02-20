@@ -187,3 +187,35 @@ class GetAttendeeCountsByEvent(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
+# class GetRegisterStatus(APIView):
+#     permission_classes = (permissions.AllowAny,)
+#     authentication_classes = ()
+
+#     def get(self, request):
+#         userId = request.GET['user_id']
+#         # eventId = request.GET['event_id']
+#         attending = Attendee.objects.all() #filter(events__id=eventId)
+#         # attendees = list(attendees)
+
+#         # for i in range(len(attendees)):
+#         #     x.append(attendees[i]['events__name'])
+#         #     y.append(attendees[i]['events__name__count'])
+#         print("register request")
+#         print(request)
+#         return Response(attending, status=status.HTTP_200_OK)
+
+class GetRegisterStatus(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        attendee_id = request.GET['user_id']
+        event_id = request.GET['event']
+        username = User.objects.filter(id=attendee_id)[0]
+        attendees = Attendee.objects.filter(username=username, events__id=event_id)
+        attendees = list(attendees)
+        data = 0
+        if (len(attendees) > 0):
+            data = 1
+        return Response(data, status=status.HTTP_200_OK)
+
