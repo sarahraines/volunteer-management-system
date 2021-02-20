@@ -36,7 +36,10 @@ function VolunteerBreakdown({ data}) {
                 columns={columns}
                 expandedRowRender = {record => <p style={{ margin: 0 }}><b>Volunteer Names: </b>{record.name}</p>}
                 rowExpandable = {record => record.label !== 'Total'}
+                pagination={false}
             />
+            <br/>
+            <br/>
         </React.Fragment>
     )
 
