@@ -21,12 +21,14 @@ function EventLeaderboard({ data}) {
             title: 'Average Rating',
             dataIndex: 'avg_rating',
             key: 'avg_rating',
+            defaultSortOrder: 'descend',
             sorter: (a, b) => a.count - b.count,
         },
         {
             title: 'Average Satisfaction',
             dataIndex: 'avg_satisfaction',
             key: 'avg_satisfaction',
+            defaultSortOrder: 'descend',
             sorter: (a, b) => a.total - b.total,
         },
     ];
@@ -40,7 +42,7 @@ function EventLeaderboard({ data}) {
                 columns={columns}
                 pagination={{ pageSize: 5 }}
                 expandedRowRender= {record => 
-                    <body>
+                    <p>
                         <b>Event Details</b><br/>
                         Name: {record.event__name}<br/>
                         Location: {record.event__location}<br/>
@@ -50,8 +52,8 @@ function EventLeaderboard({ data}) {
                         {record.attendees}<br/><br/>
 
                         <EventLeaderboardPlots data={record}/>
-                    </body>
-                } 
+                    </p>
+                }
                 dataSource={data} />
         </React.Fragment>
     )

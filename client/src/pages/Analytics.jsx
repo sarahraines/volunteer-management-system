@@ -26,7 +26,6 @@ const Analytics = ({orgId}) => {
     useEffect(() => {
         if (orgId) {
             getBreakdown(orgId);
-            console.log('breakdown', breakdown); 
         }
     }, [getBreakdown, orgId, breakdown]);
 

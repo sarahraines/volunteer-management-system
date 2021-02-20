@@ -25,6 +25,7 @@ function VolunteerLeaderboard({ data}) {
             title: 'Volunteer Hours',
             dataIndex: 'total',
             key: 'total',
+            defaultSortOrder: 'descend',
             sorter: (a, b) => a.total - b.total,
         },
     ];
@@ -42,4 +43,3 @@ function VolunteerLeaderboard({ data}) {
 
 
 } export default VolunteerLeaderboard;
-
