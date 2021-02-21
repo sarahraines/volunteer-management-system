@@ -53,6 +53,9 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
                     <Item className="action-submenu-item" key="find" icon={<SearchOutlined />}>
                         Find service opportunities
                     </Item>
+                    <Item className="action-submenu-item" key="calendar" icon={<SearchOutlined />}>
+                        View My Events
+                    </Item>
                     <Item className="action-submenu-item" key="view-analytics" icon={<BarChartOutlined />}>
                         View analytics
                     </Item>
