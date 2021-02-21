@@ -46,12 +46,14 @@ function OrgPage({member, orgId}) {
                 <TabPane tab="Feedback" key="feedback">
                     <OrgFeedback isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
-                <TabPane tab="Analytics" key="analytics">
-                    <Analytics orgId={orgId} />
-                </TabPane>
                 <TabPane tab="Clearances" key="clearance">
                     <Clearances isAdmin={isAdmin} orgId={orgId} />
                 </TabPane>
+                {isAdmin &&
+                <TabPane tab="Analytics" key="analytics">
+                    <Analytics orgId={orgId} />
+                </TabPane>
+                }
                 {isAdmin &&
                     <TabPane tab="Clearance Table" key="clearance_table">
                         <OrgClearanceTable orgId={orgId} />

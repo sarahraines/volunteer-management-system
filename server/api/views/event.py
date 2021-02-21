@@ -75,8 +75,6 @@ class GetEventsByOrg(APIView):
             orgId = request.GET['orgId']
             events = Event.objects.filter(organizations__in=[orgId]).filter(enddate__gte=date).order_by('begindate')
             serializer = EventSerializer(events, many=True)
-            print("getting events")
-            print(events[0].virtual)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
@@ -158,17 +156,25 @@ class GetEventFeedback(APIView):
 
         if str(is_admin)=='1':
             feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
-            'event__name', 'event__location', 'event__begindate', 'event__enddate', 
+            'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
         else:
             feedback = EventFeedback.objects.filter(event__organizations__id=org_id, username__id=user_id).values(
-            'event__name', 'event__location', 'event__begindate', 'event__enddate', 
+            'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
 
-        feedback = list(feedback)
+        overall = dict(EventFeedback.OVERALL_CHOICES)
+        satisfaction = dict(EventFeedback.SATISFACTION_CHOICES)
+        likely = dict(EventFeedback.LIKELY_CHOICES)
 
+        for f in feedback:
+            f['key'] = f['id']
+            f['name'] = f['username__first_name'] + ' ' + f['username__last_name']
+            f['overall'] = overall[f['overall']]
+            f['satisfaction'] = satisfaction[f['satisfaction']]
+            f['likely'] = likely[f['likely']]
         return Response(feedback, status=status.HTTP_200_OK)
 
 class GetAttendeeCountsByEvent(APIView):

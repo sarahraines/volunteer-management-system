@@ -11,7 +11,6 @@ urlpatterns = [
     path('organization/get-causes/', views.GetCausesByOrg.as_view(), name='get_org_causes'),
     path('organization/get-invites/', views.GetInvitesByOrg.as_view(), name='get_org_invites'),
     path('organization/get-members/', views.GetMembersFromOrg.as_view(), name='get_org_members'),
-    path('organization/get-member-counts-by-org/', views.GetMemberCountsByOrg.as_view(), name='get-members-counts-by-org'),
     path('causes/get/', views.GetCauses.as_view(), name='get_causes'),
     path('admin/get-orgs/', views.GetAdminOrganizations.as_view(), name='get_admin_organizations'),
     path('events/get/', views.GetEvents.as_view(), name='get_events'),
@@ -50,5 +49,10 @@ urlpatterns = [
     path('clearances/get-user-files/', views.GetUserFiles.as_view(), name='get_user_files'),
     path('clearances/get-user-files-for-org/', views.GetUserFilesForOrg.as_view(), name='get_user_files_for_org'),
     path('clearances/set-status-user-file/', views.SetStatusUserFile.as_view(), name='set_status_user_file'),
-    
+    path('analytics/volunteer-leaderboard/', views.VolunteerLeaderboard.as_view(), name='volunteer_leaderboard'),
+    path('analytics/event-leaderboard/', views.EventLeaderboard.as_view(), name='event_leaderboard'),
+    path('analytics/volunteer-breakdown/', views.VolunteerBreakdown.as_view(), name='volunteer_breakdown'),
+    path('analytics/nonprofit-breakdown/', views.NonprofitBreakdown.as_view(), name='nonprofit_breakdown'),
+    path('analytics/volunteer-event-leaderboard/', views.VolunteerEventLeaderboard.as_view(), name='volunteer_event_leaderboard'),
+    path('analytics/volunteer-summary/', views.VolunteerSummary.as_view(), name='volunteer_summary'),
 ]

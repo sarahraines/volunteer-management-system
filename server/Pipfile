@@ -16,6 +16,9 @@ django-crontab = "*"
 django-utils = "*"
 django-extensions = "*"
 django-request-token = "*"
+psycopg2-binary = "*"
+django-mysql = "*"
+mysql-connector = "*"
 
 [requires]
 python_version = "3.8"
