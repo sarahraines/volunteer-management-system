@@ -11,6 +11,7 @@ import Clearances from './Clearances';
 import OrgClearanceTable from './OrgClearanceTable'
 import NewEmail from './NewEmail'
 import "./OrgPage.css";
+import EventLandingPage from './EventLandingPage';
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -37,7 +38,7 @@ function OrgPage({member, orgId}) {
                     <AboutUs org={org} />
                 </TabPane>
                 <TabPane tab="Events" key="events">
-                    <OrgEvents orgId={orgId} />
+                    <OrgEvents orgId={orgId} viewmore={false} eventId={-1}/>
                 </TabPane>
                 <TabPane tab="FAQ" key="faq">
                     <QAndAPage isAdmin={isAdmin} orgId={orgId} />

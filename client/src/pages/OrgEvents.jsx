@@ -1,10 +1,9 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Typography} from 'antd';
+import {Button, Typography, message} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
 import axiosAPI from "../api/axiosApi";
-
 
 const OrgEvents = ({orgId}) => {
     const [events, setEvents] = useState([]); 
@@ -27,7 +26,7 @@ const OrgEvents = ({orgId}) => {
     }, [orgId, getEventsByOrg]);
     
     const eventList = events.map(item => 
-        <EventCard key={item.id} item={item} />
+        <EventCard key={item.id} item={item}/>
     );
 
 

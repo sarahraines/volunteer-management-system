@@ -9,6 +9,7 @@ import Activate from './pages/Activate';
 // import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
 import NewEvent from './pages/NewEvent'
+import EventLandingPage from './pages/EventLandingPage'
 import EventFeedback from './pages/EventFeedback'
 import './App.css';
 
@@ -33,7 +34,7 @@ function App() {
           <Route path="/events" component={Event} />
           <Route path="/NewEvent" component={NewEvent} />
           <Route path="/feed" component={Feed} />
-          <Route path="/EventFeedback" component={EventFeedback} />
+          <Route path="/EventFeedback" component={EventFeedback} />\
       </Switch> 
   </main>
   );

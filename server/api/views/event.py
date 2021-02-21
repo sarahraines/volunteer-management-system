@@ -75,6 +75,8 @@ class GetEventsByOrg(APIView):
             orgId = request.GET['orgId']
             events = Event.objects.filter(organizations__in=[orgId]).filter(enddate__gte=date).order_by('begindate')
             serializer = EventSerializer(events, many=True)
+            print("getting events")
+            print(events[0].virtual)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
@@ -187,22 +189,19 @@ class GetAttendeeCountsByEvent(APIView):
 
         return Response(data, status=status.HTTP_200_OK)
 
-# class GetRegisterStatus(APIView):
-#     permission_classes = (permissions.AllowAny,)
-#     authentication_classes = ()
+class GetEventAttendeeCount(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
 
-#     def get(self, request):
-#         userId = request.GET['user_id']
-#         # eventId = request.GET['event_id']
-#         attending = Attendee.objects.all() #filter(events__id=eventId)
-#         # attendees = list(attendees)
+    def get(self, request):
+        eventId = request.GET['event']
+        attendees = Attendee.objects.filter(events__id=eventId)
+        attendees = list(attendees)
+        print("attendees count")
+        print(attendees)
+        data = len(attendees)
 
-#         # for i in range(len(attendees)):
-#         #     x.append(attendees[i]['events__name'])
-#         #     y.append(attendees[i]['events__name__count'])
-#         print("register request")
-#         print(request)
-#         return Response(attending, status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
 class GetRegisterStatus(APIView):
     permission_classes = (permissions.AllowAny,)

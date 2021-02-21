@@ -20,3 +20,8 @@
     margin-top: 8px;
     margin-bottom: 8px;
 }
+
+.event-viewmore-form-button .ant-collapse-content-box {
+    padding: 0;
+    margin-left: 0px;
+}
