@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Button, Typography, message} from 'antd';
+import {Button, Typography, message, Input} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
@@ -7,6 +7,8 @@ import axiosAPI from "../api/axiosApi";
 
 const OrgEvents = ({orgId}) => {
     const [events, setEvents] = useState([]); 
+    const [word, setWord] = useState("");
+    const [filterDisplay, setFilterDisplay] = useState([]);
 
     const getEventsByOrg = useCallback(async () => {
         try {
@@ -16,6 +18,7 @@ const OrgEvents = ({orgId}) => {
                 }
             });
             setEvents(response.data);
+            setFilterDisplay(response.data);
         } catch (error) {
             console.error(error);
         }
@@ -29,12 +32,29 @@ const OrgEvents = ({orgId}) => {
         <EventCard key={item.id} item={item}/>
     );
 
+    const handleChange = e => {
+        let oldList = events;
+        if (e !== "") {
+            let newList = [];
+            setWord(e);
+            newList = oldList.filter(event =>
+                event.name.includes(e)
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
+
 
     return (
         <React.Fragment>
             <Typography.Title level={4}>Upcoming events</Typography.Title>
+            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events"/>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll" }}>
-                {eventList}
+                {filterDisplay.map((item, i) => 
+                    <EventCard key={i} item={item}/>
+                )}
             </div>
         </React.Fragment>
     );

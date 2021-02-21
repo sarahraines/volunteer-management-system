@@ -38,8 +38,6 @@ function EventCard ({item}){
 
 	const getRegisterStatus = useCallback(async () => {
         try {
-			console.log("event id");
-			console.log(item.id);
             const response = await axiosAPI.get("events/get-register-status/", {
                 params: {
 					user_id: localStorage.getItem("user_id"),
