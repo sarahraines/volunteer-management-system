@@ -7,7 +7,6 @@ import axiosAPI from "../api/axiosApi";
 
 const OrgEvents = ({orgId}) => {
     const [events, setEvents] = useState([]); 
-    const [word, setWord] = useState("");
     const [filterDisplay, setFilterDisplay] = useState([]);
 
     const getEventsByOrg = useCallback(async () => {
@@ -28,15 +27,14 @@ const OrgEvents = ({orgId}) => {
         getEventsByOrg();
     }, [orgId, getEventsByOrg]);
     
-    const eventList = events.map(item => 
-        <EventCard key={item.id} item={item}/>
-    );
+    // const eventList = events.map(item => 
+    //     <EventCard key={item.id} item={item}/>
+    // );
 
     const handleChange = e => {
         let oldList = events;
         if (e !== "") {
             let newList = [];
-            setWord(e);
             newList = oldList.filter(event =>
                 event.name.includes(e)
             );

@@ -9,7 +9,6 @@ import Activate from './pages/Activate';
 // import ForgotPassword from './pages/ForgotPassword';
 import Event from './pages/Event';
 import NewEvent from './pages/NewEvent'
-import EventLandingPage from './pages/EventLandingPage'
 import EventFeedback from './pages/EventFeedback'
 import './App.css';
 
