@@ -75,6 +75,16 @@ class GetEventsByOrg(APIView):
             orgId = request.GET['orgId']
             events = Event.objects.filter(organizations__in=[orgId]).filter(enddate__gte=date).order_by('begindate')
             serializer = EventSerializer(events, many=True)
+            
+            for i in range(len(events)):
+                attendees = Attendee.objects.filter(events__id=events[i].id)
+                attendees = list(attendees)
+                attendee_count = len(attendees)
+                serializer.data[i]["attendee_count"] = attendee_count
+                # print("serializer data")
+                # print(serializer.data[i])
+            
+            # print(serializer.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
@@ -203,8 +213,6 @@ class GetEventAttendeeCount(APIView):
         eventId = request.GET['event']
         attendees = Attendee.objects.filter(events__id=eventId)
         attendees = list(attendees)
-        print("attendees count")
-        print(attendees)
         data = len(attendees)
 
         return Response(data, status=status.HTTP_200_OK)

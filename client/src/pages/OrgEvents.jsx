@@ -66,46 +66,43 @@ const OrgEvents = ({orgId}) => {
         }
     };
 
-    const getAttendeeCount = useCallback(async (eventId) => {
-		try {
-			const response = await axiosAPI.get("events/get-event-attendee-count/", {
-                params: {
-					event: eventId
-                }
-            });
-            console.log("gets here");
-            setAttendeeCount(response.data);
-		}
-		catch {
-			const errMsg = "Get Attendee Count failed";
-			message.error(errMsg);
-		}
-    }, []);
-
-    // const openFilterChange = useCallback(async (value) => {
-    //     let oldList = events;
-    //     if (value == "open") {
-    //         let newList = [];
-    //         console.log("open")
-    //         newList = oldList.filter(e =>
-    //             {
-    //                 getAttendeeCount(e);
-    //                 console.log("attendee count" + attendeeCount);
-    //                 return (attendeeCount < e.attendee_cap)
+    // const getAttendeeCount = useCallback(async (eventId) => {
+	// 	try {
+	// 		const response = await axiosAPI.get("events/get-event-attendee-count/", {
+    //             params: {
+	// 				event: eventId
     //             }
-    //             // {console.log("attendee count " + getAttendeeCount(e.id));}
-    //         );
-    //         setFilterDisplay(newList);
-    //     } else if (value == "filled") {
-    //         let newList = [];
-    //         newList = oldList.filter(event =>
-    //             !event.virtual
-    //         );
-    //         setFilterDisplay(newList);
-    //     } else {
-    //         setFilterDisplay(oldList);
-    //     }
+    //         });
+    //         console.log("gets here");
+    //         setAttendeeCount(response.data);
+	// 	}
+	// 	catch {
+	// 		const errMsg = "Get Attendee Count failed";
+	// 		message.error(errMsg);
+	// 	}
     // }, []);
+
+    const openFilterChange = value => {
+        let oldList = events;
+        if (value == "open") {
+            let newList = [];
+            
+            newList = oldList.filter(event =>
+                    (event.attendee_count < event.attendee_cap)
+            );
+            console.log("newList: " + newList)
+            setFilterDisplay(newList);
+        } else if (value == "filled") {
+            let newList = [];
+            newList = oldList.filter(event =>
+                !(event.attendee_count < event.attendee_cap)
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
+
 
 
     return (
@@ -118,11 +115,11 @@ const OrgEvents = ({orgId}) => {
                     <Option value="virtual">Virtual</Option>
                     <Option value="inperson">Not Virtual</Option>
                 </Select>
-                {/* Filter by Open:<Select defaultValue="none" style={{ width: 120 }} onChange={value => openFilterChange(value)} size="small">
+                Filter by Open:<Select defaultValue="none" style={{ width: 120 }} onChange={value => openFilterChange(value)} size="small">
                     <Option value="none">Select All</Option>
                     <Option value="open">Open</Option>
                     <Option value="filled">Filled</Option>
-                </Select> */}
+                </Select>
             </Space> 
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll" }}>
                 {filterDisplay.map((item, i) => 
