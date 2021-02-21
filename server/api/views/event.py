@@ -224,3 +224,20 @@ class GetRegisterStatus(APIView):
             data = 1
         return Response(data, status=status.HTTP_200_OK)
 
+class GetVolunteerEvents(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        attendee_id = request.GET['user_id']
+        username = User.objects.filter(id=attendee_id)[0]
+        events = Attendee.objects.filter(username=username).values('events__id',
+        'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
+        'events__causes', 'events__description', 'events__organizations', 'events__instructions',
+        'events__attendee_cap')
+        
+        print("volunteer events")
+        print(events)
+
+        return Response(events, status=status.HTTP_200_OK)
+

@@ -1,36 +1,62 @@
-import React from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import { Typography } from 'antd';
 import { Calendar, Badge } from 'antd';
+import axiosAPI from "../api/axiosApi";
 
 const VolunteerCalendar = () => {
+    const [events, setEvents] = useState([]); 
+    const getVolunteerEvents = useCallback(async () => {
+        try {
+            const response = await axiosAPI.get("attendees/get-volunteer-events/", {
+                params: {
+                    user_id: localStorage.getItem("user_id"),
+                }
+            });
+            setEvents(response.data);
+            console.log("date test : " + (new Date(response.data[0].events__begindate)).getMonth())
+        } catch (error) {
+            console.error(error);
+        }
+    }, []);
+
+    useEffect(() => {
+        getVolunteerEvents();
+    }, []);
+
     function getListData(value) {
         let listData;
-        switch (value.date()) {
-            case 8:
-                listData = [
-                    { type: 'warning', content: 'This is warning event.' },
-                    { type: 'success', content: 'This is usual event.' },
-                ];
-            break;
-            case 10:
-                listData = [
-                    { type: 'warning', content: 'This is warning event.' },
-                    { type: 'success', content: 'This is usual event.' },
-                    { type: 'error', content: 'This is error event.' },
-                ];
-            break;
-            case 15:
-                listData = [
-                    { type: 'warning', content: 'This is warning event' },
-                    { type: 'success', content: 'This is very long usual event。。....' },
-                    { type: 'error', content: 'This is error event 1.' },
-                    { type: 'error', content: 'This is error event 2.' },
-                    { type: 'error', content: 'This is error event 3.' },
-                    { type: 'error', content: 'This is error event 4.' },
-                ];
-                break;
-            default:
-        }
+        // switch (value.date()) {
+        //     case 8:
+        //         listData = [
+        //             { type: 'warning', content: 'This is warning event.' },
+        //             { type: 'success', content: 'This is usual event.' },
+        //         ];
+        //     break;
+        //     case 10:
+        //         listData = [
+        //             { type: 'warning', content: 'This is warning event.' },
+        //             { type: 'success', content: 'This is usual event.' },
+        //             { type: 'error', content: 'This is error event.' },
+        //         ];
+        //     break;
+        //     case 15:
+        //         listData = [
+        //             { type: 'warning', content: 'This is warning event' },
+        //             { type: 'success', content: 'This is very long usual event。。....' },
+        //         ];
+        //         break;
+        //     default:
+        // }
+
+        listData = events.filter(events =>
+            {
+                const bdate = new Date(events.events__begindate);
+                const edate = new Date(events.events__enddate);
+
+                return ((value.month() <= edate.getMonth() && value.month() >= bdate.getMonth())
+                    && (value.date() <= edate.getDate() && value.date() >= bdate.getDate()));
+            }
+        )
         return listData || [];
     }
 
@@ -44,11 +70,18 @@ const VolunteerCalendar = () => {
         const listData = getListData(value);
         return (
           <ul className="events">
-            {listData.map(item => (
-              <li key={item.content}>
-                <Badge status={item.type} text={item.content} />
+            {listData.map((item, i) => (
+              <li key={i}>
+                {console.log("event added: " + item.events__name)}
+                <Badge status="success" text={item.events__name} />
               </li>
             ))}
+            {/* {events.map((event, i) => (
+                <li key={i}>
+                    <Badge status="success" test={event.name}/>
+                </li>
+            ))} */}
+
           </ul>
         );
       }

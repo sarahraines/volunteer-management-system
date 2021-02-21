@@ -24,6 +24,7 @@ urlpatterns = [
     path('event/get-event-by-id/', views.GetEventById.as_view(), name='get-event-by-id'),
     path('attendees/create/', views.AddAttendee.as_view(), name="add_attendees"),
     path('attendees/delete/', views.DeleteAttendee.as_view(), name="delete_attendees"),
+    path('attendees/get-volunteer-events/', views.GetVolunteerEvents.as_view(), name="get_volunteer_events"),
     path('invite/delete/', views.DeleteInvite.as_view(), name="delete_invite"),
     path('invite/validate/', views.validate_invite, name="validate_invite"),
     path('invite/accept/', views.AcceptInvite.as_view(), name="accept_invite"),
