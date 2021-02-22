@@ -9,7 +9,6 @@ function EventCard ({item}){
 	const [register, setRegister] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [viewmore, setViewmore] = useState(false);
-	const [attendeeCount, setAttendeeCount] = useState(0);
 	
 	const onClick = useCallback(async (event_id, register) => {
 		setIsLoading(true);
@@ -60,12 +59,6 @@ function EventCard ({item}){
 	const onClickViewmore = useCallback(async (event_id, viewmore) => {
 		setIsLoading(true);
 		try {
-			const response = await axiosAPI.get("events/get-event-attendee-count/", {
-                params: {
-					event: item.id
-                }
-			});
-			setAttendeeCount(response.data);
 			setViewmore(!viewmore);
 		}
 		catch {
@@ -81,24 +74,33 @@ function EventCard ({item}){
 	const enddate = new Date(item.enddate)
 	const virtual = item.virtual ? "Yes." : "No.";
 
+	const joinButton = (item.attendee_count < item.attendee_cap) ? 
+		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
+			{buttonText}
+		</Button> :
+		<Button type="primary" htmlType="submit" className="event-unjoinable-form-button" disabled={true}>
+		 	{buttonText}
+		</Button>
+	
+
 	if (viewmore) {
-    	return (
-			<Card className="event-card" title={item.name} bordered={true}>
-					<Paragraph><b>Location: </b>{item.location}</Paragraph>
-					<Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
-					<Paragraph><b>Description: </b>{item.description}</Paragraph>
-					<Paragraph><b>Virtual? </b>{virtual}</Paragraph>
-					<Paragraph><b>Instructions: </b>{item.instructions}</Paragraph>
-					<Paragraph><b>No. of Attendees: </b>{attendeeCount}/{item.attendee_cap}</Paragraph>
-				<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
-					View Less
-				</Button></p>
-				<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
-					{buttonText}
-				</Button>
-				<Paragraph></Paragraph>
-			</Card>
-		);
+		// if (attendeeCount < item.attendee_cap) {
+			return (
+				<Card className="event-card" title={item.name} bordered={true}>
+						<Paragraph><b>Location: </b>{item.location}</Paragraph>
+						<Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
+						<Paragraph><b>Description: </b>{item.description}</Paragraph>
+						<Paragraph><b>Virtual? </b>{virtual}</Paragraph>
+						<Paragraph><b>Instructions: </b>{item.instructions}</Paragraph>
+						<Paragraph><b>No. of Attendees: </b>{item.attendee_count}/{item.attendee_cap}</Paragraph>
+					<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
+						View Less
+					</Button></p>
+					{joinButton}
+					<Paragraph></Paragraph>
+				</Card>
+			);
+		// }
 	} else {
 		return (
 			<Card className="event-card" title={item.name} bordered={true}>
@@ -113,9 +115,7 @@ function EventCard ({item}){
 				<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
 					View More
 				</Button></p>
-				<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
-					{buttonText}
-				</Button>
+				{joinButton}
 				<Paragraph></Paragraph>
 			</Card>
 		);
