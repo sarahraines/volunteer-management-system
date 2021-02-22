@@ -62,7 +62,7 @@ function VolunteerCalendarCard ({item}){
                         <Typography.Title level={4}>{item.events__name}</Typography.Title>
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
-                        <Paragraph><b>Description: </b>{item.events__description.substring(0, 50)}...</Paragraph>
+                        <Paragraph><b>Description: </b>{item.events__description}</Paragraph>
                         <Paragraph><b>Virtual? </b>{virtual}</Paragraph>
                         <Paragraph><b>Instructions: </b>{item.events__instructions}</Paragraph>
                         <Paragraph><b>No. of Attendees: </b>{attendeeCount}/{item.events__attendee_cap}</Paragraph>
