@@ -155,7 +155,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CRONJOBS = [
-    ('*/1 * * * *', 'scripts.event_reminders.run')
+    ('*/60 * * * *', 'scripts.event_reminders.run')
 ]
 
 

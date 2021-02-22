@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.serializers import UserSerializer, EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer
 from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback
+from django.db.models import Count, CharField, Value as V, F, ExpressionWrapper, fields, Sum, Avg
+from django.db.models.functions import Concat
 from collections import OrderedDict
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
+from django_mysql.models import GroupConcat
 from django.utils import timezone
 
 # class AddAttendee(APIView):
@@ -241,4 +244,22 @@ class GetVolunteerEvents(APIView):
         'events__attendee_cap')
 
         return Response(events, status=status.HTTP_200_OK)
+
+class GetAttendees(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        org_id = request.GET['org_id']
+        num_attendees = Attendee.objects.annotate(name=Concat('username__first_name', V(' '), 'username__last_name')).filter(
+            events__organizations__id=org_id, events__begindate__gte=timezone.now()).values(
+                'events__id', 'events__name', 'events__location', 'events__begindate', 'events__enddate', 'events__attendee_cap',).annotate(
+                    count=Count('events__id'), attendees = GroupConcat('name')).order_by('events__begindate')
+
+
+        for attendee in num_attendees:
+            attendee['key'] = attendee['events__id']
+            attendee['attendees'] = attendee['attendees'].replace(',', ', ')
+
+        return Response(num_attendees, status=status.HTTP_200_OK)
 

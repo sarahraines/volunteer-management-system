@@ -60,7 +60,7 @@ def run():
 				# print(message.sid)
 
 	#Event feedback
-	startdate = datetime.now(tz=timezone.utc) - timedelta(hours=24)
+	startdate = datetime.now(tz=timezone.utc) - timedelta(hours=1)
 	enddate = datetime.now(tz=timezone.utc)
 	attendees = Attendee.objects.filter(events__enddate__range=[startdate, enddate]). \
 		values('id', 'events__name', 'events__location', 'events__begindate',  \
