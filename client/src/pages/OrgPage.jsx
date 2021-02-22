@@ -10,8 +10,9 @@ import InvitePage from './InvitePage';
 import Clearances from './Clearances';
 import OrgClearanceTable from './OrgClearanceTable'
 import NewEmail from './NewEmail'
+import Attendees from './Attendees';
 import "./OrgPage.css";
-import EventLandingPage from './EventLandingPage';
+// import EventLandingPage from './EventLandingPage';
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -40,6 +41,11 @@ function OrgPage({member, orgId}) {
                 <TabPane tab="Events" key="events">
                     <OrgEvents orgId={orgId} viewmore={false} eventId={-1}/>
                 </TabPane>
+                {isAdmin &&
+                <TabPane tab="Attendees" key="attendees">
+                    <Attendees orgId={orgId} />
+                </TabPane>
+                }
                 <TabPane tab="FAQ" key="faq">
                     <QAndAPage isAdmin={isAdmin} orgId={orgId} />
                 </TabPane>

@@ -12,8 +12,8 @@ class Event(models.Model):
     causes = models.ManyToManyField('Cause')
     description = models.TextField()
     organizations = models.ManyToManyField('Organization')
-    instructions = models.TextField()
-    attendee_cap = models.IntegerField()
+    instructions = models.TextField(null=True)
+    attendee_cap = models.IntegerField(null=True)
     REQUIRED_FIELDS = ['name', 'virtual']
 
 class Attendee(models.Model):
