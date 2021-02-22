@@ -85,10 +85,8 @@ function EventCard ({item}){
 		<Button type="primary" htmlType="submit" className="event-unjoinable-form-button" disabled={true}>
 		 	{buttonText}
 		</Button>)
-	
 
 	if (viewmore) {
-		// if (attendeeCount < item.attendee_cap) {
 			return (
 				<Card className="event-card" title={item.name} bordered={true}>
 						<Paragraph><b>Location: </b>{item.location}</Paragraph>
@@ -101,7 +99,6 @@ function EventCard ({item}){
 						View Less
 					</Button></p>
 					{joinButton}
-					<Paragraph></Paragraph>
 				</Card>
 			);
 		// }
@@ -110,21 +107,14 @@ function EventCard ({item}){
 			<Card className="event-card" title={item.name} bordered={true}>
 					<Paragraph><b>Location: </b>{item.location}</Paragraph>
 					<Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
-					{/* <Paragraph><b>Causes: </b>
-						{item.causes.map(c => 
-							<Paragraph key={c.id} level={2}>{c.name}</Paragraph>
-						)}
-					</Paragraph> */}
 					<Paragraph><b>Description: </b>{item.description.substring(0, 50)}...</Paragraph>
 				<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
 					View More
 				</Button></p>
 				{joinButton}
-				<Paragraph></Paragraph>
 			</Card>
 		);
 	}
-
 
 } export default EventCard; 
 

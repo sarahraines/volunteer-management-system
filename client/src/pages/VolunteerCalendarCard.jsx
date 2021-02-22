@@ -11,7 +11,6 @@ function VolunteerCalendarCard ({item}){
 	const [attendeeCount, setAttendeeCount] = useState(0);
     
     const toggleVisible = () => {
-        // console.log("visible" + visible);
         setVisible(!vis);
     };
 
@@ -78,7 +77,6 @@ function VolunteerCalendarCard ({item}){
                     </div>}
                 trigger="click"
                 visible={!vis}
-                // onVisibleChange={handleVisibleChange(visible)}
             >
                 <Button type="link" className="event-viewmore-form-button" onClick={toggleVisible}>
                     > {item.events__name}
@@ -106,7 +104,6 @@ function VolunteerCalendarCard ({item}){
                     </div>}
                 trigger="click"
                 visible={!vis}
-                // onVisibleChange={handleVisibleChange(visible)}
             >
                 <Button type="link" className="event-viewmore-form-button" onClick={toggleVisible}>
                     > {item.events__name}

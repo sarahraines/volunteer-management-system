@@ -29,10 +29,6 @@ const OrgEvents = ({orgId}) => {
     useEffect(() => {
         getEventsByOrg();
     }, [orgId, getEventsByOrg]);
-    
-    // const eventList = events.map(item => 
-    //     <EventCard key={item.id} item={item}/>
-    // );
 
     const handleChange = e => {
         let oldList = events;
@@ -66,31 +62,13 @@ const OrgEvents = ({orgId}) => {
         }
     };
 
-    // const getAttendeeCount = useCallback(async (eventId) => {
-	// 	try {
-	// 		const response = await axiosAPI.get("events/get-event-attendee-count/", {
-    //             params: {
-	// 				event: eventId
-    //             }
-    //         });
-    //         console.log("gets here");
-    //         setAttendeeCount(response.data);
-	// 	}
-	// 	catch {
-	// 		const errMsg = "Get Attendee Count failed";
-	// 		message.error(errMsg);
-	// 	}
-    // }, []);
-
     const openFilterChange = value => {
         let oldList = events;
         if (value == "open") {
             let newList = [];
-            
             newList = oldList.filter(event =>
                     (event.attendee_count < event.attendee_cap)
             );
-            console.log("newList: " + newList)
             setFilterDisplay(newList);
         } else if (value == "filled") {
             let newList = [];
@@ -102,8 +80,6 @@ const OrgEvents = ({orgId}) => {
             setFilterDisplay(oldList);
         }
     };
-
-
 
     return (
         <React.Fragment>

@@ -14,7 +14,6 @@ const VolunteerCalendar = () => {
                 }
             });
             setEvents(response.data);
-            console.log("date test : " + (new Date(response.data[0].events__begindate)).getMonth())
         } catch (error) {
             console.error(error);
         }
