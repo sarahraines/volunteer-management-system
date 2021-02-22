@@ -78,9 +78,13 @@ function EventCard ({item}){
 		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
 			{buttonText}
 		</Button> :
+		(register ? 
+		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
+			{buttonText}
+		</Button> : 
 		<Button type="primary" htmlType="submit" className="event-unjoinable-form-button" disabled={true}>
 		 	{buttonText}
-		</Button>
+		</Button>)
 	
 
 	if (viewmore) {
