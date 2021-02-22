@@ -4,7 +4,7 @@ import { Typography, Table} from 'antd';
 function VolunteerBreakdown({ data}) {
 
     const columns = [
-        {
+        { 
             title: '',
             dataIndex: 'label',
             key: 'label',

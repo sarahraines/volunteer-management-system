@@ -1,6 +1,7 @@
 import React from "react";
 import ProfileSettings from "../pages/ProfileSettings";
 import SecuritySettings from "../pages/SecuritySettings";
+import UserNotifications from "../pages/UserNotifications";
 import { Tabs, Typography } from 'antd';
 
 const { TabPane } = Tabs;
@@ -14,6 +15,9 @@ const Settings = () => (
             </TabPane>
             <TabPane tab="Security" key="2">
                 <SecuritySettings />
+            </TabPane>
+            <TabPane tab="Notifications" key="3">
+                <UserNotifications />
             </TabPane>
         </Tabs>
     </React.Fragment>

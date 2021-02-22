@@ -202,12 +202,6 @@ class VolunteerSummary(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
-#     							Nonprofits	Events	Hours
-# Past Month
-# Past Year
-# Overall
-
-
     def get(self, request):
         user = request.GET['user']
 

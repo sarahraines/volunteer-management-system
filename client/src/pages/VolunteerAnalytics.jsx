@@ -27,7 +27,6 @@ const VolunteerAnalytics = () => {
 
     useEffect(() => {
             getSummary();
-            console.log('summary', summary); 
     }, [getSummary, summary]);
 
     const [nonprofits, setNonprofits] = useState([]);

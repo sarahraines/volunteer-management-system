@@ -1,0 +1,13 @@
+.user-settings-form-forgot {
+    float: right;
+}
+.ant-col-rtl .user-settings-form-forgot {
+    float: left;
+}
+.user-settings-form-button {
+    width: 100%;
+}
+
+.user-settings-form {
+    width: 400px;
+}

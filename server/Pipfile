@@ -19,6 +19,7 @@ django-request-token = "*"
 psycopg2-binary = "*"
 django-mysql = "*"
 mysql-connector = "*"
+twilio = "<6.51.0"
 
 [requires]
 python_version = "3.8"
