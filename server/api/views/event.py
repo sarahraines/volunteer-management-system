@@ -36,7 +36,6 @@ class AddAttendee(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        print(data)
         serializer = AttendeeSerializer(data=data)
         user = User.objects.filter(id=data['user_id'])[0]
         event = Event.objects.filter(id=data['event'])
@@ -81,10 +80,7 @@ class GetEventsByOrg(APIView):
                 attendees = list(attendees)
                 attendee_count = len(attendees)
                 serializer.data[i]["attendee_count"] = attendee_count
-                # print("serializer data")
-                # print(serializer.data[i])
-            
-            # print(serializer.data)
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
@@ -243,9 +239,6 @@ class GetVolunteerEvents(APIView):
         'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
         'events__causes', 'events__description', 'events__organizations', 'events__instructions',
         'events__attendee_cap')
-        
-        print("volunteer events")
-        print(events)
 
         return Response(events, status=status.HTTP_200_OK)
 
