@@ -1,10 +1,11 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Typography } from 'antd';
-import { Calendar, Badge } from 'antd';
+import { Calendar, Typography , Button, Popover} from 'antd';
 import axiosAPI from "../api/axiosApi";
+import VolunteerCalendarCard from './VolunteerCalendarCard';
 
 const VolunteerCalendar = () => {
     const [events, setEvents] = useState([]); 
+
     const getVolunteerEvents = useCallback(async () => {
         try {
             const response = await axiosAPI.get("attendees/get-volunteer-events/", {
@@ -25,38 +26,13 @@ const VolunteerCalendar = () => {
 
     function getListData(value) {
         let listData;
-        // switch (value.date()) {
-        //     case 8:
-        //         listData = [
-        //             { type: 'warning', content: 'This is warning event.' },
-        //             { type: 'success', content: 'This is usual event.' },
-        //         ];
-        //     break;
-        //     case 10:
-        //         listData = [
-        //             { type: 'warning', content: 'This is warning event.' },
-        //             { type: 'success', content: 'This is usual event.' },
-        //             { type: 'error', content: 'This is error event.' },
-        //         ];
-        //     break;
-        //     case 15:
-        //         listData = [
-        //             { type: 'warning', content: 'This is warning event' },
-        //             { type: 'success', content: 'This is very long usual event。。....' },
-        //         ];
-        //         break;
-        //     default:
-        // }
-
-        listData = events.filter(events =>
-            {
+        listData = events.filter(events => {
                 const bdate = new Date(events.events__begindate);
                 const edate = new Date(events.events__enddate);
 
                 return ((value.month() <= edate.getMonth() && value.month() >= bdate.getMonth())
                     && (value.date() <= edate.getDate() && value.date() >= bdate.getDate()));
-            }
-        )
+        })
         return listData || [];
     }
 
@@ -71,17 +47,10 @@ const VolunteerCalendar = () => {
         return (
           <ul className="events">
             {listData.map((item, i) => (
-              <li key={i}>
-                {console.log("event added: " + item.events__name)}
-                <Badge status="success" text={item.events__name} />
-              </li>
-            ))}
-            {/* {events.map((event, i) => (
                 <li key={i}>
-                    <Badge status="success" test={event.name}/>
+                    <VolunteerCalendarCard key={i} item={item}/>
                 </li>
-            ))} */}
-
+            ))}
           </ul>
         );
       }
@@ -89,21 +58,20 @@ const VolunteerCalendar = () => {
     function monthCellRender(value) {
         const num = getMonthData(value);
         return num ? (
-          <div className="notes-month">
-            <section>{num}</section>
-            <span>Backlog number</span>
-          </div>
+            <div className="notes-month">
+                <section>{num}</section>
+                <span>Backlog number</span>
+            </div>
         ) : null;
       }
 
     return (
-      <div align="center">
+        <div align="center">
             <Typography.Title level={2}>View My Events</Typography.Title>
             <Calendar dateCellRender={dateCellRender} monthCellRender={monthCellRender} />
         </div>
     );
 };
-
 
 export default VolunteerCalendar;  
 
