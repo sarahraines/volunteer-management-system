@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, Table, Tag, Space } from 'antd';
+import { Upload, Button, Table } from 'antd';
 import {StatusTag} from '../components/StatusTag';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';

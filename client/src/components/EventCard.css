@@ -20,3 +20,18 @@
     margin-top: 8px;
     margin-bottom: 8px;
 }
+
+.event-form-button {
+    width: 100%;
+}
+
+.event-unjoinable-form-button {
+    width: 100%;
+    background-color: dimgray;
+    border-color: dimgray;
+}
+
+.event-viewmore-form-button .ant-collapse-content-box {
+    padding: 0;
+    margin-left: 0px;
+}

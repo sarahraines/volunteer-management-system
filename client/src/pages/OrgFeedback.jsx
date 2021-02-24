@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Form, Typography, Calendar, Table} from 'antd';
+import {Typography, Table} from 'antd';
 import "antd/dist/antd.css";
 import axiosAPI from "../api/axiosApi";
 
@@ -18,95 +18,179 @@ const OrgFeedback = ({isAdmin, orgId}) => {
                 }
             });
             setInfo(response.data);
-            console.log('response', response.data)
         } catch (error) {
             console.error(error);
         }
-    }, [setInfo, orgId]);
+    }, [orgId, isAdmin]);
 
     useEffect(() => {
         getFeedbackByOrg();
-    }, [orgId]);
+    }, [getFeedbackByOrg, orgId]);
 
     const columns = [
     {
     title: 'Event Name',
     dataIndex: 'event__name',
     key: 'event__name',
+    sorter: (a, b) => a.event__name.localeCompare(b.event__name),
     },
     {
-    title: 'Event Location',
-    dataIndex: 'event__location',
-    key: 'event__location',
+    title: 'Volunteer Name',
+    dataIndex: 'name',
+    key: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-    title: 'Event Start Date',
-    dataIndex: 'event__begindate',
-    key: 'event__begindate',
-    },
-    {
-    title: 'Event End Date',
-    dataIndex: 'event__enddate',
-    key: 'event__enddate',
-    },
-    {
-    title: 'User Email',
+    title: 'Volunteer Email',
     dataIndex: 'username__email',
-    key: 'uesrname__email',
+    key: 'username__email',
+    sorter: (a, b) => a.username__email.localeCompare(b.username__email),
     },
     {
-    title: 'User First Name',
-    dataIndex: 'username__first_name',
-    key: 'username__first_name',
-    },
-    {
-    title: 'User Last Name',
-    dataIndex: 'username__last_name',
-    key: 'username__last_name',
-    },
-    {
-    title: 'Overall',
+    title: 'Overall Experience',
     dataIndex: 'overall',
     key: 'overall',
+    filters: [
+        {
+            text: 'Poor',
+            value: 'Poor',
+        },
+        {
+            text: 'Fair',
+            value: 'Fair',
+        },
+        {
+            text: 'Average',
+            value: 'Average',
+        },
+        {
+            text: 'Good',
+            value: 'Good',
+        },
+        {
+            text: 'Excellent',
+            value: 'Excellent',
+        },
+        ],
+            filterMultiple: true,
+            onFilter: (value, record) => record.overall === value,
     },
     {
     title: 'Satisfaction',
     dataIndex: 'satisfaction',
     key: 'satisfaction',
+    filters: [
+        {
+            text: 'Very Dissatisfed',
+            value: 'Very Dissatisfied',
+        },
+        {
+            text: 'Dissatisfied',
+            value: 'Dissatisfied',
+        },
+        {
+            text: 'Neutral',
+            value: 'Neutral',
+        },
+        {
+            text: 'Satisfied',
+            value: 'Satisfied',
+        },
+        {
+            text: 'Very Satisfied',
+            value: 'Very Satisfied',
+        },
+        ],
+        filterMultiple: true,
+        onFilter: (value, record) => record.satisfaction === value,
     },
     {
-    title: 'Likely',
+    title: 'Recommend Likelihood',
     dataIndex: 'likely',
     key: 'likely',
+    filters: [
+        {
+            text: 'Very Unlikely',
+            value: 'Very Unlikely',
+        },
+        {
+            text: 'Somewhat Unlikely',
+            value: 'Somewhat Unlikely',
+        },
+        {
+            text: 'Neutral',
+            value: 'Neutral',
+        },
+        {
+            text: 'Somewhat Likely',
+            value: 'Somewhat Likely',
+        },
+        {
+            text: 'Very Likely',
+            value: 'Very Likely',
+        },
+        ],
+        filterMultiple: true,
+        onFilter: (value, record) => record.likely === value,
     },
     {
-    title: 'Expectations',
+    title: 'Met Expectations',
     dataIndex: 'expectations',
     key: 'expectations',
+    filters: [
+        {
+            text: 'Yes',
+            value: 'Yes',
+        },
+        {
+            text: 'No',
+            value: 'No',
+        },
+        ],
+        filterMultiple: true,
+        onFilter: (value, record) => record.expectations === value,
     },
     {
-    title: 'Future',
+    title: 'Future Volunteer',
     dataIndex: 'future',
     key: 'future',
-    },
-    {
-    title: 'Better',
-    dataIndex: 'better',
-    key: 'better',
-    },
-    {
-    title: 'Experience',
-    dataIndex: 'experience',
-    key: 'experience',
+    filters: [
+        {
+            text: 'Yes',
+            value: 'Yes',
+        },
+        {
+            text: 'No',
+            value: 'No',
+        },
+        ],
+        filterMultiple: true,
+        onFilter: (value, record) => record.future === value,
     },
     ];
+
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
     return (
         <React.Fragment>
             <Typography.Title level={4}>Event Feedback</Typography.Title>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll" }}>
-            <Table dataSource={info} columns={columns}/>;
-            </div>
+            <Table 
+            dataSource={info} 
+            columns={columns}
+            expandedRowRender= {record =>
+                <p>
+                    <b>Event Details</b><br/>
+                    Name: {record.event__name}<br/>
+                    Location: {record.event__location}<br/>
+                    Date: {(new Date(record.event__begindate)).toLocaleString('en-US', options)} - {(new Date(record.event__enddate)).toLocaleString('en-US', options)}<br/><br/>
+                    <b>Additional Feedback</b><br/>
+                    What could we have done better?<br/>
+                    {record.better}<br/><br/>
+                    Is there anything else we should know about your volunteer experience?<br/>
+                    {record.experience}<br/>
+                </p>
+            }        
+            />
         </React.Fragment>
     );
 }; export default OrgFeedback;
