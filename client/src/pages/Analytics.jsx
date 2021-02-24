@@ -3,7 +3,7 @@ import {Typography} from 'antd';
 import "antd/dist/antd.css";
 import axiosAPI from "../api/axiosApi";
 import Plot from 'react-plotly.js';
-
+import EventsPerVolunteer from './EventsPerVolunteer.jsx';
 
 const Analytics = ({orgId}) => {
 
@@ -45,7 +45,7 @@ const Analytics = ({orgId}) => {
 
     useEffect(() => {
         getAnalyticsByEvent();
-    }, [orgId, getAnalyticsByEvent]); 
+    }, [orgId]); 
 
    
     return (
@@ -63,6 +63,7 @@ const Analytics = ({orgId}) => {
                     ]}
                     layout={ {width: 480, height: 360, title: 'Event Attendees Count'} }
                 />
+                <EventsPerVolunteer orgId ={orgId}/>
         </React.Fragment>
     );
 };export default Analytics;

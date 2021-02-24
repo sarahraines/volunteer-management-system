@@ -76,6 +76,17 @@ class GetEventsByOrg(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
+class GetEventCountForOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        if request.GET.get('orgId'):
+            orgId = request.GET['orgId']
+            events = Event.objects.filter(organizations__in=[orgId])
+            return Response(len(events), status=status.HTTP_200_OK)
+        return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
+
 class CreateEvent(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
@@ -184,4 +195,38 @@ class GetAttendeeCountsByEvent(APIView):
             y.append(attendees[i]['events__name__count'])
 
         return Response(data, status=status.HTTP_200_OK)
+class AverageEventsPerVolunteer(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    def get(self, request):
+        orgId = request.GET['orgId']
+        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('username')
+        events =  Event.objects.filter(organizations__in=[orgId])
+        if len(attendees) > 0:
+            avg = len(events)/len(attendees)
+        else:
+            avg = 0
+        return Response(avg, status=status.HTTP_200_OK)
+
+
+class GetUniqueAttendees(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        orgId = request.GET['orgId']
+        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('username')
+        unique_attendees =attendees.distinct()
+        return Response(len(unique_attendees), status=status.HTTP_200_OK)
+
+class GetUniqueVolunteersWithFeedback(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        org_id = request.GET['orgId']
+        feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
+        'username__email').distinct()
+
+        return Response(len(feedback), status=status.HTTP_200_OK)
 
