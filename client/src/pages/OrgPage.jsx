@@ -10,7 +10,9 @@ import InvitePage from './InvitePage';
 import Clearances from './Clearances';
 import OrgClearanceTable from './OrgClearanceTable'
 import NewEmail from './NewEmail'
+import Attendees from './Attendees';
 import "./OrgPage.css";
+// import EventLandingPage from './EventLandingPage';
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -37,20 +39,27 @@ function OrgPage({member, orgId}) {
                     <AboutUs org={org} />
                 </TabPane>
                 <TabPane tab="Events" key="events">
-                    <OrgEvents orgId={orgId} />
+                    <OrgEvents orgId={orgId} viewmore={false} eventId={-1}/>
                 </TabPane>
+                {isAdmin &&
+                <TabPane tab="Attendees" key="attendees">
+                    <Attendees orgId={orgId} />
+                </TabPane>
+                }
                 <TabPane tab="FAQ" key="faq">
                     <QAndAPage isAdmin={isAdmin} orgId={orgId} />
                 </TabPane>
                 <TabPane tab="Feedback" key="feedback">
                     <OrgFeedback isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
-                <TabPane tab="Analytics" key="analytics">
-                    <Analytics orgId={orgId} />
-                </TabPane>
                 <TabPane tab="Clearances" key="clearance">
                     <Clearances isAdmin={isAdmin} orgId={orgId} />
                 </TabPane>
+                {isAdmin &&
+                <TabPane tab="Analytics" key="analytics">
+                    <Analytics orgId={orgId} />
+                </TabPane>
+                }
                 {isAdmin &&
                     <TabPane tab="Clearance Table" key="clearance_table">
                         <OrgClearanceTable orgId={orgId} />
