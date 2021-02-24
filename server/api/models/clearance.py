@@ -10,4 +10,5 @@ class UserFile(models.Model):
     user = models.ForeignKey(User, null=False, blank=True, on_delete=models.CASCADE)
     filled_form = models.FileField()
     status = models.CharField(max_length=20)
+    comment = models.CharField(max_length=200)
 

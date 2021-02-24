@@ -63,5 +63,5 @@ urlpatterns = [
     path('analytics/volunteer-breakdown/', views.VolunteerBreakdown.as_view(), name='volunteer_breakdown'),
     path('analytics/nonprofit-breakdown/', views.NonprofitBreakdown.as_view(), name='nonprofit_breakdown'),
     path('analytics/volunteer-event-leaderboard/', views.VolunteerEventLeaderboard.as_view(), name='volunteer_event_leaderboard'),
-    path('analytics/volunteer-summary/', views.VolunteerSummary.as_view(), name='volunteer_summary'),
+    path('analytics/volunteer-summary/', views.VolunteerSummary.as_view(), name='volunteer_summary')
 ]
