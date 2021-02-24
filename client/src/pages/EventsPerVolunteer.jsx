@@ -1,7 +1,10 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import { Upload, Button, message, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
+import Plot from 'react-plotly.js';
+
 const { Title } = Typography;
+
 
 function EventsPerVolunteer({orgId}) {
     useEffect(() => {
@@ -9,13 +12,15 @@ function EventsPerVolunteer({orgId}) {
         getUniqueAttendees(orgId)
         getUniqueMembers(orgId)
         getVolunteersWhoGaveFeedback(orgId)
-        getAvgEventsPerVolunteer(orgId)
+        getAvgEventsPerVolunteer(orgId);
+  
     }, [orgId]);
     const [uniqueAttendees, setUniqueAttendees] = useState(0);
     const [uniqueMembers, setUniqueMembers] = useState(0);
     const [uniqueEvents, setUniqueEvents] = useState(0);
     const [uniqueVolunteersWithFeedback, setUniqueVolunteersWithFeedback] = useState(0);
     const [avgEventsPerVolunteer, setAvgEventsPerVolunteer] = useState(0);
+
     const getUniqueAttendees = async (orgId) => {
         try {
             const response =  await axiosAPI.get("events/get-unique-attendees/", {
@@ -81,11 +86,12 @@ function EventsPerVolunteer({orgId}) {
             console.error(error);
         }
     }
+    console.log("unique attendees" + uniqueAttendees);
+    console.log("unique vol" + uniqueVolunteersWithFeedback);
+    var data = [{type: 'funnel', y: ["Members", "Attendees", "Feedback", "Events per Volunteer"], x: [uniqueMembers, uniqueAttendees, uniqueVolunteersWithFeedback, avgEventsPerVolunteer]}];
+    var layout = {margin: {l: 150}, width:600, height: 500}
     return (
-        <div>
-            ATTENDEES
-           
-        </div>
+        <Plot data={data} layout={layout}/>
     );
 };
 export default EventsPerVolunteer;
