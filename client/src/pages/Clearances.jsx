@@ -116,7 +116,7 @@ function Clearances({isAdmin, orgId}) {
 
     return (
         <div>
-            <Title level={4}>Manage Clearances for Each Event</Title>
+            <Title level={4}>Manage Clearances for Upcoming Event</Title>
             {isAdmin ? 
                 <>
                     <Table 
@@ -134,7 +134,8 @@ function Clearances({isAdmin, orgId}) {
                                 {/* <Upload {...orgProps}>
                                     <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
                                 </Upload> */}
-                                <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eventId={record.event} />
+                                {/* {console.log(record.event)} */}
+                                <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
                             </p>
                     }/>
                     

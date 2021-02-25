@@ -18,12 +18,13 @@ class AddOrgFile(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GetOrgFiles(APIView):
+class GetOrgFilesForEvent(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        org_files = OrgFile.objects.filter(organization=org).values('id', 'organization', 'event', 'event__name', 'empty_form')
+        event_id = request.GET['eventId']
+        org_files = OrgFile.objects.filter(organization=org, event__id = event_id).values('id', 'organization', 'event', 'event__name', 'empty_form')
         print("org files")
         print(org_files)
         # serializer = OrgFileSerializer(org_files, many=True)

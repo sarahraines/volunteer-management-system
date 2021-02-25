@@ -5,16 +5,16 @@ import UserFilesTable from '../pages/UserFilesTable';
 import { UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
-function ClearanceUpload({isAdmin, orgId, eventId}) {
+function ClearanceUpload({isAdmin, orgId, eId}) {
     const [fileList, setFileList] = useState([]);
     const localHost = "http://localhost:8080/"
 
     const getOrgFiles = useCallback(async (orgId) => {
         try {
-            const response = await axiosAPI.get("clearances/get-org-files/", {
+            const response = await axiosAPI.get("clearances/get-org-files-for-event/", {
                 params: {
                     orgId: orgId, 
-                    eventId: eventId
+                    eventId: eId
                 }
             });
             const files = response.data;
