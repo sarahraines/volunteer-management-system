@@ -26,11 +26,11 @@ function Attendees({orgId}) {
 
     useEffect(() => {
         getAttendees();
-}, [getAttendees, attendees]);
+    }, [getAttendees, attendees]);
 
     const columns = [
         {
-            title: 'Upcming Event',
+            title: 'Upcoming Event',
             dataIndex: 'events__name',
             key: 'events__name',
         },
@@ -61,10 +61,10 @@ function Attendees({orgId}) {
                         Location: {record.events__location}<br/>
                         Date: {(new Date(record.events__begindate)).toLocaleString('en-US', options)} - {(new Date(record.events__enddate)).toLocaleString('en-US', options)}<br/><br/>
                         
-                        <b>Attendes: </b>
+                        <b>Attendees: </b>
                         {record.attendees}
                     </p>
-                }/>
+            }/>
         </React.Fragment>
     );
 };

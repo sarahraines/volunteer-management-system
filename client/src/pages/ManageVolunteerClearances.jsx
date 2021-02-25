@@ -2,10 +2,10 @@ import React, {useState, useCallback, useEffect} from 'react';
 import { Upload, Button, message, Typography, Table } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
-import ClearanceUpload from '../components/ClearanceUpload';
+import OrgClearanceTable from './OrgClearanceTable';
 const { Title } = Typography;
 
-function Clearances({isAdmin, orgId}) {
+function ManageVolunteerClearances({orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
 
@@ -57,17 +57,17 @@ function Clearances({isAdmin, orgId}) {
 
     return (
         <React.Fragment>
-            <Title level={4}>Manage Clearances for Upcoming Events</Title>
+            <Title level={4}>Manage Volunteers' Uploaded Clearance for Each Event</Title>
             <Table 
                 columns={columns}
                 dataSource={events} 
                 loading={loading}
                 expandedRowRender= {record => 
                     <p>
-                        <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
+                        <OrgClearanceTable orgId={orgId} eId={record.id} />
                     </p>
             }/>
         </React.Fragment>
     );
 };
-export default Clearances;
+export default ManageVolunteerClearances;

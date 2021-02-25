@@ -11,21 +11,31 @@ class AddOrgFile(APIView):
 
     def post(self, request, format='json'):
         org = Organization.objects.filter(id=request.data['orgId'])[0]
+        e = Event.objects.filter(id=request.data['eventId'])[0]
         data = request.data
+        print("add org file")
+        print(data)
         serializer = OrgFileSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(organization = org)
+            serializer.save(organization = org, event=e)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GetOrgFiles(APIView):
+class GetOrgFilesForEvent(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        org_files = OrgFile.objects.filter(organization=org)
-        serializer = OrgFileSerializer(org_files, many=True)
-        return Response(serializer.data)
+        event_id = request.GET['eventId']
+        org_files = OrgFile.objects.filter(organization=org, event__id = event_id).values('id', 'organization', 'event', 'event__name', 'empty_form')
+        print("org files")
+        print(org_files)
+        # serializer = OrgFileSerializer(org_files, many=True)
+        
+        for file in org_files:
+            file['key'] = file['id']
+
+        return Response(org_files)
 
 class GetUserFiles(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -41,8 +51,9 @@ class GetUserFilesForOrg(APIView):
     authentication_classes = ()
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        user_files = UserFile.objects.filter(org_file__organization = org).prefetch_related('org_file').prefetch_related('user').values(
-            'user__email','org_file', 'filled_form', 'status', 'id', 'comment' )
+        event_id = request.GET['eventId']
+        user_files = UserFile.objects.filter(org_file__organization = org, org_file__event__id = event_id).prefetch_related('org_file').prefetch_related('user').values(
+            'user__email','org_file', 'filled_form', 'status', 'id', 'comment', 'org_file__event', 'org_file__event__name')
         user_files = list(user_files)
         return Response(user_files)
         

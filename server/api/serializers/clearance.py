@@ -4,7 +4,7 @@ from api.models import OrgFile, UserFile
 class OrgFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrgFile
-        fields = ['id', 'organization', 'empty_form']
+        fields = ['id', 'organization', 'event', 'empty_form']
         
 class UserFileSerializer(serializers.ModelSerializer):
     class Meta:
