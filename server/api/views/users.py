@@ -3,9 +3,9 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer, UserSettingsSerializer
+from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer, UserSettingsSerializer, UserGoalsSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.models import User, Invitee, Member, UserSettings
+from api.models import User, Invitee, Member, UserSettings, UserGoals
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -240,3 +240,20 @@ class GetNotificationSettings(APIView):
                 },
             ]
             return Response(data[0], status=status.HTTP_200_OK)
+
+class CreateGoal(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        serializer = UserGoalsSerializer(data=data)
+        user = User.objects.filter(id=data['user_id'])[0]
+        data['begindate']=data['date'][0].split('T')[0]
+        data['enddate']=data['date'][1].split('T')[0]
+        serializer = UserGoalsSerializer(data=data)
+        print(data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

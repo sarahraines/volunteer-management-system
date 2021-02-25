@@ -2,7 +2,7 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.serializers import AttendeeSerializer
-from api.models import Attendee, EventFeedback, Member
+from api.models import Attendee, EventFeedback, Member, UserGoals
 from django.db.models import Count, CharField, Value as V, F, ExpressionWrapper, fields, Sum, Avg
 from django.db.models.functions import Concat
 from django.utils import timezone
@@ -276,3 +276,35 @@ class VolunteerSummary(APIView):
          
         return Response(breakdown, status = status.HTTP_200_OK)
 
+class GetVolunteerGoals(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        user = request.GET['user']
+
+        duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=fields.BigIntegerField())
+
+        goals = UserGoals.objects.filter(user__id=user, begindate__lte=timezone.now(), enddate__gte=timezone.now()).values('id', 'hours', 'begindate', 'enddate')
+
+        for goal in goals:
+            attendees = Attendee.objects.filter(username__id=user, events__begindate__gte=goal['begindate'], events__enddate__lte=timezone.now()).values(
+                'username__id').annotate(completed = Sum(duration))[0]
+            goal['key'] = goal['id']
+            goal['completed'] = attendees['completed']/10**6//3600
+            goal['progress'] = round(goal['completed']/goal['hours']*100)
+        
+        return Response(goals, status = status.HTTP_200_OK)
+        
+class VolunteerFunnel(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        org_id = request.GET['org_id']; 
+    
+        members = Member.objects.filter(organization__id=org_id).values('user__id')
+        attendees = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values('username__id').distinct()
+        feedback = EventFeedback.objects.filter(event__organizations__id=org_id, event__enddate__lte=timezone.now()).values('username__id').distinct()
+
+        return Response([len(members), len(attendees), len(feedback)], status=status.HTTP_200_OK)

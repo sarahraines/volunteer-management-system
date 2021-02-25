@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { Menu } from 'antd';
-import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, SearchOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined } from '@ant-design/icons';
+import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axiosAPI from '../api/axiosApi';
 import { logout } from '../api/authenticationApi';
@@ -44,15 +44,15 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
                 onSelect={onSelect}
             >
                 <SubMenu title="Take action" icon={<BulbOutlined />}>
-                    <Item className="action-submenu-item" key="create-event" icon={<PlusSquareOutlined />}>
-                        Create an event
-                    </Item>
                     <Item className="action-submenu-item" key="create-org" icon={<UsergroupAddOutlined />}>
                         Create an organization
                     </Item>
-                    {/* <Item className="action-submenu-item" key="find" icon={<SearchOutlined />}>
-                        Find service opportunities
-                    </Item> */}
+                    <Item className="action-submenu-item" key="create-event" icon={<PlusSquareOutlined />}>
+                        Create event
+                    </Item>
+                    <Item className="action-submenu-item" key="set-goals" icon={<CheckSquareOutlined />}>
+                        Set goals
+                    </Item>
                     <Item className="action-submenu-item" key="calendar" icon={<CalendarOutlined />}>
                         View my events
                     </Item>

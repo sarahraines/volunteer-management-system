@@ -1,0 +1,13 @@
+goal-form-forgot {
+    float: right;
+}
+.ant-col-rtl .goal-form-forgot {
+    float: left;
+}
+.goal-form-button {
+    width: 100%;
+}
+
+.goal-form {
+    width: 400px;
+}

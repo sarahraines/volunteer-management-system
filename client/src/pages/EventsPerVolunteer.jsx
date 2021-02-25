@@ -1,5 +1,5 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, message, Typography } from 'antd';
+import React, {useState, useEffect} from 'react';
+import { Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import Plot from 'react-plotly.js';
 
@@ -8,35 +8,20 @@ const { Title } = Typography;
 
 function EventsPerVolunteer({orgId}) {
     useEffect(() => {
-        getEvents(orgId)
-        getUniqueAttendees(orgId)
         getUniqueMembers(orgId)
+        getUniqueAttendees(orgId)
         getVolunteersWhoGaveFeedback(orgId)
         getAvgEventsPerVolunteer(orgId);
   
     }, [orgId]);
-    const [uniqueAttendees, setUniqueAttendees] = useState(0);
     const [uniqueMembers, setUniqueMembers] = useState(0);
-    const [uniqueEvents, setUniqueEvents] = useState(0);
+    const [uniqueAttendees, setUniqueAttendees] = useState(0);
     const [uniqueVolunteersWithFeedback, setUniqueVolunteersWithFeedback] = useState(0);
     const [avgEventsPerVolunteer, setAvgEventsPerVolunteer] = useState(0);
 
-    const getUniqueAttendees = async (orgId) => {
-        try {
-            const response =  await axiosAPI.get("events/get-unique-attendees/", {
-                params: {
-                    orgId: orgId,
-                }
-            });
-            console.log("unique attendees" + response.data);
-            setUniqueAttendees(response.data)
-        } catch(error) {
-            console.error(error);
-        }
-    }
     const getUniqueMembers = async (orgId) => {
         try {
-            const response =  await axiosAPI.get("organization/get-member-counts-by-org/", {
+            const response =  await axiosAPI.get("organization/get-unique-members/", {
                 params: {
                     orgId: orgId,
                 }
@@ -47,15 +32,15 @@ function EventsPerVolunteer({orgId}) {
             console.error(error);
         }
     }
-    const getEvents = async (orgId) => {
+    const getUniqueAttendees = async (orgId) => {
         try {
-            const response =  await axiosAPI.get("events/count-for-org/", {
+            const response =  await axiosAPI.get("events/get-unique-attendees/", {
                 params: {
                     orgId: orgId,
                 }
             });
-            console.log("event count" + response.data);
-            setUniqueEvents(response.data)
+            console.log("unique attendees" + response.data);
+            setUniqueAttendees(response.data)
         } catch(error) {
             console.error(error);
         }
