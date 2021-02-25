@@ -22,8 +22,8 @@ class GetOrgFiles(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     def get(self, request, format='json'):
-        org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        org_files = OrgFile.objects.filter(organization=org)
+        # org = Organization.objects.filter(id=request.GET['orgId'])[0]
+        org_files = OrgFile.objects.filter(organizations__in=request.GET['orgId'])
         serializer = OrgFileSerializer(org_files, many=True)
         return Response(serializer.data)
 

@@ -3,6 +3,10 @@ from api.models import User, Cause, Organization
 from django.conf import settings
 from django_mysql.models import EnumField
 
+class OrgFile(models.Model):
+    organizations = models.ManyToManyField('Organization')
+    empty_form = models.FileField()
+
 class Event(models.Model):
     name = models.CharField(max_length=1000)
     virtual = models.BooleanField(default=True)
@@ -11,10 +15,18 @@ class Event(models.Model):
     enddate = models.DateTimeField()
     causes = models.ManyToManyField('Cause')
     description = models.TextField()
-    organizations = models.ManyToManyField('Organization')
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     instructions = models.TextField(null=True)
     attendee_cap = models.IntegerField(null=True)
+    clearance_form = models.ManyToManyField('OrgFile')
     REQUIRED_FIELDS = ['name', 'virtual']
+
+class UserFile(models.Model):
+    org_file = models.ForeignKey(OrgFile, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=False, blank=True, on_delete=models.CASCADE)
+    filled_form = models.FileField()
+    status = models.CharField(max_length=20)
+    comment = models.CharField(max_length=200)
 
 class Attendee(models.Model):
     username = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
