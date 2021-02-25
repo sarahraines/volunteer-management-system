@@ -1,7 +1,7 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 
-const baseURL = '/api/';
+const baseURL = `${process.env.REACT_APP_BACKEND_HOST}/api/`;
 const accessToken = localStorage.getItem("access_token");
 
 const axiosInstance = axios.create({

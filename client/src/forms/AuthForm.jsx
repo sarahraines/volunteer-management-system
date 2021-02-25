@@ -1,25 +1,33 @@
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { register, login } from '../api/authenticationApi';
+import { addAlert } from '../actionCreators.js';
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
 
 const AuthForm = ({isRegister}) => {
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const onFinish = useCallback(async (values) => {
         try {
             if (isRegister) {
                 await register(values.email, values.first_name, values.last_name, values.password)
+                dispatch(addAlert('Account created! Check your email to confirm your account.', 'success'));
             } else {
                 await login(values.email, values.password);
                 history.push("/");
             }
         } catch (error) {
-            console.error(error)
+            if (isRegister) {
+                dispatch(addAlert('Account could not be created. Try again later.', 'error'));
+            } else {
+                message.error('Login failed. Incorrect credentials.');
+            }
         }
     }, [isRegister, history]);
 

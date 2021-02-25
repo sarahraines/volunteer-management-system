@@ -1,6 +1,7 @@
 /* eslint no-undef: 0 */
 /* eslint arrow-parens: 0 */
 import React from 'react';
+import ReactGA from 'react-ga';
 import { enquireScreen } from 'enquire-js';
 
 import Nav3 from './Nav3';
@@ -33,7 +34,7 @@ export default class Home extends React.Component {
   }
 
   componentDidMount() {
-    // 适配手机屏幕;
+    ReactGA.pageview(window.location.pathname + "home");
     enquireScreen((b) => {
       this.setState({ isMobile: !!b });
     });

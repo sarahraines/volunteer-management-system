@@ -7,8 +7,6 @@ import Feed from './pages/Feed';
 import InviteNoAuth from './pages/InviteNoAuth';
 import Activate from './pages/Activate';
 // import ForgotPassword from './pages/ForgotPassword';
-import Event from './pages/Event';
-import NewEvent from './pages/NewEvent'
 import EventFeedback from './pages/EventFeedback'
 import './App.css';
 
@@ -30,10 +28,7 @@ function App() {
           <Route path="/register" component={Register} />
           <Route path="/activate" component={Activate} />
           <Route path="/invite" component={InviteNoAuth} />
-          <Route path="/events" component={Event} />
-          <Route path="/NewEvent" component={NewEvent} />
-          <Route path="/feed" component={Feed} />
-          <Route path="/EventFeedback" component={EventFeedback} />
+          <Route path="/feedback" component={EventFeedback} />
       </Switch> 
   </main>
   );

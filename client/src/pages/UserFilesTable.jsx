@@ -16,8 +16,6 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                  }
              });
             const files = response.data;
-            console.log("files", files)
-
             const formattedFiles = files.map(file => ({
                 uid: file.id, 
                 orgFormId: file.org_file, 

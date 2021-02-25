@@ -45,6 +45,7 @@ def run():
 		values('id', 'events__name', 'events__location', 'events__begindate',  \
 		'events__enddate', 'events__causes__name', 'events__description',  \
 		'events__organizations__name', 'username__email', 'username__first_name')
+
 	for item in attendees:
 		name = item['events__name']
 		location = item['events__location']
@@ -67,7 +68,7 @@ def run():
 		'\nCauses: ' + causes + 
 		'\nDescription: ' + desc + 
 		'\n\nPlease take a moment to fill out a feedback form here:' + 
-		'\n\nhttp://localhost:3000/EventFeedback/?attendee_id=' + str(item['id']))
+		'\n\nhttps://volunteersense.com/feedback?attendee_id=' + str(item['id']))
 
 		from_email = 'vol.mgmt.system@gmail.com'
 

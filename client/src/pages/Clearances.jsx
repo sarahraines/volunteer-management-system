@@ -86,7 +86,6 @@ function Clearances({isAdmin, orgId}) {
             <Title level={4}>Clearances</Title>
             {isAdmin ? 
                 <>
-                    <Title level={2}>Add Form</Title>
                     <Upload {...orgProps}>
                         <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
                     </Upload>

@@ -37,7 +37,6 @@ const Analytics = ({orgId}) => {
                 }
             });
             setAttendeeCount(response.data);
-            console.log('response2', response.data)
         } catch (error) {
             console.error(error);
         }

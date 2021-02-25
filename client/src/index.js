@@ -6,9 +6,11 @@ import rootReducer from './reducers'
 import {BrowserRouter} from "react-router-dom";
 import './index.css';
 import App from './App';
+import ReactGA from 'react-ga';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer);
+ReactGA.initialize('UA-189701909-1');
 
 ReactDOM.render(
   <Provider store={store}>
