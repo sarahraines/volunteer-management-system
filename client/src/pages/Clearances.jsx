@@ -6,9 +6,30 @@ import UserFilesTable from './UserFilesTable';
 import { UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 function Clearances({isAdmin, orgId}) {
     const [fileList, setFileList] = useState([]);
-    const localHost = "http://localhost:8080/"
+
+    let host = window.location.origin + '/';
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        host = `http://${window.location.hostname}:8000/`
+    }
 
     const getOrgFiles = useCallback(async (orgId) => {
         try {
@@ -41,43 +62,43 @@ function Clearances({isAdmin, orgId}) {
         }
 
         if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
+          message.success('File upload success');
         } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
+          message.error('File upload failed');
         }
     }
 
     const orgProps = {
         listType: 'picture',
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
         fileList: fileList,
         onChange(info) {
             messageHandler(info)
 
             let fl = [...info.fileList];
             fl = fl.map(file => {
-                if (file.response) {
+                if (file) {
                     // Component will show file.url as link
-                    file.url = localHost+ file.name;
+                    file.url = host + file.name;
                 }
                 return file;
             });
                 
             setFileList(fl);
         },
-        previewFile: async function(file) {
+        customRequest: async function(options) {
             const formData = new FormData();
-            formData.append('empty_form', file, file.name);
+            formData.append('empty_form', options.file, options.file.name);
             formData.append('orgId', orgId);
             try {
-                return await axiosAPI.post('clearances/upload-org-file', formData, {
+                let data = await axiosAPI.post('clearances/upload-org-file', formData, {
                     headers: {
                     'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
                     }
                 })
                 .then(({ thumbnail }) => thumbnail);
-            } catch {
-                console.log("upload failed")
+                options.onSuccess(data, options.file);
+            } catch (error) {
+                console.log(error)
             }
         },
     };

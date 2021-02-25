@@ -30,7 +30,7 @@ function Attendees({orgId}) {
 
     const columns = [
         {
-            title: 'Upcming Event',
+            title: 'Upcoming Event',
             dataIndex: 'events__name',
             key: 'events__name',
         },

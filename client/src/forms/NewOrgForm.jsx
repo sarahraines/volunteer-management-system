@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, message } from 'antd';
 import axiosAPI from "../api/axiosApi";
-import { addAlert } from '../actionCreators.js';
-import { useDispatch } from 'react-redux';
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
 
@@ -11,7 +9,6 @@ const { TextArea } = Input;
 const NewOrgForm = () => {
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
-    const dispatch = useDispatch();
 
     const getCauses = useCallback(async () => {
         try {
@@ -47,12 +44,12 @@ const NewOrgForm = () => {
                 member_type: 1,
                 status: 0,
             });
-            dispatch(addAlert('Organization created', 'success'));
+            message.success('Organization created');
         }
         catch {
-            dispatch(addAlert('Organization creation failed', 'error'));
+            message.error('Organization creation failed');
         }
-    }, [dispatch]);
+    }, []);
 
     return (
         <Form
@@ -119,7 +116,7 @@ const NewOrgForm = () => {
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" className="org-form-button">
-                    Create organization
+                    Create
                 </Button>
             </Form.Item>
         </Form>

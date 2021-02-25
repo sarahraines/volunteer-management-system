@@ -47,9 +47,12 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_crontab',
     'request_token',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -98,7 +101,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'server.wsgi.application'
 
-CORS_ORIGIN_WHITELIST = [
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
 ]

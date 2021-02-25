@@ -24,9 +24,9 @@ const AuthForm = ({isRegister}) => {
             }
         } catch (error) {
             if (isRegister) {
-                dispatch(addAlert('Account could not be created. Try again later.', 'error'));
+                dispatch(addAlert('Account could not be created. Have you already created an account with this email?', 'error'));
             } else {
-                message.error('Login failed. Incorrect credentials.');
+                message.error('Login failed. Email or password is incorrect.');
             }
         }
     }, [isRegister, history]);

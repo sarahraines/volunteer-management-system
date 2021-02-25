@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
+import { Form, Input, Button, Select, Switch, DatePicker, InputNumber, message } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import { useDispatch } from 'react-redux';
 import { addAlert } from '../actionCreators.js';
@@ -68,10 +68,10 @@ const NewEventForm = () => {
                 attendee_cap: values.attendeeCap,
 
             });
-            dispatch(addAlert('Event created', 'success'));
+            message.success('Event created');
         }
         catch {
-            dispatch(addAlert('Event creation failed', 'error'));
+            message.success('Event creation failed');
         }
         setIsLoading(false);
     }, [dispatch, setIsLoading]);
@@ -129,7 +129,8 @@ const NewEventForm = () => {
                 hasFeedback
                 rules={[{ required: true, message: 'Date is required.' }]}
             >
-                <RangePicker style={{ width: '100%' }} showTime />
+                <RangePicker style={{ width: '100%' }}  showTime={{ format: 'HH:mm' }}
+      format="YYYY-MM-DD HH:mm" />
             </Form.Item>
             <Form.Item
                 name="causes"
@@ -154,10 +155,10 @@ const NewEventForm = () => {
             <Form.Item
                 name="attendeeCap"
                 hasFeedback
-                rules={[{ required: true, message: 'Attendee Cap is required and must be a number.'}]}
+                rules={[{ required: true, message: 'Max number of attendees is required and must be a number.'}]}
             >
                 
-                <Input style={{ width: '100%' }} placeholder="Maximum number of attendees" type="tel"/>
+                <InputNumber style={{ width: '100%' }} placeholder="Maximum number of attendees"/>
             </Form.Item>
             <Form.Item
                 name="description"
@@ -175,7 +176,7 @@ const NewEventForm = () => {
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" className="event-form-button" loading={isLoading}>
-                    Create event
+                    Create
                 </Button>
             </Form.Item>
         </Form>

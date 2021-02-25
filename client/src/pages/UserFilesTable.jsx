@@ -48,13 +48,13 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
             title: 'Uncompleted File',
             dataIndex: 'file',
             key: 'file',
-            render: text => <a href={"http://localhost:8080/" +text}>{text}</a>,
+            render: text => <a href={window.location.origin + "/" + text}>{text}</a>,
         },
         {
             title: 'Your Uploaded File',
             dataIndex: 'uploaded_file',
             key: 'uploaded_file',
-            render: text => <a href={"http://localhost:8080/" +text}>{text}</a>,
+            render: text => <a href={window.location.origin +  "/" + text}>{text}</a>,
         },
         {
             title: 'Status',

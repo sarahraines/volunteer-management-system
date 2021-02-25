@@ -2,5 +2,4 @@
 __pycache__/
 *.py[cod]
 db.sqlite3
-api/migrations/*
 !__init__.py

@@ -6,7 +6,7 @@ import './NewEvent.css';
 const NewEvent = () => {
     return (
       <div className='event-container'>
-            <Typography.Title level={2}>Create event</Typography.Title>
+            <Typography.Title level={2}>Create an event</Typography.Title>
             <NewEventForm />
         </div>
     );

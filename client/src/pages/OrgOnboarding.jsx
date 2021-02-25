@@ -42,7 +42,7 @@ const OrgOnboarding = () => {
                  <Button type="primary" onClick={addValueToList} shape="circle"> + </Button>
                 <Form.Item>
                 <Button type="primary" htmlType="submit" className="org-form-button">
-                    Create organization
+                    Create an organization
                 </Button>
             </Form.Item>
             </Form>

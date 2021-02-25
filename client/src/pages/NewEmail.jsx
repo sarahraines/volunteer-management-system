@@ -89,7 +89,7 @@ function NewEmail({orgId}) {
 
     return (
         <React.Fragment>
-            <Title level={4}>Email Members</Title>
+            <Title level={4}>Email members</Title>
 
             <Table 
                 className = "member-table"
