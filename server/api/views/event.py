@@ -11,6 +11,10 @@ from django.db.models import Count
 from django_mysql.models import GroupConcat
 from django.utils import timezone
 
+if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+    from django.contrib.postgres.aggregates import ArrayAgg
+    GroupConcat = ArrayAgg
+
 class AddAttendee(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
