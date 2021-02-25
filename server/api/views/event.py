@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from django_mysql.models import GroupConcat
 from django.utils import timezone
+from django.conf import settings
 
 if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
     from django.contrib.postgres.aggregates import ArrayAgg
