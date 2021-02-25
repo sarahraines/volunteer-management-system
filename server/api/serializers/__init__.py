@@ -6,3 +6,4 @@ from .event import EventSerializer, AttendeeSerializer, EventFeedbackSerializer
 from .member import MemberSerializer, InviteeSerializer
 from .clearance import UserFileSerializer, OrgFileSerializer
 from .user_settings import UserSettingsSerializer
+from .user_goals import UserGoalsSerializer

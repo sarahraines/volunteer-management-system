@@ -5,12 +5,16 @@ import axiosAPI from "../api/axiosApi";
 import VolunteerEventLeaderboard from '../components/VolunteerEventLeaderboard';
 import NonprofitBreakdown from '../components/NonprofitBreakdown';
 import VolunteerSummary from '../components/VolunteerSummary';
+import VolunteerGoals from '../components/VolunteerGoals';
 
 const VolunteerAnalytics = () => {
 
     const user = localStorage.getItem("user_id");
 
     const [summary, setSummary] = useState([]);
+    const [goals, setGoals] = useState([]);
+    const [nonprofits, setNonprofits] = useState([]);
+    const [events, setEvents] = useState([]);
     
     const getSummary = useCallback(async () => {
         try {
@@ -29,7 +33,23 @@ const VolunteerAnalytics = () => {
             getSummary();
     }, [getSummary, summary]);
 
-    const [nonprofits, setNonprofits] = useState([]);
+    const getGoals = useCallback(async () => {
+        try {
+            const response =  await axiosAPI.get("analytics/get-volunteer-goals/", {
+                params: {
+                    user: user,
+                }
+            });
+            setGoals(response.data);
+            console.log(goals); 
+        } catch(error) {
+            console.error(error);
+        }
+    }, [goals, user]);
+
+    useEffect(() => {
+            getGoals();
+    }, [getGoals, goals]);
     
     const getNonprofits = useCallback(async () => {
         try {
@@ -47,8 +67,6 @@ const VolunteerAnalytics = () => {
     useEffect(() => {
             getNonprofits();
     }, [getNonprofits, nonprofits]);
-
-    const [events, setEvents] = useState([]);
     
     const getEvents = useCallback(async () => {
         try {
@@ -72,6 +90,7 @@ const VolunteerAnalytics = () => {
       <React.Fragment>
             <Typography.Title level={2}>Analytics</Typography.Title>
             <VolunteerSummary data={summary}/>
+            <VolunteerGoals data={goals} />
             <NonprofitBreakdown data={nonprofits}/>
             <VolunteerEventLeaderboard data={events}/> 
         </React.Fragment>

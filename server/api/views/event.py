@@ -11,28 +11,6 @@ from django.db.models import Count
 from django_mysql.models import GroupConcat
 from django.utils import timezone
 
-# class AddAttendee(APIView):
-#     permission_classes = (permissions.AllowAny,)
-#     authentication_classes = ()
-
-#     def post(self, request, format='json'):
-#         data = request.data
-#         serializer = AttendeeSerializer(data=data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class DeleteAttendee(APIView):
-#     permission_classes = (permissions.AllowAny,)
-#     authentication_classes = ()
-
-#     def post(self, request, format='json'):
-#         data = request.data
-#         event = get_object_or_404(Event, pk=data['events'])
-#         Attendee.objects.filter(username=data['user_id'], events=event).delete()
-#         return Response(None, status=status.HTTP_200_OK)   
-
 class AddAttendee(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
@@ -196,58 +174,6 @@ class GetEventFeedback(APIView):
             f['satisfaction'] = satisfaction[f['satisfaction']]
             f['likely'] = likely[f['likely']]
         return Response(feedback, status=status.HTTP_200_OK)
-
-class GetAttendeeCountsByEvent(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-
-    def get(self, request):
-        orgId = request.GET['orgId']
-        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('events__name').annotate(Count('events__name'))
-        attendees = list(attendees)
-
-        x = []
-        y = []
-        data = (x, y)
-        for i in range(len(attendees)):
-            x.append(attendees[i]['events__name'])
-            y.append(attendees[i]['events__name__count'])
-
-        return Response(data, status=status.HTTP_200_OK)
-class AverageEventsPerVolunteer(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-    def get(self, request):
-        orgId = request.GET['orgId']
-        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('username')
-        events =  Event.objects.filter(organizations__in=[orgId])
-        if len(attendees) > 0:
-            avg = len(events)/len(attendees)
-        else:
-            avg = 0
-        return Response(avg, status=status.HTTP_200_OK)
-
-
-class GetUniqueAttendees(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-
-    def get(self, request):
-        orgId = request.GET['orgId']
-        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('username')
-        unique_attendees =attendees.distinct()
-        return Response(len(unique_attendees), status=status.HTTP_200_OK)
-
-class GetUniqueVolunteersWithFeedback(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
-
-    def get(self, request):
-        org_id = request.GET['orgId']
-        feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
-        'username__email').distinct()
-
-        return Response(len(feedback), status=status.HTTP_200_OK)
 
 class GetEventAttendeeCount(APIView):
     permission_classes = (permissions.AllowAny,)

@@ -36,7 +36,7 @@ function VolunteerSummary({ data}) {
 
     return (
         <React.Fragment>
-            <Typography.Title level={5}>Volunteer Breakdown</Typography.Title>
+            <Typography.Title level={5}>Summary</Typography.Title>
             <Table 
                 dataSource={data} 
                 columns={columns}

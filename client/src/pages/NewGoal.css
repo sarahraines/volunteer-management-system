@@ -1,0 +1,11 @@
+.goal-container {
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px;
+    max-width: 450px;
+}
+.goal-content {
+    padding: 5vh 5vw;
+    margin: 0 auto;
+    height: auto;
+}
