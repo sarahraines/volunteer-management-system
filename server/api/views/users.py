@@ -45,11 +45,10 @@ class CreateUser(APIView):
                 last_name=data['last_name'],
                 is_active=False
             )
-            current_site = 'localhost:3000'
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = account_activation_token.make_token(user)
-
-            activation_url = f"http://{current_site}/activate?uid={uid}&token={token}"
+            is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
+            activation_url = request.build_absolute_uri(f"/activate?uid={uid}&token={token}") if not is_localhost else f"http://localhost:3000/activate?uid={uid}&token={token}"
             mail_subject = 'Activate your account.'
             message = render_to_string('activate_account.html', {
                 'user': user,
@@ -166,11 +165,11 @@ class ForgotPassword(APIView):
                 user = None
         
         if user is not None:
-            current_site = 'localhost:3000'
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = account_activation_token.make_token(user)
 
-            password_reset_url = f"http://{current_site}/reset-password?uid={uid}&token={token}"
+            is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
+            password_reset_url = request.build_absolute_uri(f"/reset-password?uid={uid}&token={token}") if not is_localhost else f"http://localhost:3000/reset-password?uid={uid}&token={token}"
             mail_subject = 'Reset your password.'
             message = render_to_string('reset_password.html', {
                 'user': user,

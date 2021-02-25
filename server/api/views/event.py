@@ -61,6 +61,7 @@ class GetEventsByOrg(APIView):
                 attendees = list(attendees)
                 attendee_count = len(attendees)
                 serializer.data[i]["attendee_count"] = attendee_count
+                serializer.data[i]["key"] = events[i].id
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 

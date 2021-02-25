@@ -41,8 +41,13 @@ const Analytics = ({orgId}) => {
                     org_id: orgId,
                 }
             });
+<<<<<<< HEAD
             setBreakdown(response.data);
         } catch(error) {
+=======
+            setAttendeeCount(response.data);
+        } catch (error) {
+>>>>>>> main
             console.error(error);
         }
     }, [orgId]);

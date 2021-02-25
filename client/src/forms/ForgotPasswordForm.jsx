@@ -6,7 +6,7 @@ import { register, login } from '../api/authenticationApi';
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
-const AuthForm = ({isRegister}) => {
+const ForgotPasswordForm = ({isRegister}) => {
     const history = useHistory();
 
     const onFinish = useCallback(async (values) => {

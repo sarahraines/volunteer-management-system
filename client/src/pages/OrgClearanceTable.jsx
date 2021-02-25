@@ -26,12 +26,7 @@ function OrgClearanceTable({orgId, eId}) {
     };
 
     function addComment(value, record) {
-        console.log(value)
-        console.log(record)
-
-
         const comment = value
-        console.log(record.key)
 
         try {
             const response = axiosAPI.post("clearances/set-status-user-file/", 
@@ -39,8 +34,9 @@ function OrgClearanceTable({orgId, eId}) {
                     id: record.key, 
                     comment: comment,
                 }
-        );
-        } catch(error){
+            );
+            getUserFiles(orgId)
+        } catch(error) {
             console.error(error)
         }
     };

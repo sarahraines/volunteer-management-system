@@ -45,7 +45,7 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
             >
                 <SubMenu title="Take action" icon={<BulbOutlined />}>
                     <Item className="action-submenu-item" key="create-org" icon={<UsergroupAddOutlined />}>
-                        Create organization
+                        Create an organization
                     </Item>
                     <Item className="action-submenu-item" key="create-event" icon={<PlusSquareOutlined />}>
                         Create event
@@ -54,10 +54,10 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
                         Set goals
                     </Item>
                     <Item className="action-submenu-item" key="calendar" icon={<CalendarOutlined />}>
-                        View My Events
+                        View my events
                     </Item>
                     <Item className="action-submenu-item" key="view-analytics" icon={<BarChartOutlined />}>
-                        View analytics
+                        View my analytics
                     </Item>
                 </SubMenu>
                 <Divider/>

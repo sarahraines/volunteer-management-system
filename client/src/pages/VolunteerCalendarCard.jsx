@@ -92,7 +92,7 @@ function VolunteerCalendarCard ({item}){
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
                         <Paragraph><b>Description: </b>{item.events__description.substring(0, 50)}...</Paragraph>
-                        <p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(viewmore)}>
+                        <p style={{color: '#1890ff'}}><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(viewmore)}>
                             View More
                         </Button></p>
                         <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.events__id)} loading={isLoading}>
