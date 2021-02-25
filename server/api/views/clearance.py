@@ -23,7 +23,7 @@ class GetOrgFiles(APIView):
     authentication_classes = ()
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        org_files = OrgFile.objects.filter(organization=org).values('id', 'organization', 'event__name', 'empty_form')
+        org_files = OrgFile.objects.filter(organization=org).values('id', 'organization', 'event', 'event__name', 'empty_form')
         print("org files")
         print(org_files)
         # serializer = OrgFileSerializer(org_files, many=True)

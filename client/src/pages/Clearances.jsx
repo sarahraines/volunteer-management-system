@@ -3,92 +3,114 @@ import { Upload, Button, message, Typography, Table } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import UserFilesTable from './UserFilesTable';
+import ClearanceUpload from '../components/ClearanceUpload';
 import { UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
-    const [fileList, setFileList] = useState([]);
-    const localHost = "http://localhost:8080/"
+    // const [fileList, setFileList] = useState([]);
+    // const localHost = "http://localhost:8080/"
+    
 
-    const getOrgFiles = useCallback(async (orgId) => {
+    // const getOrgFiles = useCallback(async (orgId) => {
+    //     try {
+    //         const response = await axiosAPI.get("events/get-by-org/", {
+    //             params: {
+    //                 orgId: orgId, 
+    //             }
+    //         });
+    //         const files = response.data;
+            
+    //         const formattedFiles = files.map(file => ({
+    //             uid: file.id, 
+    //             name: file.empty_form.split('/').slice(-1).pop(), 
+    //             status: "done", 
+    //             url: file.empty_form,
+    //             event: file.event,
+    //             eventName: file.event__name
+    //         }));
+    //         console.log("files: " + formattedFiles);
+    //         setFileList(formattedFiles);
+    //     } catch(error) {
+    //         console.error(error);
+    //     }
+    // }, [orgId]);
+
+    // useEffect(() => {
+    //     getOrgFiles(orgId)
+    // }, [orgId]);
+
+    const [events, setEvents] = useState([]); 
+
+    const getEventsByOrg = useCallback(async () => {
         try {
-            const response = await axiosAPI.get("clearances/get-org-files/", {
+            const response = await axiosAPI.get("events/get-by-org/", {
                 params: {
-                    orgId: orgId, 
+                    orgId: orgId,
                 }
             });
-            const files = response.data;
-            
-            const formattedFiles = files.map(file => ({
-                uid: file.id, 
-                name: file.empty_form.split('/').slice(-1).pop(), 
-                status: "done", 
-                url: file.empty_form,
-                event: file.event__name
-            }));
-            console.log("files: " + formattedFiles);
-            setFileList(formattedFiles);
-        } catch(error) {
+            setEvents(response.data);
+        } catch (error) {
             console.error(error);
         }
-    }, [orgId]);
+    }, [setEvents, orgId]);
 
     useEffect(() => {
-        getOrgFiles(orgId)
-    }, [orgId]);
+        getEventsByOrg();
+    }, [orgId, getEventsByOrg]);
 
-    function messageHandler(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
+    // function messageHandler(info) {
+    //     if (info.file.status !== 'uploading') {
+    //       console.log(info.file, info.fileList);
+    //     }
 
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-        }
-    }
+    //     if (info.file.status === 'done') {
+    //       message.success(`${info.file.name} file uploaded successfully`);
+    //     } else if (info.file.status === 'error') {
+    //       message.error(`${info.file.name} file upload failed.`);
+    //     }
+    // }
 
-    const orgProps = {
-        listType: 'picture',
-        action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-        fileList: fileList,
-        onChange(info) {
-            messageHandler(info)
+    // const orgProps = {
+    //     listType: 'picture',
+    //     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    //     fileList: fileList,
+    //     onChange(info) {
+    //         messageHandler(info)
 
-            let fl = [...info.fileList];
-            fl = fl.map(file => {
-                if (file.response) {
-                    // Component will show file.url as link
-                    file.url = localHost+ file.name;
-                }
-                return file;
-            });
+    //         let fl = [...info.fileList];
+    //         fl = fl.map(file => {
+    //             if (file.response) {
+    //                 // Component will show file.url as link
+    //                 file.url = localHost+ file.name;
+    //             }
+    //             return file;
+    //         });
                 
-            setFileList(fl);
-        },
-        previewFile: async function(file) {
-            const formData = new FormData();
-            formData.append('empty_form', file, file.name);
-            formData.append('orgId', orgId);
-            try {
-                return await axiosAPI.post('clearances/upload-org-file', formData, {
-                    headers: {
-                    'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
-                    }
-                })
-                .then(({ thumbnail }) => thumbnail);
-            } catch {
-                console.log("upload failed")
-            }
-        },
-    };
+    //         setFileList(fl);
+    //     },
+    //     previewFile: async function(file) {
+    //         const formData = new FormData();
+    //         formData.append('empty_form', file, file.name);
+    //         formData.append('orgId', orgId);
+    //         try {
+    //             return await axiosAPI.post('clearances/upload-org-file', formData, {
+    //                 headers: {
+    //                 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
+    //                 }
+    //             })
+    //             .then(({ thumbnail }) => thumbnail);
+    //         } catch {
+    //             console.log("upload failed")
+    //         }
+    //     },
+    // };
 
     const columns = [
         {
             title: 'Event',
-            dataIndex: 'event',
-            key: 'event',
+            dataIndex: 'name',
+            key: 'name',
         }
     ];
 
@@ -99,7 +121,7 @@ function Clearances({isAdmin, orgId}) {
                 <>
                     <Table 
                         columns={columns}
-                        dataSource={fileList} 
+                        dataSource={events} 
                         // loading={loading}
                         expandedRowRender= {record => 
                             <p>
@@ -109,9 +131,10 @@ function Clearances({isAdmin, orgId}) {
                                 Date: {(new Date(record.events__begindate)).toLocaleString('en-US', options)} - {(new Date(record.events__enddate)).toLocaleString('en-US', options)}<br/><br/> */}
                                 
                                 {/* <Title level={5}>Upload Clearances</Title> */}
-                                <Upload {...orgProps}>
+                                {/* <Upload {...orgProps}>
                                     <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
-                                </Upload>
+                                </Upload> */}
+                                <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eventId={record.event} />
                             </p>
                     }/>
                     
@@ -120,8 +143,8 @@ function Clearances({isAdmin, orgId}) {
                         <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
                     </Upload> */}
                 </> :
-                
-                <UserFilesTable orgId={orgId} fileList={fileList} messageHandler={messageHandler}/>
+                <Title level={4}>Mrrp</Title>
+                // <UserFilesTable orgId={orgId} fileList={fileList} messageHandler={messageHandler}/>
             }
            
         </div>
