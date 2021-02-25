@@ -8,7 +8,7 @@ from django.db.models.functions import Concat
 from django.utils import timezone
 from datetime import timedelta
 from django_mysql.models import GroupConcat
-from django.db.models import TextField, DurationField, BigIntegerField
+from django.db.models import TextField, BigIntegerField
 from django.db.models.functions import Cast
 from collections import Counter
 from django.conf import settings
@@ -23,8 +23,7 @@ class VolunteerBreakdown(APIView):
     
     def get(self, request):
         org_id = request.GET['org_id']
-        duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=DurationField())
-        duration = Cast(duration, BigIntegerField())
+        duration = ExpressionWrapper(Extract(F('events__enddate'), 'epoch') - Extract(F('events__begindate'), 'epoch'), output_field=BigIntegerField())
         events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
             count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
