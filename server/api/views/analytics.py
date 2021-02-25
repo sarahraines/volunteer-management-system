@@ -12,8 +12,8 @@ from collections import Counter
 from django.conf import settings
 
 if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
-    from django.contrib.postgres.aggregates import ArrayAgg
-    GroupConcat = ArrayAgg
+    from django.contrib.postgres.aggregates import StringAgg
+    GroupConcat = lambda expression: StringAgg(expression, ',')
 
 class VolunteerBreakdown(APIView):
     permission_classes = (permissions.AllowAny,)
