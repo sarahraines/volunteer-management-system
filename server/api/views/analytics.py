@@ -8,7 +8,7 @@ from django.db.models.functions import Concat
 from django.utils import timezone
 from datetime import timedelta
 from django_mysql.models import GroupConcat
-from django.db.models import TextField, DurationField
+from django.db.models import TextField, DurationField, BigIntegerField
 from django.db.models.functions import Cast
 from collections import Counter
 from django.conf import settings
