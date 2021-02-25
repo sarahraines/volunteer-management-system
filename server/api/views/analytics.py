@@ -9,7 +9,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django_mysql.models import GroupConcat
 from django.db.models import TextField, BigIntegerField
-from django.db.models.functions import Cast
+from django.db.models.functions import Cast, Extract
 from collections import Counter
 from django.conf import settings
 
