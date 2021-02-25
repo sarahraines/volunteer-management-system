@@ -9,6 +9,11 @@ from django.utils import timezone
 from datetime import timedelta
 from django_mysql.models import GroupConcat
 from collections import Counter
+from django.conf import settings
+
+if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+    from django.contrib.postgres.aggregates import ArrayAgg
+    GroupConcat = ArrayAgg
 
 class VolunteerBreakdown(APIView):
     permission_classes = (permissions.AllowAny,)
