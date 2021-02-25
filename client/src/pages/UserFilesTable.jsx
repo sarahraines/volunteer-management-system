@@ -53,7 +53,7 @@ function UserFilesTable({orgId, fileList}) {
     
     const columns = [
         {
-            title: 'Uncompleted File',
+            title: 'Incomplete File',
             dataIndex: 'file',
             key: 'file',
             render: text => <a href={window.location.origin + "/" + text}>{text}</a>,
