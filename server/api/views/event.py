@@ -10,11 +10,13 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from django_mysql.models import GroupConcat
 from django.utils import timezone
+from django.db.models import TextField
+from django.db.models.functions import Cast
 from django.conf import settings
 
 if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
     from django.contrib.postgres.aggregates import StringAgg
-    GroupConcat = lambda expression: StringAgg(expression, ',')
+    GroupConcat = lambda expression: StringAgg(Cast(expression, TextField()), ',')
 
 class AddAttendee(APIView):
     permission_classes = (permissions.AllowAny,)
