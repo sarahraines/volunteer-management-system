@@ -305,6 +305,6 @@ class VolunteerFunnel(APIView):
     
         members = Member.objects.filter(organization__id=org_id).values('user__id')
         attendees = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values('username__id').distinct()
-        feedback = EventFeedback.objects.filter(event__organizations__id=org_id, event__enddate__lte=timezone.now()).values('username__id').distinct()
+        feedback = EventFeedback.objects.filter(event__organizations__id=org_id, event__enddate__lte=timezone.now()).values('username__email').distinct()
 
         return Response([len(members), len(attendees), len(feedback)], status=status.HTTP_200_OK)

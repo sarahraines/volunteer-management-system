@@ -21,12 +21,11 @@ const Analytics = ({orgId}) => {
                     org_id: orgId,
                 }
             });
-            console.log('funnel', funnel); 
             setFunnel(response.data);
         } catch(error) {
             console.error(error);
         }
-    }, [funnel, orgId]); 
+    }, [orgId]); 
 
     useEffect(() => {
         if (orgId) {

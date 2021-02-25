@@ -154,12 +154,12 @@ class GetEventFeedback(APIView):
         user_id = request.GET['userId']
 
         if str(is_admin)=='1':
-            feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
+            feedback = EventFeedback.objects.filter(event__organizations__id=org_id, event__enddate__lte=timezone.now()).values(
             'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
         else:
-            feedback = EventFeedback.objects.filter(event__organizations__id=org_id, username__id=user_id).values(
+            feedback = EventFeedback.objects.filter(event__organizations__id=org_id, username__id=user_id, event__enddate__lte=timezone.now()).values(
             'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
