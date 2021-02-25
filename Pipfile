@@ -6,6 +6,25 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+django = "*"
+djangorestframework = "*"
+django-cors-headers = "*"
+djangorestframework-simplejwt = "*"
+pytz = "*"
+six = "*"
+django-crontab = "*"
+django-utils = "*"
+django-extensions = "*"
+django-request-token = "*"
+gunicorn = "*"
+dj-database-url = "*"
+psycopg2 = "*"
+django-mysql = "*"
+mysql-connector = "*"
+twilio = "<6.51.0"
 
 [requires]
 python_version = "3.8"
+
+[packages.django-storages]
+extras = [ "google",]

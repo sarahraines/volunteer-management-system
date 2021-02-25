@@ -94,7 +94,6 @@ class InviteMembers(APIView):
                         "status": 10
                     }
                 )
-                current_site = 'localhost:3000'
                 token = RequestToken.objects.create_token(
                     scope="invitation",
                     login_mode=RequestToken.LOGIN_MODE_NONE,
@@ -103,7 +102,8 @@ class InviteMembers(APIView):
                     }
                 )
 
-                activation_url = f"http://{current_site}/invite?rt={token.jwt()}"
+                is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
+                activation_url = request.build_absolute_uri(f"/invite?rt={token.jwt()}") if not is_localhost else f"http://localhost:3000/invite?rt={token.jwt()}"
                 mail_subject = 'You\'ve been invited!'
                 from_email = 'vol.mgmt.system@gmail.com'
                 message = render_to_string('invite_organization.html', {

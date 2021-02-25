@@ -57,15 +57,13 @@ function ManageVolunteerClearances({orgId}) {
 
     return (
         <React.Fragment>
-            <Title level={4}>Manage Volunteers' Uploaded Clearance for Each Event</Title>
+            <Title level={4}>Manage uploaded clearances</Title>
             <Table 
                 columns={columns}
                 dataSource={events} 
                 loading={loading}
                 expandedRowRender= {record => 
-                    <p>
-                        <OrgClearanceTable orgId={orgId} eId={record.id} />
-                    </p>
+                    <OrgClearanceTable orgId={orgId} eId={record.id} />
             }/>
         </React.Fragment>
     );

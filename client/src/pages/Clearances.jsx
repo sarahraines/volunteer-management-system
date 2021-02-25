@@ -9,6 +9,8 @@ function Clearances({isAdmin, orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
 
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+
     const getEventsByOrg = useCallback(async () => {
         try {
             const response = await axiosAPI.get("events/get-by-org/", {
@@ -52,22 +54,18 @@ function Clearances({isAdmin, orgId}) {
         }
     ];
 
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-
-
     return (
         <React.Fragment>
-            <Title level={4}>Manage Clearances for Upcoming Events</Title>
+            <Title level={4}>Manage clearances for upcoming events</Title>
             <Table 
                 columns={columns}
                 dataSource={events} 
                 loading={loading}
                 expandedRowRender= {record => 
-                    <p>
-                        <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
-                    </p>
+                    <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
             }/>
         </React.Fragment>
     );
 };
+
 export default Clearances;
