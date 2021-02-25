@@ -85,7 +85,7 @@ const OrgEvents = ({orgId}) => {
         <React.Fragment>
             <Typography.Title level={4}>Upcoming events</Typography.Title>
             <Space>
-                <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" class="search"/>
+                <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search"/>
                 Filter by Virtual:<Select defaultValue="none" style={{ width: 120 }} onChange={value => virtualFilterChange(value)} size="small">
                     <Option value="none">Select All</Option>
                     <Option value="virtual">Virtual</Option>

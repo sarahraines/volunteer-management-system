@@ -1,119 +1,71 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, message, Typography } from 'antd';
+import { Upload, Button, message, Typography, Table } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
-import UserFilesTable from './UserFilesTable';
-import { UploadOutlined } from '@ant-design/icons';
+import ClearanceUpload from '../components/ClearanceUpload';
 const { Title } = Typography;
 
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 function Clearances({isAdmin, orgId}) {
-    const [fileList, setFileList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [events, setEvents] = useState([]); 
 
-    let host = window.location.origin + '/';
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        host = `http://${window.location.hostname}:8000/`
-    }
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
-    const getOrgFiles = useCallback(async (orgId) => {
+    const getEventsByOrg = useCallback(async () => {
         try {
-            const response = await axiosAPI.get("clearances/get-org-files/", {
+            const response = await axiosAPI.get("events/get-by-org/", {
                 params: {
-                    orgId: orgId, 
+                    orgId: orgId,
                 }
             });
-            const files = response.data;
-            const formattedFiles = files.map(file => ({
-                uid: file.id, 
-                name: file.empty_form.split('/').slice(-1).pop(), 
-                status: "done", 
-                url: file.empty_form
-            }));
 
-            setFileList(formattedFiles);
-        } catch(error) {
+            const data = response.data;
+            data.map(e => {
+                e.bdate = (new Date(e.begindate)).toLocaleString('en-US', options);
+                e.edate = (new Date(e.enddate)).toLocaleString('en-US', options);
+            });
+
+            setEvents(data);
+            setLoading(false);
+        } catch (error) {
             console.error(error);
         }
-    }, [orgId]);
+    }, [setEvents, orgId]);
 
     useEffect(() => {
-        getOrgFiles(orgId)
-    }, [orgId]);
+        getEventsByOrg();
+    }, [orgId, getEventsByOrg]);
 
-    function messageHandler(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-
-        if (info.file.status === 'done') {
-          message.success('File upload success');
-        } else if (info.file.status === 'error') {
-          message.error('File upload failed');
-        }
-    }
-
-    const orgProps = {
-        listType: 'picture',
-        fileList: fileList,
-        onChange(info) {
-            messageHandler(info)
-            let fl = [...info.fileList];
-            fl = fl.map(file => {
-                if (file.response) {
-                    // Component will show file.url as link
-                    file.url = file.response.data.empty_form;
-                }
-                return file;
-            });
-                
-            setFileList(fl);
+    const columns = [
+        {
+            title: 'Event',
+            dataIndex: 'name',
+            key: 'name',
         },
-        customRequest: async function(options) {
-            const formData = new FormData();
-            formData.append('empty_form', options.file, options.file.name);
-            formData.append('orgId', orgId);
-            try {
-                let data = await axiosAPI.post('clearances/upload-org-file', formData, {
-                    headers: {
-                    'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
-                    }
-                });
-                options.onSuccess(data, options.file);
-            } catch (error) {
-                console.log(error)
-            }
+        {
+            title: 'Start Date',
+            dataIndex: 'bdate',
+            key: 'bdate',
         },
-    };
+        {
+            title: 'End Date',
+            dataIndex: 'edate',
+            key: 'edate',
+        }
+    ];
+
     return (
-        <div>
-            <Title level={4}>Clearances</Title>
-            {isAdmin ? 
-                <>
-                    <Upload {...orgProps}>
-                        <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
-                    </Upload>
-                </> :
-                
-                <UserFilesTable orgId={orgId} fileList={fileList} messageHandler={messageHandler}/>
-            }
-           
-        </div>
+        <React.Fragment>
+            <Title level={4}>Manage clearances for upcoming events</Title>
+            <Table 
+                columns={columns}
+                dataSource={events} 
+                loading={loading}
+                expandedRowRender= {record => 
+                    <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
+            }/>
+        </React.Fragment>
     );
 };
+
 export default Clearances;

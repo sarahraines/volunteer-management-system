@@ -4,7 +4,7 @@ import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 const { Paragraph } = Typography;
 
-function OrgClearanceTable({orgId}) {
+function OrgClearanceTable({orgId, eId}) {
     const [rows, setRows] = useState([]);
 
     function acceptOrReject(value, record) {
@@ -26,12 +26,7 @@ function OrgClearanceTable({orgId}) {
     };
 
     function addComment(value, record) {
-        console.log(value)
-        console.log(record)
-
-
         const comment = value
-        console.log(record.key)
 
         try {
             const response = axiosAPI.post("clearances/set-status-user-file/", 
@@ -39,8 +34,9 @@ function OrgClearanceTable({orgId}) {
                     id: record.key, 
                     comment: comment,
                 }
-        );
-        } catch(error){
+            );
+            getUserFiles(orgId)
+        } catch(error) {
             console.error(error)
         }
     };
@@ -50,6 +46,7 @@ function OrgClearanceTable({orgId}) {
             const response = await axiosAPI.get("clearances/get-user-files-for-org/", {
                 params: {
                     orgId: orgId, 
+                    eventId: eId
                 }
             });
             const files = response.data;
