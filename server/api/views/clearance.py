@@ -32,6 +32,9 @@ class GetOrgFilesForEvent(APIView):
         print(org_files)
         # serializer = OrgFileSerializer(org_files, many=True)
         
+        for file in org_files:
+            file['key'] = file['id']
+
         return Response(org_files)
 
 class GetUserFiles(APIView):
@@ -48,8 +51,9 @@ class GetUserFilesForOrg(APIView):
     authentication_classes = ()
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
-        user_files = UserFile.objects.filter(org_file__organization = org).prefetch_related('org_file').prefetch_related('user').values(
-            'user__email','org_file', 'filled_form', 'status', 'id', 'comment' )
+        event_id = request.GET['eventId']
+        user_files = UserFile.objects.filter(org_file__organization = org, org_file__event__id = event_id).prefetch_related('org_file').prefetch_related('user').values(
+            'user__email','org_file', 'filled_form', 'status', 'id', 'comment', 'org_file__event', 'org_file__event__name')
         user_files = list(user_files)
         return Response(user_files)
         

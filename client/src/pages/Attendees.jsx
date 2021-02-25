@@ -26,7 +26,7 @@ function Attendees({orgId}) {
 
     useEffect(() => {
         getAttendees();
-}, [getAttendees, attendees]);
+    }, [getAttendees, attendees]);
 
     const columns = [
         {

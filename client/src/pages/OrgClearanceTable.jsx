@@ -4,7 +4,7 @@ import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 const { Paragraph } = Typography;
 
-function OrgClearanceTable({orgId}) {
+function OrgClearanceTable({orgId, eId}) {
     const [rows, setRows] = useState([]);
 
     function acceptOrReject(value, record) {
@@ -50,6 +50,7 @@ function OrgClearanceTable({orgId}) {
             const response = await axiosAPI.get("clearances/get-user-files-for-org/", {
                 params: {
                     orgId: orgId, 
+                    eventId: eId
                 }
             });
             const files = response.data;
