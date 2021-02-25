@@ -3,9 +3,9 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer
+from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer, UserSettingsSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.models import User, Invitee, Member
+from api.models import User, Invitee, Member, UserSettings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -195,3 +195,48 @@ class UpdateUser(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SubmitNotificationSettings(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        keys = data.keys()
+
+        if 'email' not in keys:
+            data['email'] = False
+        if 'text' not in keys:
+            data['text'] = False
+        if 'phone_number' not in keys:
+            data['phone_number'] = ""
+
+        exists = UserSettings.objects.filter(user__id=data['user_id']).values('id')
+        user = User.objects.get(pk=data['user_id'])
+
+        if(len(exists) != 0):
+            id = exists[0]['id']
+            UserSettings.objects.update(id=id, user=user, email=data['email'], text=data['text'], phone_number=data['phone_number'])
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            UserSettings.objects.create(user=user, email=data['email'], text=data['text'], phone_number=data['phone_number'])
+            return Response(data, status=status.HTTP_201_CREATED)
+         
+class GetNotificationSettings(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        exists = UserSettings.objects.filter(user__id=request.GET['user_id']).values('email', 'text', 'phone_number')
+
+        if(len(exists) != 0):
+            return Response(exists[0], status=status.HTTP_200_OK)
+        else:
+            data = [
+                {
+                    "email": True,
+                    "text": False,
+                    "phone_number": ''
+                },
+            ]
+            return Response(data[0], status=status.HTTP_200_OK)

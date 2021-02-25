@@ -7,8 +7,8 @@ import axiosAPI from "../api/axiosApi";
 
 
 const Event = () => {
-
     const [events, setEvents] = useState([]); 
+    const [filterDisplay, setFilterDisplay] = useState([]);
 
     useEffect(() => {
         getEvents();
@@ -18,20 +18,37 @@ const Event = () => {
         try {
             const response = await axiosAPI.get("events/get/");
             setEvents(response.data);
+            setFilterDisplay(response.data);
         } catch (error) {
             console.error(error);
         }
     }
 
-    const eventList = events.map(item => 
-        <EventCard key={item.id} item={item} />
-    );
+    const handleChange = e => {
+        let oldList = events;
+        if (e !== "") {
+            let newList = [];
+            newList = oldList.filter(event =>
+                event.name.includes(e)
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
+
+    // const eventList = events.map(item => 
+    //     <EventCard key={item.id} item={item} />
+    // );
 
     return (
         <React.Fragment>
             <Typography.Title style={{ textAlign: "center" }} level={2}>Find service opportunities</Typography.Title>
+            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events"/>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll" }}>
-                {eventList}
+                {filterDisplay.map((item, i) => 
+                    <EventCard key={i} item={item}/>
+                )}
             </div>
         </React.Fragment>
     );

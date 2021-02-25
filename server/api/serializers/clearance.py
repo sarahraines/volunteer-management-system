@@ -9,4 +9,4 @@ class OrgFileSerializer(serializers.ModelSerializer):
 class UserFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserFile
-        fields = ['id', 'org_file', 'user', 'filled_form', 'status']
+        fields = ['id', 'org_file', 'user', 'filled_form', 'status', 'comment']

@@ -54,31 +54,33 @@ const EventFeedbackForm = () => {
     } 
 
     const options = [
-        { label: 'Poor', value: 'Poor' },
-        { label: 'Fair', value: 'Fair' },
-        { label: 'Average', value: 'Average'},
-        { label: 'Good', value: 'Good'},
-        { label: 'Excellent', value: 'Excellent'},
+        { label: 'Poor', value: 1},
+        { label: 'Fair', value: 2 },
+        { label: 'Average', value: 3},
+        { label: 'Good', value: 4},
+        { label: 'Excellent', value: 5},
     ];
 
     const s_options = [
-        { label: 'Very Dissatisfied', value: 'Very Dissatisfied' },
-        { label: 'Dissatisfied', value: 'Dissatisfied' },
-        { label: 'Neutral', value: 'Neutral'},
-        { label: 'Satisfied', value: 'Satisfied'},
-        { label: 'Very Satisfied', value: 'Very Satisfied'},
+        { label: 'Very Dissatisfied', value: 1},
+        { label: 'Dissatisfied', value: 2},
+        { label: 'Neutral', value: 3},
+        { label: 'Satisfied', value: 4},
+        { label: 'Very Satisfied', value: 5},
     ];
     const l_options = [
-        { label: 'Very Unlikely', value: 'Very Unlikely'},
-        { label: 'Somewhat Unlikely', value: 'Somewhat Unlikely'},
-        { label: 'Neutral', value: 'Neutral'},
-        { label: 'Somewhat Likely', value: 'Somewhat Likely' },
-        { label: 'Very Likely', value: 'Very Likely' },
+        { label: 'Very Unlikely', value: 1},
+        { label: 'Somewhat Unlikely', value: 2},
+        { label: 'Neutral', value: 3},
+        { label: 'Somewhat Likely', value: 4},
+        { label: 'Very Likely', value: 5},
     ];
     const yn_options = [
         { label: 'Yes', value: 'Yes'},
         { label: 'No', value: 'No'},
     ];
+
+    const date_options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
   return (
 
@@ -95,7 +97,7 @@ const EventFeedbackForm = () => {
             <strong>Organization: </strong> {info.events__organizations__name}<br/>
             <strong>Event: </strong>{info.events__name} <br/>
             <strong>Location: </strong>{info.events__location}<br/>
-            <strong>Date: </strong>{info.events__begindate}-{info.events__enddate}<br/>
+            <strong>Date: </strong>{(new Date(info.events__begindate)).toLocaleString('en-US', date_options)} - {(new Date(info.events__enddate)).toLocaleString('en-US', date_options)}<br/>
         </p>
         
 
@@ -156,11 +158,10 @@ const EventFeedbackForm = () => {
         >
             <TextArea row={6} style={{ width: '100%' }} placeholder="Response here" />
         </Form.Item>
-        <p>Is there anything else you’d like for us to know about your volunteer experience?</p>
+        <p>Is there anything else we should know about your volunteer experience?</p>
         <Form.Item
             name="experience"
-            hasFeedback
-        >
+            hasFeedback        >
             <TextArea row={6} style={{ width: '100%' }} placeholder="Response here" />
         </Form.Item>
          <Form.Item>

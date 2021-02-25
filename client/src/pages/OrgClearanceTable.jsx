@@ -1,7 +1,8 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Table, Radio } from 'antd';
+import { Table, Radio, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
+const { Paragraph } = Typography;
 
 function OrgClearanceTable({orgId}) {
     const [rows, setRows] = useState([]);
@@ -24,6 +25,26 @@ function OrgClearanceTable({orgId}) {
         }
     };
 
+    function addComment(value, record) {
+        console.log(value)
+        console.log(record)
+
+
+        const comment = value
+        console.log(record.key)
+
+        try {
+            const response = axiosAPI.post("clearances/set-status-user-file/", 
+                {
+                    id: record.key, 
+                    comment: comment,
+                }
+        );
+        } catch(error){
+            console.error(error)
+        }
+    };
+
     const getUserFiles = useCallback(async (orgId) => {
         try {
             const response = await axiosAPI.get("clearances/get-user-files-for-org/", {
@@ -36,7 +57,8 @@ function OrgClearanceTable({orgId}) {
                 key: file.id, 
                 user: file.user__email, 
                 file: file.filled_form.split('/').slice(-1).pop(), 
-                status: file.status 
+                status: file.status,
+                comment: file.comment
             }))
 
             console.log(result)
@@ -72,6 +94,16 @@ function OrgClearanceTable({orgId}) {
                 <Radio.Button value="Rejected">Reject</Radio.Button>
                 </Radio.Group>
             ),
+        },
+        {
+            title: 'Comment',
+            dataIndex: 'comment',
+            key: 'comment',
+            render: (text,record, index) => ( 
+            (<div style={{ marginLeft: 4, flexGrow: 100 }}>
+                <Paragraph style={{ width: "100%" }} editable={{ onChange: (value) => addComment(value, record) }}>{record.comment}</Paragraph>
+            </div>))
+           
         },
     ];
     

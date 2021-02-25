@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Card, Button, Typography, message} from 'antd';
 import axiosAPI from "../api/axiosApi";
 import './EventCard.css';
@@ -6,9 +6,10 @@ import './EventCard.css';
 const { Paragraph } = Typography;
 
 function EventCard ({item}){
-	const [register, setRegister] = useState(false); 
+	const [register, setRegister] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-
+	const [viewmore, setViewmore] = useState(false);
+	
 	const onClick = useCallback(async (event_id, register) => {
 		setIsLoading(true);
 		try {
@@ -34,27 +35,86 @@ function EventCard ({item}){
 		setIsLoading(false);
     }, []);
 
+	const getRegisterStatus = useCallback(async () => {
+        try {
+            const response = await axiosAPI.get("events/get-register-status/", {
+                params: {
+					user_id: localStorage.getItem("user_id"),
+					event: item.id
+                }
+            });
+			setRegister(false);
+			if (response.data == 1) {
+				setRegister(true);
+			}
+        } catch (error) {
+            console.error(error);
+        }
+    }, []);
+	
+	useEffect(() => {
+        getRegisterStatus();
+	}, [getRegisterStatus]);
+	
+	const onClickViewmore = useCallback(async (event_id, viewmore) => {
+		setIsLoading(true);
+		try {
+			setViewmore(!viewmore);
+		}
+		catch {
+			const errMsg = "Viewmore failed";
+			message.error(errMsg);
+		}
+		setIsLoading(false);
+    }, []);
+	
 	const buttonText = register ? "Unjoin" : "Join";
 	const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 	const begindate = new Date(item.begindate)
 	const enddate = new Date(item.enddate)
+	const virtual = item.virtual ? "Yes." : "No.";
 
-    return (
-		<Card className="event-card" title={item.name} bordered={true}>
-				<Paragraph><b>Location: </b>{item.location}</Paragraph>
-                <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
-                {/* <Paragraph><b>Causes: </b>
-					{item.causes.map(c => 
-                        <Paragraph key={c.id} level={2}>{c.name}</Paragraph>
-                    )}
-				</Paragraph> */}
-                <Paragraph><b>Description: </b>{item.description}</Paragraph>
-            <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
-            	{buttonText}
-            </Button>
-        </Card>
-	)
+	const joinButton = (item.attendee_count < item.attendee_cap) ? 
+		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
+			{buttonText}
+		</Button> :
+		(register ? 
+		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
+			{buttonText}
+		</Button> : 
+		<Button type="primary" htmlType="submit" className="event-unjoinable-form-button" disabled={true}>
+		 	{buttonText}
+		</Button>)
 
+	if (viewmore) {
+			return (
+				<Card className="event-card" title={item.name} bordered={true}>
+						<Paragraph><b>Location: </b>{item.location}</Paragraph>
+						<Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
+						<Paragraph><b>Description: </b>{item.description}</Paragraph>
+						<Paragraph><b>Virtual? </b>{virtual}</Paragraph>
+						<Paragraph><b>Instructions: </b>{item.instructions}</Paragraph>
+						<Paragraph><b>No. of Attendees: </b>{item.attendee_count}/{item.attendee_cap}</Paragraph>
+					<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
+						View Less
+					</Button></p>
+					{joinButton}
+				</Card>
+			);
+		// }
+	} else {
+		return (
+			<Card className="event-card" title={item.name} bordered={true}>
+					<Paragraph><b>Location: </b>{item.location}</Paragraph>
+					<Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
+					<Paragraph><b>Description: </b>{item.description.substring(0, 50)}...</Paragraph>
+				<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
+					View More
+				</Button></p>
+				{joinButton}
+			</Card>
+		);
+	}
 
 } export default EventCard; 
 

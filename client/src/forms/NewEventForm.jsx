@@ -64,6 +64,9 @@ const NewEventForm = () => {
                 organizations: values.organizations,
                 date:values.date,
                 description: values.description,
+                instructions: values.instructions,
+                attendee_cap: values.attendeeCap,
+
             });
             dispatch(addAlert('Event created', 'success'));
         }
@@ -149,11 +152,26 @@ const NewEventForm = () => {
                 </Select>
             </Form.Item>
             <Form.Item
+                name="attendeeCap"
+                hasFeedback
+                rules={[{ required: true, message: 'Attendee Cap is required and must be a number.'}]}
+            >
+                
+                <Input style={{ width: '100%' }} placeholder="Maximum number of attendees" type="tel"/>
+            </Form.Item>
+            <Form.Item
                 name="description"
                 hasFeedback
                 rules={[{ required: true, message: 'Description is required.' }]}
             >
                 <TextArea row={6} style={{ width: '100%' }} placeholder="Event description" />
+            </Form.Item>
+            <Form.Item
+                name="instructions"
+                hasFeedback
+                rules={[{ required: true, message: 'Instructions is required.' }]}
+            >
+                <TextArea row={6} style={{ width: '100%' }} placeholder="Provide volunteers with instructions (i.e. how to get there, what to bring, etc.)" />
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" className="event-form-button" loading={isLoading}>

@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, Table, Tag, Space } from 'antd';
+import { Upload, Button, Table } from 'antd';
 import {StatusTag} from '../components/StatusTag';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
@@ -21,7 +21,8 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                 orgFormId: file.org_file, 
                 name: file.filled_form.split('/').slice(-1).pop(), 
                 status: file.status,
-                url: file.filled_form
+                url: file.filled_form,
+                comment: file.comment
             }));
             setUserFileList(formattedFiles);
         } catch(error) {
@@ -63,6 +64,13 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
             render: (text, record) => <StatusTag status={record.status} />
         },
         {
+            title: 'Comment',
+            dataIndex: 'comment',
+            key: 'comment',
+            // render: (text, record) => console.log("record", record)
+            render: (text, record) => <p>{text}</p> 
+        },
+        {
             title: 'Upload New File',
             key: 'upload',
             render: (record) => (
@@ -73,7 +81,7 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                         formData.append('user_id', localStorage.getItem("user_id"))
                         formData.append('filled_form', file, file.name);
                         formData.append('status', 'Pending');
-
+                        formData.append('comment', 'N/A');
                         return axiosAPI.post('clearances/upload-user-file', formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
@@ -96,6 +104,8 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
                 return userFile.name;
             } else if (infoType == "status") {
                 return userFile.status
+            } else if (infoType == "comment"){
+                return userFile.comment
             }
         }
 
@@ -109,7 +119,8 @@ function UserFilesTable({orgId, fileList, messageHandler}) {
         "key": file.uid, 
         "file": file.name,
         "uploaded_file": getUserFileForOrgFile("name", file.uid),
-        "status": getUserFileForOrgFile("status", file.uid)
+        "status": getUserFileForOrgFile("status", file.uid),
+        "comment": getUserFileForOrgFile("comment", file.uid),
     }))
 
     return (
