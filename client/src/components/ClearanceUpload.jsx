@@ -72,6 +72,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
             const formData = new FormData();
             formData.append('empty_form', file, file.name);
             formData.append('orgId', orgId);
+            formData.append('eventId', eId);
             try {
                 return await axiosAPI.post('clearances/upload-org-file', formData, {
                     headers: {

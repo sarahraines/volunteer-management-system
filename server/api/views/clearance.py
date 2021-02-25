@@ -11,10 +11,13 @@ class AddOrgFile(APIView):
 
     def post(self, request, format='json'):
         org = Organization.objects.filter(id=request.data['orgId'])[0]
+        e = Event.objects.filter(id=request.data['eventId'])[0]
         data = request.data
+        print("add org file")
+        print(data)
         serializer = OrgFileSerializer(data=data)
         if serializer.is_valid():
-            serializer.save(organization = org)
+            serializer.save(organization = org, event=e)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
