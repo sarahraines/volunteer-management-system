@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, message, Typography } from 'antd';
+import { Upload, Button, message, Typography, Table } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import UserFilesTable from './UserFilesTable';
@@ -18,13 +18,15 @@ function Clearances({isAdmin, orgId}) {
                 }
             });
             const files = response.data;
+            
             const formattedFiles = files.map(file => ({
                 uid: file.id, 
                 name: file.empty_form.split('/').slice(-1).pop(), 
                 status: "done", 
-                url: file.empty_form
+                url: file.empty_form,
+                event: file.event__name
             }));
-
+            console.log("files: " + formattedFiles);
             setFileList(formattedFiles);
         } catch(error) {
             console.error(error);
@@ -81,15 +83,42 @@ function Clearances({isAdmin, orgId}) {
             }
         },
     };
+
+    const columns = [
+        {
+            title: 'Event',
+            dataIndex: 'event',
+            key: 'event',
+        }
+    ];
+
     return (
         <div>
-            <Title level={4}>Clearances</Title>
+            <Title level={4}>Manage Clearances for Each Event</Title>
             {isAdmin ? 
                 <>
-                    <Title level={2}>Add Form</Title>
+                    <Table 
+                        columns={columns}
+                        dataSource={fileList} 
+                        // loading={loading}
+                        expandedRowRender= {record => 
+                            <p>
+                                {/* <b>Event Details</b><br/>
+                                Name: {record.events__name}<br/> */}
+                                {/* Location: {record.events__location}<br/>
+                                Date: {(new Date(record.events__begindate)).toLocaleString('en-US', options)} - {(new Date(record.events__enddate)).toLocaleString('en-US', options)}<br/><br/> */}
+                                
+                                {/* <Title level={5}>Upload Clearances</Title> */}
+                                <Upload {...orgProps}>
+                                    <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
+                                </Upload>
+                            </p>
+                    }/>
+                    
+                    {/* <Title level={2}>Add Form</Title>
                     <Upload {...orgProps}>
                         <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
-                    </Upload>
+                    </Upload> */}
                 </> :
                 
                 <UserFilesTable orgId={orgId} fileList={fileList} messageHandler={messageHandler}/>

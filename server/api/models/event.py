@@ -16,6 +16,18 @@ class Event(models.Model):
     attendee_cap = models.IntegerField(null=True)
     REQUIRED_FIELDS = ['name', 'virtual']
 
+class OrgFile(models.Model):
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, null=True, blank=True, on_delete=models.CASCADE)
+    empty_form = models.FileField()
+
+class UserFile(models.Model):
+    org_file = models.ForeignKey(OrgFile, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=False, blank=True, on_delete=models.CASCADE)
+    filled_form = models.FileField()
+    status = models.CharField(max_length=20)
+    comment = models.CharField(max_length=200)
+
 class Attendee(models.Model):
     username = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     events = models.ManyToManyField('Event')
