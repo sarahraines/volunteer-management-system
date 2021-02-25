@@ -19,6 +19,9 @@ django-request-token = "*"
 gunicorn = "*"
 dj-database-url = "*"
 psycopg2 = "*"
+django-mysql = "*"
+mysql-connector = "*"
+twilio = "<6.51.0"
 
 [requires]
 python_version = "3.8"
