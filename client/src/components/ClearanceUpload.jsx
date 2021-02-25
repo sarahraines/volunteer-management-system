@@ -96,14 +96,12 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
 
     return (
         <div>
-            <Title level={4}>Manage Clearances for Each Event</Title>
             {isAdmin ? 
                 <>
                     <Upload {...orgProps}>
                         <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
                     </Upload>
                 </> :
-                
                 <UserFilesTable orgId={orgId} fileList={fileList} messageHandler={messageHandler}/>
             }
            
