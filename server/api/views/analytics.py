@@ -107,7 +107,7 @@ class VolunteerLeaderboard(APIView):
     
     def get(self, request):
         org_id = request.GET['org_id']
-        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=BigIntegerField())
+        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
         events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
             count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
