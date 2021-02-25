@@ -26,13 +26,13 @@ class VolunteerBreakdown(APIView):
         duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=fields.BigIntegerField())
         events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
-            count=Count('username__id'), total=ExpressionWrapper(5, output_field=fields.BigIntegerField()), event_list=GroupConcat('events__name')).order_by('-count')
+            count=Count('username__id'), event_list=GroupConcat('events__name')).order_by('-count')
         members = Member.objects.filter(organization__id=org_id).values('user__first_name', 'user__last_name')
         for event in events_attended:
             event['key'] = event['username__id']
             event['name'] = event['username__first_name'] + ' ' + event['username__last_name']
             event['email'] = event['username__email']
-            event['total'] = (event['total'])/10**6//3600
+            event['total'] = 1
             event['event_list'] = (event['event_list']).replace(',', ', ')
         
         returning_count = 0
