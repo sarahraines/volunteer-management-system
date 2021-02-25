@@ -73,7 +73,7 @@ const UserNotificationsForm = ({user}) => {
                 <Form.Item
                     name="text"
                 >
-                    <Checkbox checked={text} onChange={(e) => {setText(e.target.checked)}}>Send text notifications</Checkbox>
+                    <Checkbox checked={text} onChange={(e) => {setText(e.target.checked)}} disabled = {true}>Send text notifications</Checkbox>
                 </Form.Item>
                 <Form.Item
                     name="phone_number"
@@ -82,7 +82,8 @@ const UserNotificationsForm = ({user}) => {
                         { required: text, message: 'Phone is a required field.' },
                     ]}
                 >
-                    <Input addonBefore="Phone Number" placeholder="Phone Number" disabled={!text}/>
+                    <Input addonBefore="Phone Number" placeholder="Phone Number" disabled={true}/>
+                    {/* <Input addonBefore="Phone Number" placeholder="Phone Number" disabled={!text}/> */}
                 </Form.Item>
                 <Form.Item>
                         <Button style={{ width: '100%'}} type="primary" htmlType="submit">
