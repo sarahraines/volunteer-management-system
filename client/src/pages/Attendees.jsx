@@ -17,16 +17,15 @@ function Attendees({orgId}) {
                 }
             });
             setAttendees(response.data);
-            console.log(attendees); 
             setLoading(false);
         } catch(error) {
             console.error(error);
         }
-    }, [attendees, orgId]);
+    }, [orgId]);
 
     useEffect(() => {
         getAttendees();
-    }, [getAttendees, attendees]);
+    }, []);
 
     const columns = [
         {

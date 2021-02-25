@@ -31,7 +31,7 @@ const Analytics = ({orgId}) => {
         if (orgId) {
             getFunnel(orgId);
         }
-    }, [getFunnel, orgId, funnel]);
+    }, [getFunnel, orgId]);
     
     const getBreakdown = useCallback(async () => {
         try {
@@ -50,7 +50,7 @@ const Analytics = ({orgId}) => {
         if (orgId) {
             getBreakdown(orgId);
         }
-    }, [getBreakdown, orgId, breakdown]);
+    }, [getBreakdown, orgId]);
     
     const getVolunteers = useCallback(async () => {
         try {
@@ -69,7 +69,7 @@ const Analytics = ({orgId}) => {
         if (orgId) {
             getVolunteers(orgId);
         }
-    }, [getVolunteers, orgId, volunteers]); 
+    }, [getVolunteers, orgId]); 
 
     const getEvents = useCallback(async () => {
         try {
@@ -88,7 +88,7 @@ const Analytics = ({orgId}) => {
         if (orgId) {
             getEvents(orgId);
         }
-    }, [getEvents, orgId, events]);
+    }, [getEvents, orgId]);
 
     return (
       <React.Fragment>
