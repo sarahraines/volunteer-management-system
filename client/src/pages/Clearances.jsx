@@ -73,12 +73,11 @@ function Clearances({isAdmin, orgId}) {
         fileList: fileList,
         onChange(info) {
             messageHandler(info)
-
             let fl = [...info.fileList];
             fl = fl.map(file => {
-                if (file) {
+                if (file.response) {
                     // Component will show file.url as link
-                    file.url = host + file.name;
+                    file.url = file.response.data.empty_form;
                 }
                 return file;
             });
@@ -94,8 +93,7 @@ function Clearances({isAdmin, orgId}) {
                     headers: {
                     'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
                     }
-                })
-                .then(({ thumbnail }) => thumbnail);
+                });
                 options.onSuccess(data, options.file);
             } catch (error) {
                 console.log(error)
