@@ -6,34 +6,34 @@ import UserFilesTable from './UserFilesTable';
 import { UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
-function Clearances({isAdmin}) { //, orgId}) {
+function Clearances({isAdmin, orgId}) {
     const [fileList, setFileList] = useState([]);
     const localHost = "http://localhost:8080/"
 
-    // const getOrgFiles = useCallback(async (orgId) => {
-    //     try {
-    //         const response = await axiosAPI.get("clearances/get-org-files/", {
-    //             params: {
-    //                 orgId: orgId, 
-    //             }
-    //         });
-    //         const files = response.data;
-    //         const formattedFiles = files.map(file => ({
-    //             uid: file.id, 
-    //             name: file.empty_form.split('/').slice(-1).pop(), 
-    //             status: "done", 
-    //             url: file.empty_form
-    //         }));
+    const getOrgFiles = useCallback(async (orgId) => {
+        try {
+            const response = await axiosAPI.get("clearances/get-org-files/", {
+                params: {
+                    orgId: orgId, 
+                }
+            });
+            const files = response.data;
+            const formattedFiles = files.map(file => ({
+                uid: file.id, 
+                name: file.empty_form.split('/').slice(-1).pop(), 
+                status: "done", 
+                url: file.empty_form
+            }));
 
-    //         setFileList(formattedFiles);
-    //     } catch(error) {
-    //         console.error(error);
-    //     }
-    // }, [orgId]);
+            setFileList(formattedFiles);
+        } catch(error) {
+            console.error(error);
+        }
+    }, [orgId]);
 
-    // useEffect(() => {
-    //     getOrgFiles(orgId)
-    // }, [orgId]);
+    useEffect(() => {
+        getOrgFiles(orgId)
+    }, [orgId]);
 
     function messageHandler(info) {
         if (info.file.status !== 'uploading') {
@@ -68,7 +68,7 @@ function Clearances({isAdmin}) { //, orgId}) {
         previewFile: async function(file) {
             const formData = new FormData();
             formData.append('empty_form', file, file.name);
-            //formData.append('orgId', orgId);
+            formData.append('orgId', orgId);
             try {
                 return await axiosAPI.post('clearances/upload-org-file', formData, {
                     headers: {
@@ -83,13 +83,8 @@ function Clearances({isAdmin}) { //, orgId}) {
     };
     return (
         <div>
-            {/* <Title level={4}>Clearances</Title> */}
-            <Title level={5}>Add Clearance Forms</Title>
-            <Upload {...orgProps}>
-                <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
-            </Upload>
-
-            {/* {isAdmin ? 
+            <Title level={4}>Clearances</Title>
+            {isAdmin ? 
                 <>
                     <Title level={2}>Add Form</Title>
                     <Upload {...orgProps}>
@@ -98,7 +93,7 @@ function Clearances({isAdmin}) { //, orgId}) {
                 </> :
                 
                 <UserFilesTable orgId={orgId} fileList={fileList} messageHandler={messageHandler}/>
-            } */}
+            }
            
         </div>
     );

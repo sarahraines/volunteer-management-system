@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Form, Input, Button, Select, Switch, DatePicker, Space } from 'antd';
+import { Form, Input, Button, Select, Switch, DatePicker } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import { useDispatch } from 'react-redux';
 import { addAlert } from '../actionCreators.js';
-import Clearances from '../pages/Clearances';
 import "antd/dist/antd.css";
 import "./NewEventForm.css"
 
@@ -173,9 +172,6 @@ const NewEventForm = () => {
                 rules={[{ required: true, message: 'Instructions is required.' }]}
             >
                 <TextArea row={6} style={{ width: '100%' }} placeholder="Provide volunteers with instructions (i.e. how to get there, what to bring, etc.)" />
-            </Form.Item>
-            <Form.Item>
-                <Clearances isAdmin={true} orgId={1} />
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" className="event-form-button" loading={isLoading}>

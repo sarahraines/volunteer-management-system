@@ -75,10 +75,7 @@ class GetEventsByOrg(APIView):
         if request.GET.get('orgId'):
             date = timezone.now()
             orgId = request.GET['orgId']
-            events = Event.objects.filter(organization__id=orgId).filter(enddate__gte=date).order_by('begindate')
-            print('events')
-            print(events)
-            
+            events = Event.objects.filter(organizations__in=[orgId]).filter(enddate__gte=date).order_by('begindate')
             serializer = EventSerializer(events, many=True)
             
             for i in range(len(events)):
@@ -97,7 +94,7 @@ class GetEventCountForOrg(APIView):
     def get(self, request):
         if request.GET.get('orgId'):
             orgId = request.GET['orgId']
-            events = Event.objects.filter(organization__id=orgId)
+            events = Event.objects.filter(organizations__in=[orgId])
             return Response(len(events), status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
@@ -107,8 +104,6 @@ class CreateEvent(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        print("data")
-        print(data)
         try:
             data['begindate']=data['date'][0]
             data['enddate']=data['date'][1]
@@ -180,12 +175,12 @@ class GetEventFeedback(APIView):
         user_id = request.GET['userId']
 
         if str(is_admin)=='1':
-            feedback = EventFeedback.objects.filter(event__organization__id=org_id).values(
+            feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
             'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
         else:
-            feedback = EventFeedback.objects.filter(event__organization__id=org_id, username__id=user_id).values(
+            feedback = EventFeedback.objects.filter(event__organizations__id=org_id, username__id=user_id).values(
             'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
@@ -208,7 +203,7 @@ class GetAttendeeCountsByEvent(APIView):
 
     def get(self, request):
         orgId = request.GET['orgId']
-        attendees = Attendee.objects.filter(events__organization__id=orgId).values('events__name').annotate(Count('events__name'))
+        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('events__name').annotate(Count('events__name'))
         attendees = list(attendees)
 
         x = []
@@ -224,8 +219,8 @@ class AverageEventsPerVolunteer(APIView):
     authentication_classes = ()
     def get(self, request):
         orgId = request.GET['orgId']
-        attendees = Attendee.objects.filter(events__organization__id=orgId).values('username')
-        events =  Event.objects.filter(organization__in=orgId)
+        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('username')
+        events =  Event.objects.filter(organizations__in=[orgId])
         if len(attendees) > 0:
             avg = len(events)/len(attendees)
         else:
@@ -239,7 +234,7 @@ class GetUniqueAttendees(APIView):
 
     def get(self, request):
         orgId = request.GET['orgId']
-        attendees = Attendee.objects.filter(events__organization__id=orgId).values('username')
+        attendees = Attendee.objects.filter(events__organizations__id=orgId).values('username')
         unique_attendees =attendees.distinct()
         return Response(len(unique_attendees), status=status.HTTP_200_OK)
 
@@ -249,7 +244,7 @@ class GetUniqueVolunteersWithFeedback(APIView):
 
     def get(self, request):
         org_id = request.GET['orgId']
-        feedback = EventFeedback.objects.filter(event__organization__id=org_id).values(
+        feedback = EventFeedback.objects.filter(event__organizations__id=org_id).values(
         'username__email').distinct()
 
         return Response(len(feedback), status=status.HTTP_200_OK)
@@ -302,7 +297,7 @@ class GetAttendees(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         num_attendees = Attendee.objects.annotate(name=Concat('username__first_name', V(' '), 'username__last_name')).filter(
-            events__organization__id=org_id, events__begindate__gte=timezone.now()).values(
+            events__organizations__id=org_id, events__begindate__gte=timezone.now()).values(
                 'events__id', 'events__name', 'events__location', 'events__begindate', 'events__enddate', 'events__attendee_cap',).annotate(
                     count=Count('events__id'), attendees = GroupConcat('name')).order_by('events__begindate')
 
