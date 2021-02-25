@@ -8,7 +8,7 @@ from django.db.models.functions import Concat
 from django.utils import timezone
 from datetime import timedelta
 from django_mysql.models import GroupConcat
-from django.db.models import TextField
+from django.db.models import TextField, IntegerField
 from django.db.models.functions import Cast
 from collections import Counter
 from django.conf import settings
@@ -24,15 +24,16 @@ class VolunteerBreakdown(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=fields.BigIntegerField())
+        duration = Cast(duration, output_field=IntegerField)
         events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
-            count=Count('username__id'), event_list=GroupConcat('events__name')).order_by('-count')
+            count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
         members = Member.objects.filter(organization__id=org_id).values('user__first_name', 'user__last_name')
         for event in events_attended:
             event['key'] = event['username__id']
             event['name'] = event['username__first_name'] + ' ' + event['username__last_name']
             event['email'] = event['username__email']
-            event['total'] = 1
+            event['total'] = (event['total'])/10**6//3600
             event['event_list'] = (event['event_list']).replace(',', ', ')
         
         returning_count = 0
