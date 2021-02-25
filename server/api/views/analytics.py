@@ -8,14 +8,16 @@ from django.db.models.functions import Concat
 from django.utils import timezone
 from datetime import timedelta
 from django_mysql.models import GroupConcat
-from django.db.models import TextField, BigIntegerField
 from django.db.models.functions import Cast, Extract
 from collections import Counter
 from django.conf import settings
 
 if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
     from django.contrib.postgres.aggregates import StringAgg
-    GroupConcat = lambda expression: StringAgg(Cast(expression, TextField()), ',')
+    GroupConcat = lambda expression: StringAgg(Cast(expression, fields.TextField()), ',')
+    T = lambda e: Extract(F(e), 'epoch') * V(10**6) 
+else:
+    T = F
 
 class VolunteerBreakdown(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -23,7 +25,7 @@ class VolunteerBreakdown(APIView):
     
     def get(self, request):
         org_id = request.GET['org_id']
-        duration = ExpressionWrapper(Extract(F('events__enddate'), 'epoch') - Extract(F('events__begindate'), 'epoch'), output_field=BigIntegerField())
+        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
         events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
             count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
@@ -105,7 +107,7 @@ class VolunteerLeaderboard(APIView):
     
     def get(self, request):
         org_id = request.GET['org_id']
-        duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=fields.BigIntegerField())
+        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=BigIntegerField())
         events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
             count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
@@ -193,7 +195,7 @@ class NonprofitBreakdown(APIView):
     def get(self, request):
         user = request.GET['user']
 
-        duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=fields.BigIntegerField())
+        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
 
         nonprofits = Attendee.objects.filter(username__id=user, events__enddate__lte=timezone.now()).values(
             'events__organizations__id', 'events__organizations__name').annotate(count = Count('events__organizations__id'), hours = Sum(duration), events=GroupConcat('events__name'))
@@ -212,7 +214,7 @@ class VolunteerSummary(APIView):
     def get(self, request):
         user = request.GET['user']
 
-        duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=fields.BigIntegerField())
+        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
 
         nonprofits = []
         events = []
@@ -290,7 +292,7 @@ class GetVolunteerGoals(APIView):
     def get(self, request):
         user = request.GET['user']
 
-        duration = ExpressionWrapper(F('events__enddate') - F('events__begindate'), output_field=fields.BigIntegerField())
+        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
 
         goals = UserGoals.objects.filter(user__id=user, begindate__lte=timezone.now(), enddate__gte=timezone.now()).values('id', 'hours', 'begindate', 'enddate')
 
