@@ -53,12 +53,10 @@ function OrgClearanceTable({orgId, eId}) {
             const result = files.map((file,i) => ({
                 key: file.id, 
                 user: file.user__email, 
-                file: file.filled_form.split('/').slice(-1).pop(), 
+                url: file.url, 
                 status: file.status,
                 comment: file.comment
             }))
-
-            console.log(result)
             setRows(result)
         } catch(error) {
             console.error(error);
@@ -78,9 +76,9 @@ function OrgClearanceTable({orgId, eId}) {
         },
         {
             title: 'File',
-            dataIndex: 'file',
-            key: 'file',
-            render: (text, record) => <a href={"http://localhost:8080/" +text}>{text}</a>,
+            dataIndex: 'url',
+            key: 'url',
+            render: url => !!url ? <a href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Action',

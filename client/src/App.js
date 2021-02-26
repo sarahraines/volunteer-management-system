@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route, Switch } from "react-router-dom";
 import { isAuthenticated } from './api/authenticationApi';
 import Auth from './pages/Auth';
@@ -11,6 +11,10 @@ import EventFeedback from './pages/EventFeedback'
 import './App.css';
 
 function App() {
+
+  useEffect(() => {
+    document.title = "VolunteerSense"
+  }, []);
 
   return (
     <main>

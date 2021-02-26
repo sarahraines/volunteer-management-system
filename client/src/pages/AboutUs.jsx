@@ -4,6 +4,7 @@ import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import { PlusOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
+import { usePageView } from '../utils/googleAnalytics'
 
 const { Paragraph, Title } = Typography;
 
@@ -12,6 +13,7 @@ const AboutUs = ({org}) => {
     const [inputVisible, setInputVisible] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const inputRef = useRef();
+    usePageView('/about');
 
     const getCausesByOrg = useCallback(async () => {
         if (org?.id) {

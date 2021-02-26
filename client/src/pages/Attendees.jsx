@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import { Table, Typography, Button, Popconfirm, Tooltip, message, Select } from 'antd';
+import { usePageView } from '../utils/googleAnalytics'
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 
@@ -8,6 +9,7 @@ const { Title } = Typography;
 function Attendees({orgId}) {
     const [attendees, setAttendees] = useState([]);
     const [loading, setLoading] = useState(true);
+    usePageView('/attendees');
     
     const getAttendees = useCallback(async () => {
         try {

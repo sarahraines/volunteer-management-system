@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import { Table, Typography, Button, Popconfirm, message, Row, Modal, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { usePageView } from '../utils/googleAnalytics'
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 
@@ -16,6 +17,7 @@ function InvitePage({orgId}) {
     const [invitedMembers, setInvitedMembers] = useState([]);
     const [memberType, setMemberType] = useState(0);
 
+    usePageView('/invites')
     const getInvites = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("organization/get-invites/", {

@@ -5,7 +5,7 @@ import LoginLogo from '../assets/login.svg';
 import RegisterLogo from '../assets/register.svg';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { removeAlert } from '../actionCreators.js';
-import { logPageView } from '../utils/googleAnalytics'
+import { usePageView } from '../utils/googleAnalytics'
 import './Auth.css';
 
 const Auth = ({isRegister}) => {
@@ -13,6 +13,7 @@ const Auth = ({isRegister}) => {
   const logo = isRegister ? RegisterLogo: LoginLogo;
   const alerts = useSelector(state => state.alerts, shallowEqual);
   const dispatch = useDispatch();
+  usePageView(isRegister ? '/register' : '/login');
 
   const onClose = useCallback((id) => {
     setTimeout(() => dispatch(removeAlert(id)), 500);

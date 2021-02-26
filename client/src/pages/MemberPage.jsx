@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import { Table, Typography, Button, Popconfirm, Tooltip, message, Select } from 'antd';
+import { usePageView } from '../utils/googleAnalytics'
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 
@@ -10,6 +11,7 @@ function MemberPage({orgId}) {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const currentUser = localStorage.getItem("user_id");
+    usePageView('/members')
     
     const getMembers = useCallback(async () => {
         try {

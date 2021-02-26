@@ -18,10 +18,9 @@ function UserFilesTable({orgId, fileList}) {
             const files = response.data;
             const formattedFiles = files.map(file => ({
                 uid: file.id, 
-                orgFormId: file.org_file, 
-                name: file.filled_form.split('/').slice(-1).pop(), 
+                orgFormId: file.org_file,
                 status: file.status,
-                url: file.filled_form,
+                url: file.url,
                 comment: file.comment
             }));
             setUserFileList(formattedFiles);
@@ -54,15 +53,15 @@ function UserFilesTable({orgId, fileList}) {
     const columns = [
         {
             title: 'Incomplete File',
-            dataIndex: 'file',
-            key: 'file',
-            render: text => <a href={window.location.origin + "/" + text}>{text}</a>,
+            dataIndex: 'incomplete_file',
+            key: 'incomplete_file',
+            render: url => !!url ? <a href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Your Uploaded File',
             dataIndex: 'uploaded_file',
             key: 'uploaded_file',
-            render: text => <a href={window.location.origin +  "/" + text}>{text}</a>,
+            render: url => !!url ? <a href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Status',
@@ -113,25 +112,20 @@ function UserFilesTable({orgId, fileList}) {
     function getUserFileForOrgFile(infoType, oFormId) {
         if ((userFileList.filter(ufile => ufile.orgFormId == oFormId)).length > 0) {
             const userFile = userFileList.filter(ufile => ufile.orgFormId == oFormId)[0]
-            if (infoType == "name") {
-                return userFile.name;
-            } else if (infoType == "status") {
-                return userFile.status
-            } else if (infoType == "comment"){
-                return userFile.comment
-            }
+            return userFile[infoType]
         }
 
         if (infoType == "status") {
             return "None";
         }
-        return (null)
+
+        return null
     }
     
     const data = fileList.map((file,i) => ({
         "key": file.uid, 
-        "file": file.name,
-        "uploaded_file": getUserFileForOrgFile("name", file.uid),
+        "incomplete_file": file.url,
+        "uploaded_file": getUserFileForOrgFile("url", file.uid),
         "status": getUserFileForOrgFile("status", file.uid),
         "comment": getUserFileForOrgFile("comment", file.uid),
     }))

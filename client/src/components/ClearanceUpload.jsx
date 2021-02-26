@@ -22,9 +22,9 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
             const formattedFiles = files.map(file => ({
                 key: file.id, 
                 uid: file.id, 
-                name: file.empty_form.split('/').slice(-1).pop(), 
+                name: file.url.split('/').slice(-1)[0].split('?')[0], 
                 status: "done", 
-                url: file.empty_form,
+                url: file.url,
                 event: file.event,
                 eventName: file.event__name
             }));

@@ -3,11 +3,13 @@ import { Upload, Button, message, Typography, Table } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import ClearanceUpload from '../components/ClearanceUpload';
+import { usePageView } from '../utils/googleAnalytics'
 const { Title } = Typography;
 
 function Clearances({isAdmin, orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
+    usePageView('/clearances')
 
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 

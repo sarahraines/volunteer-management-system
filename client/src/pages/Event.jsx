@@ -9,6 +9,7 @@ import axiosAPI from "../api/axiosApi";
 const Event = () => {
     const [events, setEvents] = useState([]); 
     const [filterDisplay, setFilterDisplay] = useState([]);
+    usePageView('/events');
 
     useEffect(() => {
         getEvents();
