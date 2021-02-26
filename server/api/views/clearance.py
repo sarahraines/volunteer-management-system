@@ -25,14 +25,19 @@ class GetOrgFilesForEvent(APIView):
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
         event_id = request.GET['eventId']
-        org_files = OrgFile.objects.filter(organization=org, event__id = event_id).values('id', 'organization', 'event', 'event__name', 'empty_form.url')
-        # serializer = OrgFileSerializer(org_files, many=True)
-        
-        for file in org_files:
-            file['empty_form'] = file.empty_form.url
-            file['key'] = file['id']
+        org_files = OrgFile.objects.filter(organization=org, event__id = event_id).select_related()
 
-        return Response(org_files)
+        result = []
+        for file in org_files:
+            result.append({
+                'key': file.id,
+                'id': file.id,
+                'url': file.empty_form.url,
+                'event': str(file.event),
+                'event__name': file.event.name, 
+            })
+
+        return Response(result)
 
 class GetUserFiles(APIView):
     permission_classes = (permissions.AllowAny,)
