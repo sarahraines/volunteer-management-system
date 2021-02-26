@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { Button, Typography } from 'antd';
 import QAndA from '../components/QAndA';
-import { usePageView } from '../utils/googleAnalytics'
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 
@@ -9,7 +8,6 @@ const { Title } = Typography;
 
 function QAndAPage({isAdmin, orgId}) {
     const [qA, setQA] = useState([]);
-    usePageView('/faq')
     const getQA = async (orgId) => {
         try {
             const response =  await axiosAPI.get("organization/get-faq/", {

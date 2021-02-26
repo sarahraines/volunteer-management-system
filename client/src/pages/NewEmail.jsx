@@ -3,7 +3,6 @@ import { Table, Typography, Form, Input, Button} from 'antd';
 import axiosAPI from '../api/axiosApi';
 import { addAlert } from '../actionCreators.js';
 import { useDispatch } from 'react-redux';
-import { usePageView } from '../utils/googleAnalytics'
 import './NewEmail.css';
 
 const { TextArea } = Input;
@@ -16,8 +15,6 @@ function NewEmail({orgId}) {
     const [checkedList, setCheckedList] = useState([]); 
     const dispatch = useDispatch();
 
-    usePageView('/communication')
-    
     const getMembers = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("organization/get-members/", {

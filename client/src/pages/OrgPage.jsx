@@ -12,6 +12,7 @@ import ManageVolunteerClearances from './ManageVolunteerClearances'
 import NewEmail from './NewEmail'
 import Attendees from './Attendees';
 import "./OrgPage.css";
+import { makePageView } from '../utils/googleAnalytics';
 // import EventLandingPage from './EventLandingPage';
 
 const { Title } = Typography;
@@ -21,6 +22,11 @@ function OrgPage({member, orgId}) {
     const [org, setOrg] = useState(null);
     const [activeKey, setActiveKey] = useState("home");
     const isAdmin = member?.member_type === 1;
+
+    const onChange = (key) => {
+        setActiveKey(key);
+        makePageView('/' + key);
+    }
 
     useEffect(() => {
         if (orgId) {
@@ -34,7 +40,7 @@ function OrgPage({member, orgId}) {
     return (
         <React.Fragment>
             {org && <Title style={{ textAlign: "center" }} level={2}>{org.name}</Title>}
-            <Tabs activeKey={activeKey} onChange={setActiveKey} style={{ height: "100%" }}>
+            <Tabs activeKey={activeKey} onChange={onChange} style={{ height: "100%" }}>
                 <TabPane tab="Home" key="home" style={{ height: "100%" }}>
                     <AboutUs org={org} />
                 </TabPane>

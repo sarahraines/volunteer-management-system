@@ -3,7 +3,6 @@ import {Button, Typography, message, Select, Space} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
-import { usePageView } from '../utils/googleAnalytics'
 import axiosAPI from "../api/axiosApi";
 
 const { Option } = Select;
@@ -12,9 +11,7 @@ const OrgEvents = ({orgId}) => {
     const [events, setEvents] = useState([]); 
     const [filterDisplay, setFilterDisplay] = useState([]);
     const [attendeeCount, setAttendeeCount] = useState([]); 
-
-    usePageView('/events')
-
+    
     const getEventsByOrg = useCallback(async () => {
         try {
             const response = await axiosAPI.get("events/get-by-org/", {

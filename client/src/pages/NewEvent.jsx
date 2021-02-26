@@ -5,7 +5,8 @@ import { usePageView } from '../utils/googleAnalytics'
 import './NewEvent.css';
 
 const NewEvent = () => {
-    usePageView('/create-event')
+    usePageView('/new-event')
+
     return (
       <div className='event-container'>
             <Typography.Title level={2}>Create an event</Typography.Title>

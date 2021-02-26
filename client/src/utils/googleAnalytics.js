@@ -8,3 +8,5 @@ export const makePageView = (pageName) =>
     useEffect(() => {
         makePageView(pageName);
     }, [pageName]);
+
+export const makeEvent = (args) => ReactGA.event(args);
