@@ -31,7 +31,7 @@ const VolunteerAnalytics = () => {
 
     useEffect(() => {
             getSummary();
-    }, [getSummary, summary]);
+    }, []);
 
     const getGoals = useCallback(async () => {
         try {
@@ -41,15 +41,14 @@ const VolunteerAnalytics = () => {
                 }
             });
             setGoals(response.data);
-            console.log(goals); 
         } catch(error) {
             console.error(error);
         }
-    }, [goals, user]);
+    }, [user]);
 
     useEffect(() => {
             getGoals();
-    }, [getGoals, goals]);
+    }, []);
     
     const getNonprofits = useCallback(async () => {
         try {
@@ -66,7 +65,7 @@ const VolunteerAnalytics = () => {
 
     useEffect(() => {
             getNonprofits();
-    }, [getNonprofits, nonprofits]);
+    }, []);
     
     const getEvents = useCallback(async () => {
         try {
@@ -83,7 +82,7 @@ const VolunteerAnalytics = () => {
 
     useEffect(() => {
             getEvents();
-    }, [getEvents, events]);
+    }, []);
       
 
     return (
