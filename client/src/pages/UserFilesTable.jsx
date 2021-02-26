@@ -135,6 +135,8 @@ function UserFilesTable({orgId, fileList}) {
         "status": getUserFileForOrgFile("status", file.uid),
         "comment": getUserFileForOrgFile("comment", file.uid),
     }))
+    
+    console.log(data)
 
     return (
         <div>

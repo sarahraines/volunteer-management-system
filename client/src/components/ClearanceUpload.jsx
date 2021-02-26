@@ -27,6 +27,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 event: file.event,
                 eventName: file.event__name
             }));
+            console.log(formattedFiles)
             setFileList(formattedFiles);
         } catch(error) {
             console.error(error);

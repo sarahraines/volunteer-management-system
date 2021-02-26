@@ -80,7 +80,7 @@ function OrgClearanceTable({orgId, eId}) {
             title: 'File',
             dataIndex: 'file',
             key: 'file',
-            render: text => <a href={"http://localhost:8080/" +text}>{text}</a>,
+            render: (text, record) => <a href={"http://localhost:8080/" +text}>{text}</a>,
         },
         {
             title: 'Action',
