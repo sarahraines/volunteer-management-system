@@ -14,7 +14,7 @@ function NewEmail({orgId}) {
     const [loading, setLoading] = useState(true);
     const [checkedList, setCheckedList] = useState([]); 
     const dispatch = useDispatch();
-    
+
     const getMembers = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("organization/get-members/", {

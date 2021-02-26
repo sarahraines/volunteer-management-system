@@ -8,7 +8,6 @@ const { Title } = Typography;
 
 function QAndAPage({isAdmin, orgId}) {
     const [qA, setQA] = useState([]);
-    console.log('isAdmin', isAdmin); 
     const getQA = async (orgId) => {
         try {
             const response =  await axiosAPI.get("organization/get-faq/", {

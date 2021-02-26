@@ -6,7 +6,6 @@ import NonprofitFunnel from '../components/NonprofitFunnel.jsx';
 import VolunteerLeaderboard from '../components/VolunteerLeaderboard';
 import EventLeaderboard from '../components/EventLeaderboard';
 import VolunteerBreakdown from '../components/VolunteerBreakdown';
-import { usePageView } from '../utils/googleAnalytics'
 
 const Analytics = ({orgId}) => {
 
@@ -14,7 +13,6 @@ const Analytics = ({orgId}) => {
     const [breakdown, setBreakdown] = useState([]);
     const [volunteers, setVolunteers] = useState([]);
     const [events, setEvents] = useState([]);
-    usePageView('/analytics');
 
     const getFunnel = useCallback(async () => {
         try {

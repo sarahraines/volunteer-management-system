@@ -5,6 +5,7 @@ import { Form, Input, Button, message } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { register, login } from '../api/authenticationApi';
 import { addAlert } from '../actionCreators.js';
+import { makeEvent } from '../utils/googleAnalytics'
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
@@ -17,6 +18,10 @@ const AuthForm = ({isRegister}) => {
         try {
             if (isRegister) {
                 await register(values.email, values.first_name, values.last_name, values.password)
+                makeEvent({
+                    category: 'auth',
+                    action: 'registration_success'
+                })
                 dispatch(addAlert('Account created! Check your email to confirm your account.', 'success'));
             } else {
                 await login(values.email, values.password);
@@ -24,6 +29,10 @@ const AuthForm = ({isRegister}) => {
             }
         } catch (error) {
             if (isRegister) {
+                makeEvent({
+                    category: 'auth',
+                    action: 'registration_fail'
+                })
                 dispatch(addAlert('Account could not be created. Have you already created an account with this email?', 'error'));
             } else {
                 message.error('Login failed. Email or password is incorrect.');

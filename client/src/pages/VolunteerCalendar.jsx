@@ -1,10 +1,12 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import { Calendar, Typography , Button, Popover} from 'antd';
+import { usePageView } from '../utils/googleAnalytics'
 import axiosAPI from "../api/axiosApi";
 import VolunteerCalendarCard from './VolunteerCalendarCard';
 
 const VolunteerCalendar = () => {
     const [events, setEvents] = useState([]); 
+    usePageView('/calendar')
 
     const getVolunteerEvents = useCallback(async () => {
         try {

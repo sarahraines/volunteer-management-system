@@ -11,7 +11,7 @@ const OrgEvents = ({orgId}) => {
     const [events, setEvents] = useState([]); 
     const [filterDisplay, setFilterDisplay] = useState([]);
     const [attendeeCount, setAttendeeCount] = useState([]); 
-
+    
     const getEventsByOrg = useCallback(async () => {
         try {
             const response = await axiosAPI.get("events/get-by-org/", {

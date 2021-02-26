@@ -3,13 +3,11 @@ import { Upload, Button, message, Typography, Table } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import OrgClearanceTable from './OrgClearanceTable';
-import { usePageView } from '../utils/googleAnalytics'
 const { Title } = Typography;
 
 function ManageVolunteerClearances({orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
-    usePageView('/clearance-management');
 
     const getEventsByOrg = useCallback(async () => {
         try {

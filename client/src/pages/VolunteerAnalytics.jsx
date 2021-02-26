@@ -7,6 +7,7 @@ import NonprofitBreakdown from '../components/NonprofitBreakdown';
 import VolunteerSummary from '../components/VolunteerSummary';
 import VolunteerGoals from '../components/VolunteerGoals';
 import Plotly from 'react-plotly.js';
+import { usePageView } from '../utils/googleAnalytics'
 
 const VolunteerAnalytics = () => {
 
@@ -34,6 +35,7 @@ const VolunteerAnalytics = () => {
     useEffect(() => {
             getMonthlyHours();
     }, []);
+    usePageView('/volunteer-analytics');
 
     const getSummary = useCallback(async () => {
         try {
