@@ -194,6 +194,10 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, '..', 'assets')
 
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, '..', 'media')
+
 ### File storage
 
 if os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'):

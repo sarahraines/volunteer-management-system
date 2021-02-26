@@ -27,5 +27,5 @@ urlpatterns = [
         RedirectView.as_view(url='/assets/%(path)s', permanent=False)),
     re_path(r'^(?!/?assets/)(?!/?admin/)(?!/?api/)(?!/?media/).*$', serve, kwargs={'path': 'index.html'}),
     
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
