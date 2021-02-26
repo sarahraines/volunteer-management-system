@@ -35,7 +35,7 @@ const OrgEvents = ({orgId}) => {
         if (e !== "") {
             let newList = [];
             newList = oldList.filter(event =>
-                event.name.includes(e)
+                event.name.toLowerCase().includes(e.toLowerCase())
             );
             setFilterDisplay(newList);
         } else {
