@@ -63,4 +63,5 @@ urlpatterns = [
     path('analytics/volunteer-summary/', views.VolunteerSummary.as_view(), name='volunteer_summary'),
     path('analytics/get-volunteer-goals/', views.GetVolunteerGoals.as_view(), name='get_volunteer_goals'),
     path('analytics/volunteer-funnel/', views.VolunteerFunnel.as_view(), name='volunteer_funnel'),
+    path('analytics/get-monthly-hours/', views.GetMonthlyHours.as_view(), name='get_monthly_hours'),
 ]

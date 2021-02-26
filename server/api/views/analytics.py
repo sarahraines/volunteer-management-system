@@ -11,6 +11,7 @@ from django_mysql.models import GroupConcat
 from django.db.models.functions import Cast, Extract
 from collections import Counter
 from django.conf import settings
+from datetime import datetime
 
 if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
     from django.contrib.postgres.aggregates import StringAgg
@@ -310,10 +311,38 @@ class VolunteerFunnel(APIView):
     authentication_classes = ()
 
     def get(self, request):
-        org_id = request.GET['org_id']; 
+        org_id = request.GET['org_id']
     
         members = Member.objects.filter(organization__id=org_id).values('user__id')
         attendees = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values('username__id').distinct()
         feedback = EventFeedback.objects.filter(event__organizations__id=org_id, event__enddate__lte=timezone.now()).values('username__email').distinct()
 
         return Response([len(members), len(attendees), len(feedback)], status=status.HTTP_200_OK)
+
+class GetMonthlyHours(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        user = request.GET['user']
+
+        duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
+
+        attendees = Attendee.objects.filter(username__id=user, events__begindate__lte=timezone.now()).values('events__begindate').annotate(
+            hours=Sum(duration)).order_by('events__begindate')
+
+        month_counts = dict()
+        year_counts = dict()
+
+        for attendee in attendees:
+            month = str(attendee['events__begindate'])[:7]
+            if month not in month_counts:
+                month_counts[month] = 0
+            month_counts[month] += attendee['hours']/10**6//3600
+
+            year = str(attendee['events__begindate'])[:4]
+            if year not in year_counts:
+                year_counts[year] = 0
+            year_counts[year] += attendee['hours']/10**6//3600
+
+        return Response([month_counts.keys(), month_counts.values(), year_counts.keys(), year_counts.values()], status=status.HTTP_200_OK)
