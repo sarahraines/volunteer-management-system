@@ -6,16 +6,35 @@ import VolunteerEventLeaderboard from '../components/VolunteerEventLeaderboard';
 import NonprofitBreakdown from '../components/NonprofitBreakdown';
 import VolunteerSummary from '../components/VolunteerSummary';
 import VolunteerGoals from '../components/VolunteerGoals';
+import Plotly from 'react-plotly.js';
 import { usePageView } from '../utils/googleAnalytics'
 
 const VolunteerAnalytics = () => {
 
     const user = localStorage.getItem("user_id");
 
+    const [monthlyHours, setMonthlyHours] = useState([]); 
     const [summary, setSummary] = useState([]);
     const [goals, setGoals] = useState([]);
     const [nonprofits, setNonprofits] = useState([]);
     const [events, setEvents] = useState([]);
+    
+    const getMonthlyHours = useCallback(async () => {
+        try {
+            const response =  await axiosAPI.get("analytics/get-monthly-hours/", {
+                params: {
+                    user: user,
+                }
+            });
+            setMonthlyHours(response.data);
+        } catch(error) {
+            console.error(error);
+        }
+    }, [user]);
+
+    useEffect(() => {
+            getMonthlyHours();
+    }, []);
     usePageView('/volunteer-analytics');
 
     const getSummary = useCallback(async () => {
@@ -90,6 +109,31 @@ const VolunteerAnalytics = () => {
     return (
       <React.Fragment>
             <Typography.Title level={2}>Analytics</Typography.Title>
+            
+            <Plotly 
+                data={[{
+                    type: 'scatter', 
+                    marker: {color: 'blue'},
+                    x: monthlyHours[0],
+                    y: monthlyHours[1],
+                    row: 1,
+                    col: 1},
+                    {type: 'bar', 
+                    marker: {color: 'blue'},
+                    x: monthlyHours[2],
+                    y: monthlyHours[3],
+                    xaxis: 'x2',
+                    yaxis: 'y2',
+                    row: 1,
+                    col: 2},
+                    ]}
+                layout={{
+                    grid: {rows: 1, 
+                            columns: 2,
+                            pattern: 'independent'},
+                    showlegend: false,
+                    title: 'Volunteer Hours'}}/>
+
             <VolunteerSummary data={summary}/>
             <VolunteerGoals data={goals} />
             <NonprofitBreakdown data={nonprofits}/>
