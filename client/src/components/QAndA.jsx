@@ -6,7 +6,7 @@ import './QAndA.css';
 const { Paragraph } = Typography;
 
 
-function QAndA ({isAdmin, item, removeFaq}) {
+function QAndA ({isAdmin, item, removeFaq, orgId}) {
     const [questionStr, setQuestionStr] = useState(item?.question || "");
     const [answerStr, setAnswerStr] = useState(item?.answer || "");
     const [isPublic, setIsPublic] = useState(!!item?.is_public);
@@ -15,7 +15,7 @@ function QAndA ({isAdmin, item, removeFaq}) {
         setQuestionStr(newQuestionStr)
         try {
             await axiosAPI.post("faq/upsert/", {
-                id: item?.id, question: newQuestionStr, answer: answerStr
+                id: item?.id, question: newQuestionStr, answer: answerStr, org_id: orgId
             });
             message.success('Question updated');
         }
@@ -27,7 +27,7 @@ function QAndA ({isAdmin, item, removeFaq}) {
         setAnswerStr(newAnswerStr)
         try {
             await axiosAPI.post("faq/upsert/", {
-                id: item?.id, question: questionStr, answer: newAnswerStr, is_public: isPublic
+                id: item?.id, question: questionStr, answer: newAnswerStr, is_public: isPublic, org_id: orgId
             });
             message.success('Answer updated');
         }
@@ -39,7 +39,7 @@ function QAndA ({isAdmin, item, removeFaq}) {
         setIsPublic(newIsPublic)
         try {
             await axiosAPI.post("faq/upsert/", {
-                id: item?.id, question: questionStr, answer: answerStr, is_public: newIsPublic
+                id: item?.id, question: questionStr, answer: answerStr, is_public: newIsPublic, org_id: orgId
             });
             message.success('FAQ updated');
         }

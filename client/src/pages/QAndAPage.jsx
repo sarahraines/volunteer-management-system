@@ -44,7 +44,7 @@ function QAndAPage({isAdmin, orgId}) {
         <div>
             <Title level={4}>Frequently asked questions</Title>
             {qA.map(item => 
-                <QAndA isAdmin={isAdmin} key={item.id} item={item} removeFaq={removeFaq}/>
+                <QAndA isAdmin={isAdmin} key={item.id} item={item} removeFaq={removeFaq} orgId={orgId}/>
             )}
             {isAdmin && (<Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>)}
         </div>
