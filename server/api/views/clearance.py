@@ -13,8 +13,6 @@ class AddOrgFile(APIView):
         org = Organization.objects.filter(id=request.data['orgId'])[0]
         e = Event.objects.filter(id=request.data['eventId'])[0]
         data = request.data
-        print("add org file")
-        print(data)
         serializer = OrgFileSerializer(data=data)
         if serializer.is_valid():
             serializer.save(organization = org, event=e)
@@ -27,12 +25,11 @@ class GetOrgFilesForEvent(APIView):
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
         event_id = request.GET['eventId']
-        org_files = OrgFile.objects.filter(organization=org, event__id = event_id).values('id', 'organization', 'event', 'event__name', 'empty_form')
-        print("org files")
-        print(org_files)
+        org_files = OrgFile.objects.filter(organization=org, event__id = event_id).values('id', 'organization', 'event', 'event__name', 'empty_form.url')
         # serializer = OrgFileSerializer(org_files, many=True)
         
         for file in org_files:
+            file['empty_form'] = file.empty_form.url
             file['key'] = file['id']
 
         return Response(org_files)
