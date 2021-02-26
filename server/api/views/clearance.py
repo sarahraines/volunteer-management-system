@@ -25,7 +25,7 @@ class GetOrgFilesForEvent(APIView):
     def get(self, request, format='json'):
         org = Organization.objects.filter(id=request.GET['orgId'])[0]
         event_id = request.GET['eventId']
-        org_files = OrgFile.objects.filter(organization=org, event__id = event_id).select_related()
+        org_files = OrgFile.objects.select_related('event').filter(organization=org, event__id = event_id)
 
         result = []
         for file in org_files:
