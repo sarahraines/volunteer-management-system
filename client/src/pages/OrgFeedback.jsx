@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {Typography, Table} from 'antd';
+import { usePageView } from '../utils/googleAnalytics'
 import "antd/dist/antd.css";
 import axiosAPI from "../api/axiosApi";
 
@@ -22,6 +23,8 @@ const OrgFeedback = ({isAdmin, orgId}) => {
             console.error(error);
         }
     }, [orgId, isAdmin]);
+
+    usePageView('/feedback')
 
     useEffect(() => {
         getFeedbackByOrg();

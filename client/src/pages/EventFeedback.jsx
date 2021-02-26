@@ -5,7 +5,7 @@ import { usePageView } from '../utils/googleAnalytics'
 import './EventFeedback.css';
 
 const EventFeedback = () => {
-    usePageView('/feedback');
+    usePageView('/feedback-form');
     return (
       <div className='event-feedback-container'>
             <Typography.Title level={2}>Event Feedback</Typography.Title>

@@ -6,6 +6,7 @@ import VolunteerEventLeaderboard from '../components/VolunteerEventLeaderboard';
 import NonprofitBreakdown from '../components/NonprofitBreakdown';
 import VolunteerSummary from '../components/VolunteerSummary';
 import VolunteerGoals from '../components/VolunteerGoals';
+import { usePageView } from '../utils/googleAnalytics'
 
 const VolunteerAnalytics = () => {
 
@@ -15,7 +16,8 @@ const VolunteerAnalytics = () => {
     const [goals, setGoals] = useState([]);
     const [nonprofits, setNonprofits] = useState([]);
     const [events, setEvents] = useState([]);
-    
+    usePageView('/volunteer-analytics');
+
     const getSummary = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("analytics/volunteer-summary/", {
