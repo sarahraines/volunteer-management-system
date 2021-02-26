@@ -17,6 +17,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 }
             });
             const files = response.data;
+            console.log('files', files);
             
             const formattedFiles = files.map(file => ({
                 key: file.id, 
