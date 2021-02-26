@@ -55,13 +55,13 @@ function UserFilesTable({orgId, fileList}) {
             title: 'Incomplete File',
             dataIndex: 'incomplete_file',
             key: 'incomplete_file',
-            render: url => !!url ? <a href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
+            render: url => !!url ? <a target="_blank" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Your Uploaded File',
             dataIndex: 'uploaded_file',
             key: 'uploaded_file',
-            render: url => !!url ? <a href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
+            render: url => !!url ? <a target="_blank" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Status',

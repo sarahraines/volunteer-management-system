@@ -78,7 +78,7 @@ function OrgClearanceTable({orgId, eId}) {
             title: 'File',
             dataIndex: 'url',
             key: 'url',
-            render: url => !!url ? <a href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
+            render: url => !!url ? <a target="_blank" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Action',
