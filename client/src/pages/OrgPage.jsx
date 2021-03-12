@@ -13,7 +13,6 @@ import NewEmail from './NewEmail'
 import Attendees from './Attendees';
 import "./OrgPage.css";
 import { makePageView } from '../utils/googleAnalytics';
-// import EventLandingPage from './EventLandingPage';
 
 const { Title } = Typography;
 const { TabPane } = Tabs;
@@ -39,10 +38,10 @@ function OrgPage({member, orgId}) {
 
     return (
         <React.Fragment>
-            {org && <Title style={{ textAlign: "center" }} level={2}>{org.name}</Title>}
+            {org && <Title style={{ textAlign: "center" }} level={2}>{org?.name}</Title>}
             <Tabs activeKey={activeKey} onChange={onChange} style={{ height: "100%" }}>
                 <TabPane tab="Home" key="home" style={{ height: "100%" }}>
-                    <AboutUs org={org} />
+                    <AboutUs org={org} isAdmin={isAdmin} />
                 </TabPane>
                 {isAdmin &&
                      <TabPane tab="Invites" key="invites">
