@@ -30,7 +30,7 @@ const AboutUs = ({org, isAdmin}) => {
 
     const closeModal = useCallback(() => {
         setIsModalVisible(false);
-    }, []);
+    }, [org?.id]);
 
     const closeModalWithUpdate = useCallback(() => {
         setIsModalVisible(false);
@@ -71,7 +71,7 @@ const AboutUs = ({org, isAdmin}) => {
                   ]}
             >
                   <Descriptions>
-                    {org?.website && <Descriptions.Item label="Website"><a href={org.website}>{org.website}</a></Descriptions.Item>}
+                    {org?.website && <Descriptions.Item label="Website"><a target="_blank" href={org.website}>{org.website}</a></Descriptions.Item>}
                     {org?.phone && <Descriptions.Item label="Telephone">{org.phone}</Descriptions.Item>}
                     {org?.email && <Descriptions.Item label="Email"><a href={`mailto:${org.email}`}>{org.email}</a></Descriptions.Item>}
                     {org?.address && <Descriptions.Item label="Street Address">{org.address}</Descriptions.Item>}

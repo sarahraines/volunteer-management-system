@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { Alert, Layout } from 'antd';
-import { removeAlert } from '../actionCreators.js';
+import { removeAlert, setOrgs, setSidebarItem } from '../actionCreators.js';
 import Sidebar from "../components/Sidebar";
 import FeedContent from "../components/FeedContent";
 import axiosAPI from '../api/axiosApi';
@@ -9,13 +9,8 @@ import axiosAPI from '../api/axiosApi';
 const { Content, Sider } = Layout;
 
 const Feed = () => {
-  const [context, setContext] = useState([]);
-  const [member, setMember] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  const setContextFromSidebar = (newContext) => {
-    setContext(newContext);
-  }
   const alerts = useSelector(state => state.alerts, shallowEqual);
+  const orgs = useSelector(state => state.orgs);
   const dispatch = useDispatch();
 
   const onClose = useCallback((id) => {
@@ -40,33 +35,31 @@ const Feed = () => {
                  user_id: localStorage.getItem("user_id"), 
              }
          });
-        const member = response.data;
-        if (member.length > 0) {
-            setMember(member)
-            setSelectedKeys([member[0]?.organization?.id.toString()])
-        } else {
-            setSelectedKeys(["create"])
+        response.data.forEach(member => member.key = member.organization.id)
+        dispatch(setOrgs(response.data));
+        if (response.data.length > 0) {
+          dispatch(setSidebarItem(response?.data[0]?.key.toString() ?? 'create-org'));
         }
     } catch(error) {
         console.error(error);
     }
-  }, [setSelectedKeys, setMember])
+  }, [dispatch]);
 
   useEffect(() => {
     getMember()
   }, [getMember]);
 
   return (
-    <Layout style={{ minHeight:"100vh" }}>
+    <Layout id="content" style={{ minHeight:"100vh" }}>
       <Sider width={240} style={{ background: '#fff' }}>
-        <Sidebar selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} member={member} setFeedContext={setContextFromSidebar}/>
+        <Sidebar member={orgs}/>
       </Sider>
       <Layout>
         {alertList}
-        <Layout style={{ padding: '24px', height: "100%"  }}>
-          <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
-            <FeedContent member={member} context={context}/>
-          </Content>
+        <Layout style={{ padding: '24px', height: "100%"}}>
+            <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
+              <FeedContent member={orgs} />
+            </Content>
         </Layout>
       </Layout>
     </Layout>

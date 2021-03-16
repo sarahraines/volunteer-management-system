@@ -18,7 +18,7 @@ function MemberPage({orgId}) {
                     org_id: orgId,
                 }
             });
-            response.data.forEach(member => member.key = member.id);
+            response.data.forEach(member => member.key = member.organization.id)
             setMembers(response.data);
             setLoading(false);
         } catch(error) {

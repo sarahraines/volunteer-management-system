@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select, message } from 'antd';
+import { useDispatch } from 'react-redux'
+import { setOrgs, setSidebarItem } from '../actionCreators.js';
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
@@ -9,6 +11,7 @@ const { TextArea } = Input;
 const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
+    const dispatch = useDispatch();
 
     const getCauses = useCallback(async () => {
         try {
@@ -38,7 +41,7 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
             setLoading(true);
         }
         try {
-            await axiosAPI.post("organization/upsert/", {
+           const newOrg = await axiosAPI.post("organization/upsert/", {
                 id: org?.id,
                 name: values.name,
                 causes: values.causes,
@@ -56,6 +59,14 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
                     status: 0,
                 });
             }
+            const response = await axiosAPI.get("user/get-member/", {
+                params: {
+                    user_id: localStorage.getItem("user_id"), 
+                }
+            });
+            response.data.forEach(member => member.key = member.organization.id)
+            dispatch(setOrgs(response.data));
+            dispatch(setSidebarItem(newOrg.data.id));
             message.success(`Organization ${form ? "updated" : "created"}`);
             if (form) {
                 closeModalWithUpdate();
