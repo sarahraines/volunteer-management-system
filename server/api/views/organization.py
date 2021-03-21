@@ -102,9 +102,7 @@ class GetPublicOrgs(APIView):
     authentication_classes = ()
     
     def get(self, request):
-        orgs = Organization.objects.all()
-        print("org len" + str(orgs))
+        orgs = Organization.objects.filter(is_public=True)
         serializer = OrganizationSerializer(orgs, many=True)
-        print("org len" + str(serializer.data))
         return Response(serializer.data)
         
