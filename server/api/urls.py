@@ -38,6 +38,7 @@ urlpatterns = [
     path('users/activate/', views.ActivateUser.as_view(), name='activate_user'),
     path('users/create/', views.CreateUser.as_view(), name='create_user'),
     path('users/create-from-invite/', views.CreateUserFromInvite.as_view(), name='create_user_from_invite'),
+    path('users/resend-confirmation-email/', views.ResendConfirmationEmail.as_view(), name='resend_confirmation_email'),
     path('users/reset-password/', views.ChangePassword.as_view(), name='reset_password'),
     path('users/forgot-password/', views.ForgotPassword.as_view(), name='forgot_password'),
     path('users/update/', views.UpdateUser.as_view(), name='update_user'),

@@ -20,4 +20,4 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add extra responses here
         data['user_id'] = self.user.id
-        return data
+        return data  

@@ -13,6 +13,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from api.tokens import account_activation_token
 from django.shortcuts import get_object_or_404
+from smtplib import SMTPException
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,38 @@ class LogoutAndBlacklistRefreshTokenForUserView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class ResendConfirmationEmail(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    def post(self, request):
+        data = request.data
+        email = data['email']
+        user = User.objects.get(email=email)
+        serializer = UserSerializer(user)
+        if serializer.is_valid():
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = account_activation_token.make_token(user)
+            is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
+            activation_url = request.build_absolute_uri(f"/activate?uid={uid}&token={token}") if not is_localhost else f"http://localhost:3000/activate?uid={uid}&token={token}"
+            mail_subject = 'Activate your account.'
+            message = render_to_string('activate_account.html', {
+                'user': user,
+                'activation_url': activation_url
+            })
+            email = EmailMessage(
+                mail_subject, message, to=[data['email']]
+            )
+            try:
+                email.send(fail_silently=False)
+            except SMTPException:
+                return Response(False, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 class CreateUser(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -57,7 +90,11 @@ class CreateUser(APIView):
             email = EmailMessage(
                 mail_subject, message, to=[data['email']]
             )
-            email.send()
+            try:
+                email.send(fail_silently=False)
+            except SMTPException:
+                return Response(False, status=status.HTTP_201_CREATED)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -105,7 +142,6 @@ class ChangePassword(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        serializer = ChangePasswordSerializer(data=data)
         if serializer.is_valid():
             user = User.objects.get(pk=data['user_id'])
             if user.check_password(data['old_password']) : 
