@@ -9,9 +9,20 @@ function BrowseOrgs({}) {
     const [orgs, setOrgs] = useState([]);
     const getPublicOrgs = useCallback(async () => {
         try {
-            const response = await axiosAPI.get("organization/get-public-orgs/");
-            setOrgs(response.data);
-            console.log(orgs)
+            console.log("user id " + localStorage.getItem("user_id"))
+            const response = await axiosAPI.get("organization/get-public-orgs/", {
+                params: {
+                    user_id: localStorage.getItem("user_id")
+                }
+            });
+            const member_data = response.data["member"]
+            const orgsUserIsIn = member_data.map(item => item.organization.id)
+            const orgsUserIsInSet = new Set(orgsUserIsIn)
+            const orgsToTypeSet = Object.assign({}, ...member_data.map(item => ({[item.organization.id]: item.member_type})))
+            const org_data  = response.data["org"]
+            const complete_data = org_data.map(org => ({org: org, isCurrMember:orgsUserIsInSet.has(org.id), isAdmin: (orgsUserIsInSet.has(org.id) && orgsToTypeSet[org.id]==1) }))
+            setOrgs(complete_data);
+
         } catch (error) {
             console.error(error);
         }
@@ -36,11 +47,11 @@ function BrowseOrgs({}) {
 
     return (
         orgs.length > 0 && (
-            orgs.map(org => 
-            <Card title={org.name} extra={<Button type="primary" onClick= {() => addMember(org.name)} >Join {org.name}</Button>} style={{ width: 300 }}>
-                    <p>{org.description}</p>
-                    <p>{org.website}</p>
-                    <p>{org.address}</p>
+            orgs.map(data => 
+            <Card title={data.org.name} extra={<Button type="primary"  disabled={data.isCurrMember} onClick= {() => addMember(data.org.name)} >Join {data.org.name}</Button>} style={{ width: 300 }}>
+                    <p>{data.org.description}</p>
+                    <p>{data.org.website}</p>
+                    <p>{data.org.address}</p>
                 </Card>
         ))
     );

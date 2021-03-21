@@ -102,7 +102,13 @@ class GetPublicOrgs(APIView):
     authentication_classes = ()
     
     def get(self, request):
+        print("REACHED REQ")
+        user_id = request.GET['user_id']
+        print("USER ID" + str(user_id))
         orgs = Organization.objects.filter(is_public=True)
-        serializer = OrganizationSerializer(orgs, many=True)
-        return Response(serializer.data)
+        org_serializer = OrganizationSerializer(orgs, many=True).data
+        members = Member.objects.filter(user__id=user_id)
+        member_serializer = MemberSerializer(members, many=True).data
+        data = {"org": org_serializer, "member": member_serializer }
+        return Response(data)
         
