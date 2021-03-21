@@ -96,4 +96,15 @@ class GetMembersFromOrg(APIView):
         members = Member.objects.filter(organization__id=org_id)
         serializer = MemberSerializer(members, many=True)
         return Response(serializer.data)
+
+class GetPublicOrgs(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        orgs = Organization.objects.all()
+        print("org len" + str(orgs))
+        serializer = OrganizationSerializer(orgs, many=True)
+        print("org len" + str(serializer.data))
+        return Response(serializer.data)
         

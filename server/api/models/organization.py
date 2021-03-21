@@ -15,6 +15,7 @@ class Organization(models.Model):
     website = models.CharField(max_length=256, null=True, blank=True)
     phone = models.CharField(max_length=32, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
+    is_public = models.BooleanField(default = True)
 
 
 class FAQ(models.Model):

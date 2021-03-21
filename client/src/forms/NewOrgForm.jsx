@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Form, Input, Button, Select, message } from 'antd';
+import { Radio, Form, Input, Button, Select, message } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
@@ -9,6 +9,7 @@ const { TextArea } = Input;
 const NewOrgForm = () => {
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
+    const [isPublic, setIsPublic] = React.useState(true);
 
     const getCauses = useCallback(async () => {
         try {
@@ -23,6 +24,11 @@ const NewOrgForm = () => {
         getCauses();
     }, [getCauses]);
 
+    const onChangeRadio = e => {
+        console.log('radio checked', e.target.value);
+        setIsPublic(e.target.value);
+      };
+
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
     }, [selectedCauses, causes]);
@@ -36,7 +42,8 @@ const NewOrgForm = () => {
                 website: values.website,
                 phone: values.phone,
                 address: values.address,
-                email: values.email
+                email: values.email,
+                public: values.isPublic
             });
             await axiosAPI.post("member/create/", {
                 user_id: localStorage.getItem("user_id"),
@@ -113,6 +120,12 @@ const NewOrgForm = () => {
                 rules={[{ required: true, message: 'Organization description is required.' }]}
             >
                 <TextArea row={6} style={{ width: '100%' }} placeholder="Describe your organization..." />
+            </Form.Item>
+            <Form.Item name="isPublic">
+                <Radio.Group onChange={onChangeRadio} value={isPublic}>
+                    <Radio value={false}>Invitation Only</Radio>
+                    <Radio value={true}>Public</Radio>
+                </Radio.Group>
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" className="org-form-button">

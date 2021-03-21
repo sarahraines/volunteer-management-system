@@ -6,7 +6,7 @@ import OrgPage from "../pages/OrgPage"
 import VolunteerAnalytics from "../pages/VolunteerAnalytics"
 import VolunteerCalendar from "../pages/VolunteerCalendar"
 import NewGoal from "../pages/NewGoal"
-
+import BrowseOrgs from "../pages/BrowseOrgs"
 
 const FeedContent = ({member, context}) => {
     switch(context) {
@@ -22,6 +22,8 @@ const FeedContent = ({member, context}) => {
             return (<VolunteerCalendar />); 
         case "view-analytics":
             return (<VolunteerAnalytics />); 
+        case "browse-orgs":
+            return <BrowseOrgs />
         default:
             const orgId = parseInt(context)
             if (isNaN(orgId)) {

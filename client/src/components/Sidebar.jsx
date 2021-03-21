@@ -50,6 +50,9 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
                     <Item className="action-submenu-item" key="create-event" icon={<PlusSquareOutlined />}>
                         Create event
                     </Item>
+                    <Item className="action-submenu-item" key="browse-orgs" icon={<PlusSquareOutlined />}>
+                        Browse Organizations
+                    </Item>
                     <Item className="action-submenu-item" key="set-goals" icon={<CheckSquareOutlined />}>
                         Set goals
                     </Item>
