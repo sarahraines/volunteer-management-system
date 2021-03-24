@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { register, login } from '../api/authenticationApi';
+import { reset_password } from '../api/authenticationApi';
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
@@ -11,7 +11,7 @@ const ForgotPasswordForm = ({isRegister}) => {
 
     const onFinish = useCallback(async (values) => {
         try {
-            await forgot_password(values.email);
+            await reset_password(values.email);
          
         } catch (error) {
             throw error;

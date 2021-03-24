@@ -11,7 +11,7 @@ export async function register(email, firstName, lastName, password) {
   return response;
 }
 
-export async function resendConfirmation(user_id) {
+export async function resendConfirmation(email) {
   const response = await axiosAPI.post("users/resend-confirmation-email/", {
     email: email
   });

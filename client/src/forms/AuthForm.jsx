@@ -46,9 +46,9 @@ const AuthForm = ({isRegister}) => {
             Already have an account? <Link to="/login">Log in</Link>
         </React.Fragment>
     ) : (
-        <React.Fragment>
-            New user? <Link to="/register">Create account</Link>
-        </React.Fragment> 
+            <React.Fragment>
+                New user? <Link to="/register">Create account</Link>
+            </React.Fragment> 
     );
 
   return (
@@ -131,7 +131,15 @@ const AuthForm = ({isRegister}) => {
                     {submitButtonText}
                 </Button>
                 {switchAuthPages}
-                {!isRegister && <Link className="auth-form-forgot" to="/register">Forgot password?</Link>}
+                {!isRegister &&  
+                <>
+                    <Link className="auth-form-forgot" to="/forgot-password">Forgot password?</Link>
+                    <br></br>
+                    Haven't Confirmed Email? <Link to="/resend-activation-email">Resend Confirmation Email</Link>
+
+                </>
+                }
+
             </Form.Item>
         </Form>
     </React.Fragment>
