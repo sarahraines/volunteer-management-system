@@ -22,7 +22,7 @@ const ResetPasswordForm = () => {
 
     const sendForgotPasswordEmail = useCallback(async () => {
         try {
-            const url = "users/forgot-password/?user_id=" + localStorage.getItem("user_id")
+            const url = "users/forgot-password-link/?user_id=" + localStorage.getItem("user_id")
             await axiosAPI.get(url);
             dispatch(addAlert('Password reset link sent to email', 'success'));
         } catch (error) {

@@ -36,31 +36,31 @@ class ResendConfirmationEmail(APIView):
     authentication_classes = ()
     def post(self, request):
         data = request.data
-        email = data['email']
-        user = User.objects.get(email=email)
+        email = data['email']['email']
+        user = None
+        try:
+            user = User.objects.get(email=email)
+        except:
+            return Response("There was ", status=status.HTTP_400_BAD_REQUEST)
         serializer = UserSerializer(user)
-        if serializer.is_valid():
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = account_activation_token.make_token(user)
-            is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
-            activation_url = request.build_absolute_uri(f"/activate?uid={uid}&token={token}") if not is_localhost else f"http://localhost:3000/activate?uid={uid}&token={token}"
-            mail_subject = 'Activate your account.'
-            message = render_to_string('activate_account.html', {
-                'user': user,
-                'activation_url': activation_url
-            })
-            email = EmailMessage(
-                mail_subject, message, to=[data['email']]
-            )
-            try:
-                email.send(fail_silently=False)
-            except SMTPException:
-                return Response(False, status=status.HTTP_201_CREATED)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = account_activation_token.make_token(user)
+        is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
+        activation_url = request.build_absolute_uri(f"/activate?uid={uid}&token={token}") if not is_localhost else f"http://localhost:3000/activate?uid={uid}&token={token}"
+        mail_subject = 'Activate your account.'
+        message = render_to_string('activate_account.html', {
+            'user': user,
+            'activation_url': activation_url
+        })
+        email = EmailMessage(
+            mail_subject, message, to=[email]
+        )
+        try:
+            email.send(fail_silently=False)
+        except SMTPException:
+            return Response(False, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+       
 
 
 class CreateUser(APIView):
@@ -94,7 +94,6 @@ class CreateUser(APIView):
                 email.send(fail_silently=False)
             except SMTPException:
                 return Response(False, status=status.HTTP_201_CREATED)
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -189,6 +188,8 @@ class ForgotPassword(APIView):
     authentication_classes = ()
 
     def get(self, request):
+        user = ""
+        print(str(request.GET))
         if request.GET.get('user_id'):
             try:
                 user = User.objects.get(pk=request.GET['user_id'])
@@ -197,11 +198,14 @@ class ForgotPassword(APIView):
         elif request.GET.get('email'):
             try:
                 user = User.objects.get(email=request.GET['email'])
+                print("USER" + str(user.pk))
             except:
                 user = None
         
         if user is not None:
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            userpk = user.pk
+            
+            uid = urlsafe_base64_encode(force_bytes(userpk))
             token = account_activation_token.make_token(user)
 
             is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
@@ -214,7 +218,10 @@ class ForgotPassword(APIView):
             email = EmailMessage(
                 mail_subject, message, to=[user.email]
             )
-            email.send()
+            try:
+                email.send(fail_silently=False)
+            except SMTPException:
+                return Response(False, status=status.HTTP_201_CREATED)
             return Response(None, status=status.HTTP_200_OK)
         return Response("There was ", status=status.HTTP_400_BAD_REQUEST) 
 

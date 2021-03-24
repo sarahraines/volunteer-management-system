@@ -52,6 +52,15 @@ export async function reset_password(old_password, new_password) {
   return response;
 }
 
+export async function forgot_password(email) {
+  const response = await axiosAPI.get("users/forgot-password-link/", {
+    params: {
+      email
+    }
+  });
+  return response;
+}
+
 export function logout() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
