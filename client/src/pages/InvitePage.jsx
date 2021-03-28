@@ -10,6 +10,7 @@ const { Option } = Select;
 function InvitePage({orgId}) {
     const [invites, setInvites] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [disabled, setDisabled] = useState(true);
     const currentUser = localStorage.getItem("user_id");
     const [showModal, setShowModal] = useState(false);
     const [modalButtonLoading, setModalButtonLoading] = useState(false);
@@ -30,6 +31,20 @@ function InvitePage({orgId}) {
             console.error(error);
         }
     }, [orgId]);
+    function updateValidation(value){
+        var str = value.toString().toLowerCase()
+        setInvitedMembers(str)
+        if(validateEmail(value)){
+            setDisabled(false)
+        } else {
+            setDisabled(true)
+        }
+
+    }
+    function validateEmail(email) {
+        const re = /\S+@\S+\.\S+/;
+        return re.test(email);
+    }
 
     const inviteMembers = useCallback(async () => {
         try {
@@ -136,7 +151,7 @@ function InvitePage({orgId}) {
                     <Button key="back" onClick={() => setShowModal(false)}>
                         Close
                     </Button>,
-                    <Button key="submit" type="primary" loading={modalButtonLoading} onClick={inviteMembers}>
+                    <Button key="submit" disabled= {disabled} type="primary" loading={modalButtonLoading} onClick={inviteMembers}>
                         Send
                     </Button>,
                 ]}
@@ -145,7 +160,7 @@ function InvitePage({orgId}) {
                     <Option value={0}>Member</Option>
                     <Option value={1}>Admin</Option>
                 </Select>
-                <Select mode="tags" style={{ width: '100%' }} onChange={value => setInvitedMembers(value)} tokenSeparators={[',']} placeholder="Emails" allowClear>
+                <Select mode="tags" style={{ width: '100%' }} onChange={value => updateValidation(value)} tokenSeparators={[',']} placeholder="Emails" allowClear>
                     {[]}
                 </Select>
             </Modal>

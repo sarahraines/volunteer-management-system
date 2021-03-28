@@ -58,6 +58,7 @@ class ResendConfirmationEmail(APIView):
         try:
             email.send(fail_silently=False)
         except SMTPException:
+            print("ERROR BC EMAIL WRONG")
             return Response(False, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
        
@@ -93,6 +94,7 @@ class CreateUser(APIView):
             try:
                 email.send(fail_silently=False)
             except SMTPException:
+                print("ERROR BC EMAIL WRONG")
                 return Response(False, status=status.HTTP_201_CREATED)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -221,6 +223,7 @@ class ForgotPassword(APIView):
             try:
                 email.send(fail_silently=False)
             except SMTPException:
+                print("ERROR OCCURRED BCEMAIL WAS WRONT")
                 return Response(False, status=status.HTTP_201_CREATED)
             return Response(None, status=status.HTTP_200_OK)
         return Response("There was ", status=status.HTTP_400_BAD_REQUEST) 
