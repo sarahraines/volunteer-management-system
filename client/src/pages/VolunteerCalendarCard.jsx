@@ -58,7 +58,11 @@ function VolunteerCalendarCard ({item}){
 			<Popover 
                 content={
                     <div>
-                        <Typography.Title level={4}>{item.events__name}</Typography.Title>
+                        <Typography.Title level={4}>{item.events__name} 
+                            <a onClick={toggleVisible} style={{ alignItems: 'right'}}>
+                                X
+                            </a>
+                        </Typography.Title>
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
                         <Paragraph><b>Description: </b>{item.events__description}</Paragraph>
@@ -71,15 +75,13 @@ function VolunteerCalendarCard ({item}){
                         <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.events__id)} loading={isLoading}>
                             Unjoin
                         </Button>
-                        <a onClick={toggleVisible}>
-                            Close
-                        </a>
+                        
                     </div>}
                 trigger="click"
                 visible={!vis}
             >
                 <Button type="link" className="event-viewmore-form-button" onClick={toggleVisible}>
-                    > {item.events__name}
+                {(new Date(item.events__begindate)).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} {item.events__name}
                 </Button>
             </Popover>
 		);
@@ -88,25 +90,27 @@ function VolunteerCalendarCard ({item}){
 			<Popover 
                 content={
                     <div>
-                        <Typography.Title level={4}>{item.events__name}</Typography.Title>
+                        <Typography.Title level={4}>{item.events__name}
+                            <a onClick={toggleVisible} style={{ alignItems: 'right'}}>
+                                X
+                            </a>
+                        </Typography.Title>
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
                         <Paragraph><b>Description: </b>{item.events__description.substring(0, 50)}...</Paragraph>
-                        <p style={{color: '#1890ff'}}><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(viewmore)}>
+                        <p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(viewmore)}>
                             View More
                         </Button></p>
                         <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.events__id)} loading={isLoading}>
                             Unjoin
                         </Button>
-                        <a onClick={toggleVisible}>
-                            Close
-                        </a>
+                        
                     </div>}
                 trigger="click"
                 visible={!vis}
             >
                 <Button type="link" className="event-viewmore-form-button" onClick={toggleVisible}>
-                    > {item.events__name}
+                {(new Date(item.events__begindate)).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} {item.events__name}
                 </Button>
             </Popover>
 		);
