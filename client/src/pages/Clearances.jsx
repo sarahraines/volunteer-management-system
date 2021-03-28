@@ -13,17 +13,37 @@ function Clearances({isAdmin, orgId}) {
 
     const getEventsByOrg = useCallback(async () => {
         try {
-            const response = await axiosAPI.get("events/get-by-org/", {
-                params: {
-                    orgId: orgId,
-                }
-            });
+            let data = {};
+            if(isAdmin) {
+                const response = await axiosAPI.get("events/get-by-org/", {
+                    params: {
+                        orgId: orgId,
+                    }
+                });
 
-            const data = response.data;
-            data.map(e => {
-                e.bdate = (new Date(e.begindate)).toLocaleString('en-US', options);
-                e.edate = (new Date(e.enddate)).toLocaleString('en-US', options);
-            });
+                data = response.data;
+                data.map(e => {
+                    e.bdate = (new Date(e.begindate)).toLocaleString('en-US', options);
+                    e.edate = (new Date(e.enddate)).toLocaleString('en-US', options);
+                });
+            } else {
+                const response = await axiosAPI.get("attendees/get-volunteer-events-for-org/", {
+                    params: {
+                        orgId: orgId,
+                        user_id: localStorage.getItem("user_id"),
+                    }
+                });
+                console.log("not admin: " +  response.data[0].events__name);
+
+                data = response.data;
+                data.map(e => {
+                    e.name = e.events__name;
+                    e.bdate = (new Date(e.events__begindate)).toLocaleString('en-US', options);
+                    e.edate = (new Date(e.events__enddate)).toLocaleString('en-US', options);
+                });
+            }
+
+            
 
             setEvents(data);
             setLoading(false);

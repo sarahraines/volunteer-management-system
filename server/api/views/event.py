@@ -224,6 +224,23 @@ class GetVolunteerEvents(APIView):
 
         return Response(events, status=status.HTTP_200_OK)
 
+class GetVolunteerEventsForOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        attendee_id = request.GET['user_id']
+        org_id = request.GET['orgId']
+        date = timezone.now()
+        username = User.objects.filter(id=attendee_id)[0]
+        events = Attendee.objects.filter(username=username, events__organizations__id=org_id, events__enddate__gte=date).values('events__id',
+        'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
+        'events__causes', 'events__description', 'events__organizations', 'events__instructions',
+        'events__attendee_cap')
+        print("events")
+        print(events)
+        return Response(events, status=status.HTTP_200_OK)
+
 class GetAttendees(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
