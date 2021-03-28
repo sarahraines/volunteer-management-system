@@ -87,7 +87,7 @@ const VolunteerCalendar = () => {
           <ul className="events">
             {listData.map((item, i) => (
                 <li key={i}>
-                    <VolunteerCalendarCard key={i} item={item}/>
+                    <VolunteerCalendarCard key={i} item={item} isYearView={false}/>
                 </li>
             ))}
           </ul>
@@ -100,7 +100,7 @@ const VolunteerCalendar = () => {
             <ul className="events">
             {monthData.map((item, i) => (
                 <li key={i}>
-                    <VolunteerCalendarCard key={i} item={item}/>
+                    <VolunteerCalendarCard key={i} item={item} isYearView={true}/>
                 </li>
             ))}
           </ul>

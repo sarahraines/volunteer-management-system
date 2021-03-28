@@ -4,7 +4,7 @@ import axiosAPI from "../api/axiosApi";
 
 const { Paragraph } = Typography;
 
-function VolunteerCalendarCard ({item}){
+function VolunteerCalendarCard ({item, isYearView}){
     const [vis, setVisible] = useState([false]); 
     const [isLoading, setIsLoading] = useState(false);
 	const [viewmore, setViewmore] = useState(false);
@@ -52,6 +52,7 @@ function VolunteerCalendarCard ({item}){
     const begindate = new Date(item.events__begindate)
 	const enddate = new Date(item.events__enddate)
     const virtual = item.events__virtual ? "Yes." : "No.";
+    const time = isYearView ? (new Date(item.events__begindate)).getMonth() + "/" + (new Date(item.events__begindate)).getDate() : (new Date(item.events__begindate)).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
     
     if (viewmore) {
     	return (
@@ -59,9 +60,6 @@ function VolunteerCalendarCard ({item}){
                 content={
                     <div>
                         <Typography.Title level={4}>{item.events__name} 
-                            <a onClick={toggleVisible} style={{ alignItems: 'right'}}>
-                                X
-                            </a>
                         </Typography.Title>
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
@@ -75,13 +73,20 @@ function VolunteerCalendarCard ({item}){
                         <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.events__id)} loading={isLoading}>
                             Unjoin
                         </Button>
+                        <a onClick={toggleVisible} >
+                            Close
+                        </a>
                         
                     </div>}
                 trigger="click"
                 visible={!vis}
+                overlayStyle={{
+                    width: "40vw",
+                    height: "30vw"
+                }}
             >
                 <Button type="link" className="event-viewmore-form-button" onClick={toggleVisible}>
-                {(new Date(item.events__begindate)).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} {item.events__name}
+                {time} {item.events__name}
                 </Button>
             </Popover>
 		);
@@ -91,9 +96,6 @@ function VolunteerCalendarCard ({item}){
                 content={
                     <div>
                         <Typography.Title level={4}>{item.events__name}
-                            <a onClick={toggleVisible} style={{ alignItems: 'right'}}>
-                                X
-                            </a>
                         </Typography.Title>
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
@@ -104,13 +106,21 @@ function VolunteerCalendarCard ({item}){
                         <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.events__id)} loading={isLoading}>
                             Unjoin
                         </Button>
+
+                        <a onClick={toggleVisible} >
+                            Close
+                        </a>
                         
                     </div>}
                 trigger="click"
                 visible={!vis}
+                overlayStyle={{
+                    width: "40vw",
+                    height: "30vw"
+                }}
             >
                 <Button type="link" className="event-viewmore-form-button" onClick={toggleVisible}>
-                {(new Date(item.events__begindate)).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'})} {item.events__name}
+                {time} {item.events__name}
                 </Button>
             </Popover>
 		);
