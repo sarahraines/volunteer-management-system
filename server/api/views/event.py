@@ -1,7 +1,7 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.serializers import UserSerializer, EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer
+from api.serializers import UserSerializer, EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer, CauseSerializer
 from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback
 from django.db.models import Count, CharField, Value as V, F, ExpressionWrapper, fields, Sum, Avg
 from django.db.models.functions import Concat
@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.db.models import TextField
 from django.db.models.functions import Cast
 from django.conf import settings
+import jwt
 
 if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
     from django.contrib.postgres.aggregates import StringAgg
@@ -60,8 +61,9 @@ class GetEventsByOrg(APIView):
         if request.GET.get('orgId'):
             date = timezone.now()
             orgId = request.GET['orgId']
-            events = Event.objects.filter(organizations__in=[orgId]).filter(enddate__gte=date).order_by('begindate')
+            events = Event.objects.filter(organization=orgId).filter(enddate__gte=date).order_by('begindate')
             serializer = EventSerializer(events, many=True)
+            is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000"
             
             for i in range(len(events)):
                 attendees = Attendee.objects.filter(events__id=events[i].id)
@@ -69,6 +71,9 @@ class GetEventsByOrg(APIView):
                 attendee_count = len(attendees)
                 serializer.data[i]["attendee_count"] = attendee_count
                 serializer.data[i]["key"] = events[i].id
+                if is_localhost:
+                    serializer.data[i]['image'] = "http://" + request.get_host() + serializer.data[i]['image']
+                 
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
@@ -84,18 +89,24 @@ class GetEventCountForOrg(APIView):
             return Response(len(events), status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
+class GetCausesByEvent(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        if request.GET.get('eventId'):
+            event_id = request.GET['eventId']
+            causes = Cause.objects.filter(event=event_id).all()
+            serializer = CauseSerializer(causes, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response("Request missing parameter eventId", status=status.HTTP_400_BAD_REQUEST)
+
 class CreateEvent(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
     def post(self, request, format='json'):
         data = request.data
-        try:
-            data['begindate']=data['date'][0]
-            data['enddate']=data['date'][1]
-            del data['date']
-        except: 
-            return Response("Incorrect date format", status=status.HTTP_400_BAD_REQUEST)
         serializer = EventSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -117,10 +128,13 @@ class GetAdminOrganizations(APIView):
 
 class GetEventById(APIView):
     permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
 
     def get(self, request):
-        attendee_id = request.GET['attendee_id']
+        try:
+            data = jwt.decode(request.GET['rt'], settings.SECRET_KEY, algorithms=["HS256"])
+            attendee_id = data['attendee_id']
+        except:
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
         attendees = Attendee.objects.filter(id=attendee_id). \
         values('events__name', 'events__location', 'events__begindate',  \
@@ -135,6 +149,7 @@ class CreateEventFeedback(APIView):
 
     def post(self, request, format='json'):
         data = request.data
+        print(request.user)
         
         ids = Attendee.objects.filter(id=data['id']).values('events__id', 'username__id')
         

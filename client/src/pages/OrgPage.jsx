@@ -49,7 +49,7 @@ function OrgPage({member, orgId}) {
                     </TabPane>
                 }
                 <TabPane tab="Events" key="events">
-                    <OrgEvents orgId={orgId} viewmore={false} eventId={-1}/>
+                    <OrgEvents orgId={orgId} isAdmin={isAdmin} />
                 </TabPane>
                 <TabPane tab="Event Clearances" key="clearance">
                     <Clearances isAdmin={isAdmin} orgId={orgId} />

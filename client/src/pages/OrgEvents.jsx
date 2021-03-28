@@ -7,10 +7,9 @@ import axiosAPI from "../api/axiosApi";
 
 const { Option } = Select;
 
-const OrgEvents = ({orgId}) => {
+const OrgEvents = ({orgId, isAdmin}) => {
     const [events, setEvents] = useState([]); 
     const [filterDisplay, setFilterDisplay] = useState([]);
-    const [attendeeCount, setAttendeeCount] = useState([]); 
     
     const getEventsByOrg = useCallback(async () => {
         try {
@@ -97,9 +96,9 @@ const OrgEvents = ({orgId}) => {
                     <Option value="filled">Filled</Option>
                 </Select>
             </Space> 
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll" }}>
+            <div style={{ flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll", height: '100%'}}>
                 {filterDisplay.map((item, i) => 
-                    <EventCard key={i} item={item}/>
+                    <EventCard key={i} item={item} isAdmin={isAdmin}/>
                 )}
             </div>
             

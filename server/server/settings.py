@@ -59,8 +59,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'request_token.middleware.RequestTokenMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'request_token.middleware.RequestTokenMiddleware',
 ]
 
 # if DEBUG:
@@ -123,7 +123,7 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('JWT',),
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
@@ -166,7 +166,6 @@ AUTH_PASSWORD_VALIDATORS = [
 CRONJOBS = [
     ('*/60 * * * *', 'scripts.event_reminders.run')
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

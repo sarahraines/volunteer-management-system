@@ -37,9 +37,7 @@ const Feed = () => {
          });
         response.data.forEach(member => member.key = member.organization.id)
         dispatch(setOrgs(response.data));
-        if (response.data.length > 0) {
-          dispatch(setSidebarItem(response?.data[0]?.key.toString() ?? 'create-org'));
-        }
+        dispatch(setSidebarItem(response?.data[0]?.key.toString() ?? 'create-org'));
     } catch(error) {
         console.error(error);
     }

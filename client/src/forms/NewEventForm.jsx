@@ -2,9 +2,9 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker, InputNumber, message } from 'antd';
 import axiosAPI from "../api/axiosApi";
 import { useDispatch } from 'react-redux';
-import { addAlert } from '../actionCreators.js';
 import "antd/dist/antd.css";
 import "./NewEventForm.css"
+import AvatarUpload from "../components/AvatarUpload"
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
@@ -15,6 +15,7 @@ const NewEventForm = () => {
     const [causes, setCauses] = useState([]);
     const [selectedOrgs, setSelectedOrgs] = useState([]);
     const [orgs, setOrgs] = useState([]);
+    const [imageFile, setImageFile] = useState(null);
     const dispatch = useDispatch();
 
     const getCauses = useCallback(async () => {
@@ -44,37 +45,33 @@ const NewEventForm = () => {
         getOrgs();
     }, [getCauses, getOrgs]);
     
-    const filteredOrgs = useMemo(() => {
-        return orgs.filter(o => !selectedOrgs.includes(o));
-    }, [selectedOrgs, orgs]);
-
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
     }, [selectedCauses, causes]);
 
-
     const onFinish = useCallback(async (values) => {
         setIsLoading(true);
         try {
-            await axiosAPI.post("event/create/", {
-                name: values.name,
-                virtual: values.virtual,
-                location: values.location,
-                causes: values.causes,
-                organizations: values.organizations,
-                date:values.date,
-                description: values.description,
-                instructions: values.instructions,
-                attendee_cap: values.attendeeCap,
+            const form = new FormData();
+            form.append('name', values.name);
+            form.append('virtual', values.virtual);
+            form.append('location', values.location);
+            form.append('causes', values.causes);
+            form.append('organization', values.organization);
+            form.append('begindate', values.date[0].toISOString());
+            form.append('enddate', values.date[1].toISOString());
+            form.append('description', values.description);
+            form.append('instructions', values.instructions);
+            form.append('image', imageFile);
 
-            });
+            await axiosAPI.post("event/create/", form);
             message.success('Event created');
         }
         catch {
-            message.success('Event creation failed');
+            message.error('Event creation failed');
         }
         setIsLoading(false);
-    }, [dispatch, setIsLoading]);
+    }, [dispatch, setIsLoading, imageFile]);
 
     return (
         <Form
@@ -82,21 +79,21 @@ const NewEventForm = () => {
             className="event-form"
             initialValues={{ remember: true }}
             onFinish={onFinish}
+            layout="vertical"
         >   
             <Form.Item
-                name="organizations"
+                name="organization"
                 hasFeedback
                 rules={[{ required: true, message: 'Organization name is required.' }]}
             >
                 <Select
-                    mode="multiple"
-                    placeholder="Organization(s)"
+                    placeholder="Organization"
                     value={selectedOrgs}
                     onChange={setSelectedOrgs}
                     style={{ width: '100%' }}
                 >
                     
-                {filteredOrgs.map(item => (
+                {orgs.map(item => (
                     <Select.Option key={item.id} value={item.id}>
                         {item.name}
                     </Select.Option>
@@ -111,9 +108,15 @@ const NewEventForm = () => {
                 <Input style={{ width: '100%' }} placeholder="Event name" />
             </Form.Item>
             <Form.Item
+                name="avatar"
+            >
+                <AvatarUpload updateImageField={setImageFile} />
+            </Form.Item>
+            <Form.Item
                 name="virtual"
                 hasFeedback
                 valuePropName="checked"
+                initialValue={true}
             >
                 <Switch checkedChildren="Virtual" unCheckedChildren="Non-virtual" defaultChecked />
             </Form.Item>
@@ -129,8 +132,7 @@ const NewEventForm = () => {
                 hasFeedback
                 rules={[{ required: true, message: 'Date is required.' }]}
             >
-                <RangePicker style={{ width: '100%' }}  showTime={{ format: 'HH:mm' }}
-      format="YYYY-MM-DD HH:mm" />
+                <RangePicker style={{ width: '100%' }}  showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />
             </Form.Item>
             <Form.Item
                 name="causes"

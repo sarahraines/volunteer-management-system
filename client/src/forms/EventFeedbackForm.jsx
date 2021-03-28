@@ -25,7 +25,6 @@ const EventFeedbackForm = () => {
                 better:values.better,
                 experience:values.experience,
             });
-            console.log('here feedback'); 
             dispatch(addAlert('Feedback submitted', 'success'));
         }
         catch {
@@ -44,7 +43,7 @@ const EventFeedbackForm = () => {
         try{
             const response = await axiosAPI.get("event/get-event-by-id/", {
                  params: {
-                     attendee_id: new URLSearchParams(window.location.search).get('attendee_id'),  
+                     rt: new URLSearchParams(window.location.search).get('rt'),  
                  }
              });
             setInfo(response.data[0]); 
