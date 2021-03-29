@@ -109,17 +109,24 @@ class VolunteerLeaderboard(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
-        events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
-            'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
-            count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
-        for event in events_attended:
-            event['key'] = event['username__id']
-            event['name'] = event['username__first_name'] + ' ' + event['username__last_name']
-            event['email'] = event['username__email']
-            event['total'] = (event['total'])/10**6//3600
-            event['event_list'] = (event['event_list']).replace(',', ', ')
+
+        timeframes = [timezone.now() - timedelta(days=30), timezone.now() - timedelta(days=365), timezone.now() - timedelta(days=10**5)]
+
+        results = []
         
-        return Response(events_attended, status = status.HTTP_200_OK)
+        for time in timeframes:
+            events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now(), events__begindate__gte=time).values(
+                'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
+                count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
+            for event in events_attended:
+                event['key'] = event['username__id']
+                event['name'] = event['username__first_name'] + ' ' + event['username__last_name']
+                event['email'] = event['username__email']
+                event['total'] = (event['total'])/10**6//3600
+                event['event_list'] = (event['event_list']).replace(',', ', ')
+            results.append(events_attended)
+        
+        return Response(results, status = status.HTTP_200_OK)
 
 class EventLeaderboard(APIView):
     permission_classes = (permissions.AllowAny,)
