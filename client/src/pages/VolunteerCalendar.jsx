@@ -6,6 +6,7 @@ import VolunteerCalendarCard from './VolunteerCalendarCard';
 
 const VolunteerCalendar = () => {
     const [events, setEvents] = useState([]); 
+    const [goals, setGoals] = useState([]);
     const [titleDate, setTitleDate] = useState([]);
     usePageView('/calendar')
 
@@ -16,6 +17,7 @@ const VolunteerCalendar = () => {
                     user_id: localStorage.getItem("user_id"),
                 }
             });
+            console.log("events: " + response.data[0]);
             setEvents(response.data);
         } catch (error) {
             console.error(error);
@@ -29,8 +31,9 @@ const VolunteerCalendar = () => {
                     user: localStorage.getItem("user_id"),
                 }
             });
-            //setEvents(response.data);
-            console.log("goals: " + response.data);
+            setGoals(response.data);
+            console.log("goals: " + response.data[0].begindate + " - " + response.data[0].enddate);
+            console.log("goals: " + response.data[1].begindate + " - " + response.data[1].enddate);
 
         } catch (error) {
             console.error(error);
@@ -39,7 +42,7 @@ const VolunteerCalendar = () => {
 
     useEffect(() => {
         getVolunteerEvents();
-        //getVolunteerGoals();
+        getVolunteerGoals();
     }, []);
 
     function getMonthName(monthNo) {
@@ -81,10 +84,71 @@ const VolunteerCalendar = () => {
         return monthData || [];
     }
 
+    function getListGoalsBegin(value) {
+        let listGoals;
+        listGoals = goals.filter(goals => {
+            const gyear = parseInt(goals.begindate.substring(0, 4), 10);
+            const gmonth = parseInt(goals.begindate.substring(5, 7), 10);
+            const gday = parseInt(goals.begindate.substring(8), 10);
+            const returnValue = value.month() + 1 == gmonth && value.date() == gday && value.year() == gyear;
+            console.log("bdate " + gyear + "-" + gmonth + "-" + gday + ", value " + value.year() + 
+                "-" + value.month() + 1 + "-" + value.date() + ", returnVal " + returnValue);
+            
+            return value.month() + 1 == gmonth && value.date() == gday 
+                && value.year() == gyear;
+        })
+        return listGoals || [];
+    }
+
+    function getListGoalsEnd(value) {
+        let listGoals;
+        listGoals = goals.filter(goals => {
+            const gyear = parseInt(goals.enddate.substring(0, 4), 10);
+            const gmonth = parseInt(goals.enddate.substring(5, 7), 10);
+            const gday = parseInt(goals.enddate.substring(8), 10);
+            const returnValue = value.month() + 1 == gmonth && value.date() == gday && value.year() == gyear;
+            console.log("bdate " + gyear + "-" + gmonth + "-" + gday + ", value " + value.year() + 
+                "-" + value.month() + 1 + "-" + value.date() + ", returnVal " + returnValue);
+            
+            return value.month() + 1 == gmonth && value.date() == gday 
+                && value.year() == gyear;
+        })
+        return listGoals || [];
+    }
+
+    function getMonthGoals(value) {
+        let monthGoals;
+        monthGoals = goals.filter(goals => {
+            const bdate = new Date(goals.begindate);
+            const edate = new Date(goals.enddate);
+
+            return ((value.month() <= edate.getMonth() && value.month() >= bdate.getMonth())
+                && (value.year() <= edate.getFullYear() && value.year() >= bdate.getFullYear()));
+        })
+
+        return monthGoals || [];
+    }
+
     function dateCellRender(value) {
         const listData = getListData(value);
+        const goalsBeginData = getListGoalsBegin(value);
+        const goalsEndData = getListGoalsEnd(value);
         return (
           <ul className="events">
+            {goalsBeginData.map((item, i) => (
+                <li key={i}>
+                    <Button type="link" disabled={true} className="event-viewmore-form-button">
+                        Start Goal: {item.hours}hrs
+                    </Button>
+                </li>
+            ))}
+            {goalsEndData.map((item, i) => (
+                <li key={i}>
+                    <Button type="link" disabled={true} className="event-viewmore-form-button">
+                        End Goal: {item.hours}hrs
+                    </Button>
+                </li>
+            ))}
             {listData.map((item, i) => (
                 <li key={i}>
                     <VolunteerCalendarCard key={i} item={item} isYearView={false}/>
