@@ -75,16 +75,41 @@ function Clearances({isAdmin, orgId}) {
     ];
 
     return (
-        <React.Fragment>
+        <div>
             <Title level={4}>Manage clearances for upcoming events</Title>
-            <Table 
-                columns={columns}
-                dataSource={events} 
-                loading={loading}
-                expandedRowRender= {record => 
-                    <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
-            }/>
-        </React.Fragment>
+            {isAdmin ? 
+                <>
+                    <Table 
+                        columns={columns}
+                        dataSource={events} 
+                        loading={loading}
+                        expandedRowRender= {record => 
+                            <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
+                        }
+                    />
+                </> :
+                // <UserFilesTable orgId={orgId} fileList={fileList} />
+                <>
+                    <Table 
+                        columns={columns}
+                        dataSource={events} 
+                        loading={loading}
+                        // expandedRowRender= {record => 
+                        //     <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
+                        // }
+                    />
+                </>
+            }
+           
+        </div>
+
+        // <React.Fragment>
+            
+            
+                    // {/* <Upload {...orgProps}>
+                    //     <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
+                    // </Upload> */}
+        // </React.Fragment>
     );
 };
 

@@ -60,11 +60,11 @@ function OrgPage({member, orgId}) {
                     <Attendees orgId={orgId} />
                 </TabPane>
                 }
-                {isAdmin &&
+                {/* {isAdmin &&
                     <TabPane tab="Attendee Clearances" key="clearance_table">
                         <ManageVolunteerClearances orgId={orgId} />
                     </TabPane> 
-                }
+                } */}
                 <TabPane tab="Feedback" key="feedback">
                     <OrgFeedback isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
