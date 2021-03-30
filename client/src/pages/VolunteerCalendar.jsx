@@ -90,9 +90,6 @@ const VolunteerCalendar = () => {
             const gyear = parseInt(goals.begindate.substring(0, 4), 10);
             const gmonth = parseInt(goals.begindate.substring(5, 7), 10);
             const gday = parseInt(goals.begindate.substring(8), 10);
-            const returnValue = value.month() + 1 == gmonth && value.date() == gday && value.year() == gyear;
-            console.log("bdate " + gyear + "-" + gmonth + "-" + gday + ", value " + value.year() + 
-                "-" + value.month() + 1 + "-" + value.date() + ", returnVal " + returnValue);
             
             return value.month() + 1 == gmonth && value.date() == gday 
                 && value.year() == gyear;
@@ -106,9 +103,6 @@ const VolunteerCalendar = () => {
             const gyear = parseInt(goals.enddate.substring(0, 4), 10);
             const gmonth = parseInt(goals.enddate.substring(5, 7), 10);
             const gday = parseInt(goals.enddate.substring(8), 10);
-            const returnValue = value.month() + 1 == gmonth && value.date() == gday && value.year() == gyear;
-            console.log("bdate " + gyear + "-" + gmonth + "-" + gday + ", value " + value.year() + 
-                "-" + value.month() + 1 + "-" + value.date() + ", returnVal " + returnValue);
             
             return value.month() + 1 == gmonth && value.date() == gday 
                 && value.year() == gyear;
@@ -116,14 +110,25 @@ const VolunteerCalendar = () => {
         return listGoals || [];
     }
 
-    function getMonthGoals(value) {
+    function getMonthGoalsBegin(value) {
         let monthGoals;
         monthGoals = goals.filter(goals => {
-            const bdate = new Date(goals.begindate);
-            const edate = new Date(goals.enddate);
+            const gyear = parseInt(goals.begindate.substring(0, 4), 10);
+            const gmonth = parseInt(goals.begindate.substring(5, 7), 10);
+            
+            return value.month() + 1 == gmonth && value.year() == gyear;
+        })
 
-            return ((value.month() <= edate.getMonth() && value.month() >= bdate.getMonth())
-                && (value.year() <= edate.getFullYear() && value.year() >= bdate.getFullYear()));
+        return monthGoals || [];
+    }
+
+    function getMonthGoalsEnd(value) {
+        let monthGoals;
+        monthGoals = goals.filter(goals => {
+            const gyear = parseInt(goals.enddate.substring(0, 4), 10);
+            const gmonth = parseInt(goals.enddate.substring(5, 7), 10);
+            
+            return value.month() + 1 == gmonth && value.year() == gyear;
         })
 
         return monthGoals || [];
@@ -160,8 +165,24 @@ const VolunteerCalendar = () => {
 
     function monthCellRender(value) {
         const monthData = getMonthData(value);
+        const goalsBeginData = getMonthGoalsBegin(value);
+        const goalsEndData = getMonthGoalsEnd(value);
         return (
             <ul className="events">
+            {goalsBeginData.map((item, i) => (
+                <li key={i}>
+                    <Button type="link" disabled={true} className="event-viewmore-form-button">
+                        {(new Date(item.begindate)).getMonth() + "/" + (new Date(item.begindate)).getDate()} Start Goal: {item.hours}hrs
+                    </Button>
+                </li>
+            ))}
+            {goalsEndData.map((item, i) => (
+                <li key={i}>
+                    <Button type="link" disabled={true} className="event-viewmore-form-button">
+                    {(new Date(item.begindate)).getMonth() + "/" + (new Date(item.begindate)).getDate()} End Goal: {item.hours}hrs
+                    </Button>
+                </li>
+            ))}
             {monthData.map((item, i) => (
                 <li key={i}>
                     <VolunteerCalendarCard key={i} item={item} isYearView={true}/>
