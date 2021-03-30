@@ -95,5 +95,9 @@ class GetMembersFromOrg(APIView):
         org_id = request.GET['org_id']
         members = Member.objects.filter(organization__id=org_id)
         serializer = MemberSerializer(members, many=True)
+
+        for item in serializer.data:
+            item['user']['name'] = item['user']['first_name'] + ' ' + item['user']['last_name']
+
         return Response(serializer.data)
         
