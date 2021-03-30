@@ -101,7 +101,7 @@ const Analytics = ({orgId}) => {
 
 
     return (
-    <React.Fragment>
+        <React.Fragment>
             <Radio.Group style={{ marginBottom: 16, float: 'right'}} onChange={e => handleChange(e.target.value)} defaultValue="chart">
                 <Radio.Button value="chart">Chart View</Radio.Button>
                 <Radio.Button value="table">Table View</Radio.Button>
