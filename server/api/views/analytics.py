@@ -295,13 +295,22 @@ class GetVolunteerGoals(APIView):
 
         duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
 
-        goals = UserGoals.objects.filter(user__id=user, begindate__lte=timezone.now(), enddate__gte=timezone.now()).values('id', 'hours', 'begindate', 'enddate')
-
-        for goal in goals:
-            attendees = Attendee.objects.filter(username__id=user, events__begindate__gte=goal['begindate'], events__enddate__lte=timezone.now()).values(
-                'username__id').annotate(completed = Sum(duration))[0]
+        # goals = UserGoals.objects.filter(user__id=user, begindate__lte=timezone.now(), enddate__gte=timezone.now()).values('id', 'hours', 'begindate', 'enddate')
+        goals = UserGoals.objects.filter(user__id=user).values('id', 'hours', 'begindate', 'enddate')
+        print("goals")
+        print(goals)
+        for goal in goals: #bug here
+            print("attendees")
+            print(Attendee.objects.filter(username__id=user, events__begindate__gte=goal['begindate'], events__enddate__lte=timezone.now()))
+            attendees = Attendee.objects.filter(username__id=user, events__begindate__gte=goal['begindate'], events__enddate__lte=timezone.now())
+            if attendees:
+                attendees = Attendee.objects.filter(username__id=user, events__begindate__gte=goal['begindate'], events__enddate__lte=timezone.now()).values(
+                    'username__id').annotate(completed = Sum(duration))[0]
+                goal['completed'] = attendees['completed']/10**6//3600
+            else:
+                goal['completed'] = 0
             goal['key'] = goal['id']
-            goal['completed'] = attendees['completed']/10**6//3600
+            # goal['completed'] = attendees['completed']/10**6//3600
             goal['progress'] = round(goal['completed']/goal['hours']*100)
         
         return Response(goals, status = status.HTTP_200_OK)
