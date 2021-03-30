@@ -8,6 +8,7 @@ const { Title } = Typography;
 function Clearances({isAdmin, orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
+    const [incompEvents, setIncompEvents] = useState([]); 
 
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
@@ -27,23 +28,22 @@ function Clearances({isAdmin, orgId}) {
                     e.edate = (new Date(e.enddate)).toLocaleString('en-US', options);
                 });
             } else {
-                const response = await axiosAPI.get("attendees/get-volunteer-events-for-org/", {
+                const responseIncomp = await axiosAPI.get("attendees/get-volunteer-events-for-org/", {
                     params: {
                         orgId: orgId,
                         user_id: localStorage.getItem("user_id"),
                     }
                 });
-                console.log("not admin: " +  response.data[0].events__name);
+                // console.log("not admin: " +  response.data[0].events__name);
 
-                data = response.data;
+                data = responseIncomp.data;
                 data.map(e => {
                     e.name = e.events__name;
                     e.bdate = (new Date(e.events__begindate)).toLocaleString('en-US', options);
                     e.edate = (new Date(e.events__enddate)).toLocaleString('en-US', options);
-                });
+                })
+                
             }
-
-            
 
             setEvents(data);
             setLoading(false);

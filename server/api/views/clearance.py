@@ -14,8 +14,20 @@ class AddOrgFile(APIView):
         e = Event.objects.filter(id=request.data['eventId'])[0]
         data = request.data
         serializer = OrgFileSerializer(data=data)
+
         if serializer.is_valid():
             serializer.save(organization = org, event=e)
+
+            attendees = Attendee.objects.filter(events__in = [e])
+            # for a in attendees:
+                # ufSerializer = UserFileSerializer()
+                # # fields = ['id', 'org_file', 'user', 'filled_form', 'status', 'comment']
+                # ufSerializer.save()
+                
+            print("attendees")
+            for e in Event.objects.raw('SELECT name FROM event'):
+                print(e)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
