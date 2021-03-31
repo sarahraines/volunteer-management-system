@@ -1,9 +1,11 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, Table, message } from 'antd';
+import { Upload, Button, Table, message, Typography } from 'antd';
 import {StatusTag} from '../components/StatusTag';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import { UploadOutlined } from '@ant-design/icons';
+const { Dragger } = Upload;
+const { Text } = Typography;
 
 function UserFilesTable({orgId, fileList}) {
     const [userFileList, setUserFileList] = useState([]);
@@ -79,7 +81,14 @@ function UserFilesTable({orgId, fileList}) {
             title: 'Upload New File',
             key: 'upload',
             render: (record) => (
-                <Upload {...props} 
+                // <Dragger {...orgProps}>
+                //         {/* <Button icon={<UploadOutlined/>}>Upload New Form</Button>   */}
+                //         <p className="ant-upload-drag-icon">
+                //         <InboxOutlined />
+                //         </p>
+                //         <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                //     </Dragger>
+                <Dragger {...props} 
                     customRequest={async (options) => {
                             const formData = new FormData();
                             formData.append('org_file_id', record.key);
@@ -103,8 +112,10 @@ function UserFilesTable({orgId, fileList}) {
                         }
                     }
                 >
-                    <Button icon={<UploadOutlined/>}> Upload </Button>  
-                </Upload>
+                    <UploadOutlined/>
+                    <p></p>
+                    <Text>Click or drag file to this area to upload</Text>
+                </Dragger>
             ),
         },
     ];

@@ -3,12 +3,11 @@ import { Upload, Button, message, Typography, Table } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import ClearanceUpload from '../components/ClearanceUpload';
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 function Clearances({isAdmin, orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
-    const [incompEvents, setIncompEvents] = useState([]); 
 
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
@@ -28,7 +27,7 @@ function Clearances({isAdmin, orgId}) {
                     e.edate = (new Date(e.enddate)).toLocaleString('en-US', options);
                 });
             } else {
-                const responseIncomp = await axiosAPI.get("attendees/get-volunteer-events-for-org/", {
+                const response = await axiosAPI.get("attendees/get-volunteer-events-for-org/", {
                     params: {
                         orgId: orgId,
                         user_id: localStorage.getItem("user_id"),
@@ -36,7 +35,7 @@ function Clearances({isAdmin, orgId}) {
                 });
                 // console.log("not admin: " +  response.data[0].events__name);
 
-                data = responseIncomp.data;
+                data = response.data;
                 data.map(e => {
                     e.name = e.events__name;
                     e.bdate = (new Date(e.events__begindate)).toLocaleString('en-US', options);
@@ -79,6 +78,8 @@ function Clearances({isAdmin, orgId}) {
             <Title level={4}>Manage clearances for upcoming events</Title>
             {isAdmin ? 
                 <>
+                    <Text>Use the "+" button to upload clearances or manage attendee clearances for an 
+                        event in the table below.</Text>
                     <Table 
                         columns={columns}
                         dataSource={events} 
@@ -90,13 +91,16 @@ function Clearances({isAdmin, orgId}) {
                 </> :
                 // <UserFilesTable orgId={orgId} fileList={fileList} />
                 <>
+                    <Text>Use the "+" button to view/download blank clearances, upload your completed 
+                        clearances, and view the status of your completed clearance for an event in the 
+                        table below. Only events you've joined will appear here.</Text>
                     <Table 
                         columns={columns}
                         dataSource={events} 
                         loading={loading}
-                        // expandedRowRender= {record => 
-                        //     <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
-                        // }
+                        expandedRowRender= {record => 
+                            <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.events__id} />
+                        }
                     />
                 </>
             }
