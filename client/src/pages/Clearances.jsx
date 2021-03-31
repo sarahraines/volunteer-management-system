@@ -102,7 +102,7 @@ function Clearances({isAdmin, orgId}) {
                     table below. Only events you've joined will appear here.</Text>
             }
             <p></p>
-            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{ alignSelf: 'right' }}/>
+            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{ float: 'right' }}/>
             <Table 
                 columns={columns}
                 dataSource={filterDisplay} 
