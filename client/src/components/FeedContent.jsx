@@ -5,6 +5,7 @@ import NewEvent from "../pages/NewEvent";
 import OrgPage from "../pages/OrgPage"
 import VolunteerAnalytics from "../pages/VolunteerAnalytics"
 import VolunteerCalendar from "../pages/VolunteerCalendar"
+import Tutorial from "../components/Tutorial"
 import NewGoal from "../pages/NewGoal"
 
 
@@ -21,7 +22,6 @@ const FeedContent = ({member, context}) => {
         case "calendar":
             return (<VolunteerCalendar />); 
         case "view-analytics":
-            return (<VolunteerAnalytics />); 
         default:
             const orgId = parseInt(context)
             if (isNaN(orgId)) {

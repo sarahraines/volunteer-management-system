@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { Menu } from 'antd';
-import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined } from '@ant-design/icons';
+import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined, SelectOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axiosAPI from '../api/axiosApi';
 import { logout } from '../api/authenticationApi';
