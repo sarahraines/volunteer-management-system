@@ -22,6 +22,7 @@ const FeedContent = ({member, context}) => {
         case "calendar":
             return (<VolunteerCalendar />); 
         case "view-analytics":
+            return (<VolunteerAnalytics />); 
         default:
             const orgId = parseInt(context)
             if (isNaN(orgId)) {
