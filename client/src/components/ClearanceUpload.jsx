@@ -18,7 +18,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 }
             });
             const files = response.data;
-            console.log('files', files);
+            // console.log('files', files);
             
             const formattedFiles = files.map(file => ({
                 key: file.id, 
@@ -29,7 +29,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 event: file.event,
                 eventName: file.event__name
             }));
-            console.log(formattedFiles)
+            // console.log(formattedFiles)
             setFileList(formattedFiles);
         } catch(error) {
             console.error(error);

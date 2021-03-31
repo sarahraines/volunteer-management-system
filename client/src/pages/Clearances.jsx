@@ -8,7 +8,9 @@ const { Title, Text } = Typography;
 function Clearances({isAdmin, orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
-
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]); 
+    const [filterDisplay, setFilterDisplay] = useState([]);
+    
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
     const getEventsByOrg = useCallback(async () => {
@@ -37,6 +39,7 @@ function Clearances({isAdmin, orgId}) {
 
                 data = response.data;
                 data.map(e => {
+                    e.id = e.events__id;
                     e.name = e.events__name;
                     e.bdate = (new Date(e.events__begindate)).toLocaleString('en-US', options);
                     e.edate = (new Date(e.events__enddate)).toLocaleString('en-US', options);
@@ -45,6 +48,7 @@ function Clearances({isAdmin, orgId}) {
             }
 
             setEvents(data);
+            setFilterDisplay(data);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -73,47 +77,42 @@ function Clearances({isAdmin, orgId}) {
         }
     ];
 
+    const handleChange = e => {
+        let oldList = events;
+        if (e !== "") {
+            let newList = [];
+            newList = oldList.filter(event =>
+                event.name.toLowerCase().includes(e.toLowerCase())
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
+
     return (
         <div>
             <Title level={4}>Manage clearances for upcoming events</Title>
             {isAdmin ? 
-                <>
-                    <Text>Use the "+" button to upload clearances or manage attendee clearances for an 
-                        event in the table below.</Text>
-                    <Table 
-                        columns={columns}
-                        dataSource={events} 
-                        loading={loading}
-                        expandedRowRender= {record => 
-                            <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
-                        }
-                    />
-                </> :
-                // <UserFilesTable orgId={orgId} fileList={fileList} />
-                <>
-                    <Text>Use the "+" button to view/download blank clearances, upload your completed 
-                        clearances, and view the status of your completed clearance for an event in the 
-                        table below. Only events you've joined will appear here.</Text>
-                    <Table 
-                        columns={columns}
-                        dataSource={events} 
-                        loading={loading}
-                        expandedRowRender= {record => 
-                            <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.events__id} />
-                        }
-                    />
-                </>
+                <Text>Use the "+" button to upload clearances or manage attendee clearances for an 
+                    event in the table below.</Text>
+                :
+                <Text>Use the "+" button to view/download blank clearances, upload your completed 
+                    clearances, and view the status of your completed clearance for an event in the 
+                    table below. Only events you've joined will appear here.</Text>
             }
+            <p></p>
+            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{ alignSelf: 'right' }}/>
+            <Table 
+                columns={columns}
+                dataSource={filterDisplay} 
+                loading={loading}
+                expandedRowRender= {record => 
+                    <ClearanceUpload isAdmin={isAdmin} orgId={orgId} eId={record.id} />
+                }
+            />
            
         </div>
-
-        // <React.Fragment>
-            
-            
-                    // {/* <Upload {...orgProps}>
-                    //     <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
-                    // </Upload> */}
-        // </React.Fragment>
     );
 };
 
