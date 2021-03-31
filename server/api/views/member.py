@@ -13,6 +13,8 @@ from request_token.models import RequestToken
 from request_token.decorators import use_request_token
 from jwt.exceptions import InvalidSignatureError, DecodeError
 from rest_framework.decorators import api_view
+from smtplib import SMTPException
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -113,7 +115,16 @@ class InviteMembers(APIView):
                 email = (mail_subject, message, from_email, [address])
 
                 emails.append(email)
-        send_mass_mail(emails)
+            try:
+                send_mass_mail(emails, fail_silently=False)
+            except SMTPException:
+                print("ERROR BC EMAIL WRONG")
+                return Response(False, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                print("A DIFF ERROR")
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(None, status=status.HTTP_201_CREATED)
 
 

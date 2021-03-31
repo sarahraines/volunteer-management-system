@@ -11,6 +11,13 @@ export async function register(email, firstName, lastName, password) {
   return response;
 }
 
+export async function resendConfirmation(email) {
+  const response = await axiosAPI.post("users/resend-confirmation-email/", {
+    email: email
+  });
+  return response;
+}
+
 export async function registerFromInvite(email, firstName, lastName, password, invite_id) {
   console.log(email)
   console.log(invite_id)
@@ -41,6 +48,15 @@ export async function reset_password(old_password, new_password) {
     user_id,
     old_password,
     new_password,
+  });
+  return response;
+}
+
+export async function forgot_password(email) {
+  const response = await axiosAPI.get("users/forgot-password-link/", {
+    params: {
+      email
+    }
   });
   return response;
 }

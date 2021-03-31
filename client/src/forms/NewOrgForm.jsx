@@ -85,11 +85,19 @@ const NewOrgForm = () => {
             </Form.Item>
             <Form.Item
                 name="website"
+                hasFeedback
+                rules={[
+                    { type: 'string', pattern: /.+\.[a-zA-Z]+/, message: 'Not a valid website.' }
+                ]}
             >
                 <Input style={{ width: '100%' }} placeholder="Website" />
             </Form.Item>
             <Form.Item
                 name="phone"
+                hasFeedback
+                rules={[
+                    { type: 'string', pattern: /\d{10}/, message: 'Not a valid phone number.' }
+                ]}
             >
                 <Input style={{ width: '100%' }} placeholder="Telephone" />
             </Form.Item>

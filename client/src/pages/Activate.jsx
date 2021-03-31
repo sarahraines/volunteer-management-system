@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import { Result, Button, Spin } from 'antd';
+import { Result, Input, Button, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import "antd/dist/antd.css";
 import axiosAPI from "../api/axiosApi";
+import Form from 'antd/lib/form/Form';
 
 const AuthState = {
     LOADING: 1,
@@ -10,7 +11,7 @@ const AuthState = {
     FAILURE: 3
  };
 
-const Activate = () => {
+const Activate = ({userId}) => {
 
     const [loadingState, setLoadingState] = useState(AuthState.LOADING); 
 
@@ -52,9 +53,6 @@ const Activate = () => {
                     title="Failed to activate account"
                     subTitle="Your activation token may be expired, or otherwise invalid."
                     extra={[
-                        <Button type="primary" key="resend" href="/">
-                            Resend confirmation email
-                        </Button>,
                         <Button key="home" href="/">Return home</Button>,
                     ]}
                 />
