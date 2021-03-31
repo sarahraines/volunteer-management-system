@@ -60,6 +60,9 @@ function VolunteerCalendarCard ({item, isYearView}){
                 content={
                     <div>
                         <Typography.Title level={4}>{item.events__name} 
+                            <a onClick={toggleVisible} style={{ float: "right", color: "grey" }}>
+                                X
+                            </a>
                         </Typography.Title>
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
@@ -73,10 +76,6 @@ function VolunteerCalendarCard ({item, isYearView}){
                         <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.events__id)} loading={isLoading}>
                             Unjoin
                         </Button>
-                        <a onClick={toggleVisible} >
-                            Close
-                        </a>
-                        
                     </div>}
                 trigger="click"
                 visible={!vis}
@@ -96,6 +95,9 @@ function VolunteerCalendarCard ({item, isYearView}){
                 content={
                     <div>
                         <Typography.Title level={4}>{item.events__name}
+                            <a onClick={toggleVisible} style={{ float: "right", color: "grey" }}>
+                                X
+                            </a>
                         </Typography.Title>
                         <Paragraph><b>Location: </b>{item.events__location}</Paragraph>
                         <Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
@@ -106,11 +108,6 @@ function VolunteerCalendarCard ({item, isYearView}){
                         <Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.events__id)} loading={isLoading}>
                             Unjoin
                         </Button>
-
-                        <a onClick={toggleVisible} >
-                            Close
-                        </a>
-                        
                     </div>}
                 trigger="click"
                 visible={!vis}
