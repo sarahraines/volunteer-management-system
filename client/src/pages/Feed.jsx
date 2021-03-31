@@ -1,10 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
-import { Alert, Layout } from 'antd';
+import { Alert, Layout, Button, Modal } from 'antd';
 import { removeAlert } from '../actionCreators.js';
 import Sidebar from "../components/Sidebar";
 import FeedContent from "../components/FeedContent";
+import Tutorial from "../components/Tutorial"; 
 import axiosAPI from '../api/axiosApi';
+import "./Feed.css"
 
 const { Content, Sider } = Layout;
 
@@ -56,6 +58,31 @@ const Feed = () => {
     getMember()
   }, [getMember]);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    function onChange(a, b, c) {
+        console.log(a, b, c);
+    }
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+      };
+    
+      const handleCancel = () => {
+        setIsModalVisible(false);
+      };
+
+    const contentStyle = {
+        height: '160px',
+        color: '#fff',
+        background: '#364d79',
+        padding: '20px'
+      };
+
   return (
     <Layout style={{ minHeight:"100vh" }}>
       <Sider width={240} style={{ background: '#fff' }}>
@@ -65,7 +92,15 @@ const Feed = () => {
         {alertList}
         <Layout style={{ padding: '24px', height: "100%"  }}>
           <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
-            <FeedContent member={member} context={context}/>
+            <div className="button-container">
+              <Button className="expand-button" type="primary" onClick={showModal}>
+                  Application Tutorial
+              </Button>
+              <Modal title="Application Tutorial" visible={isModalVisible} footer={null} onOk={handleOk} onCancel={handleCancel}>
+                  <Tutorial/>
+              </Modal>
+              <FeedContent member={member} context={context}/>
+            </div>
           </Content>
         </Layout>
       </Layout>
