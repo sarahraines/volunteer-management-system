@@ -2,7 +2,7 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.serializers import UserSerializer, EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer
-from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback
+from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback, OrgFile, UserFile
 from django.db.models import Count, CharField, Value as V, F, ExpressionWrapper, fields, Sum, Avg
 from django.db.models.functions import Concat
 from collections import OrderedDict
@@ -237,9 +237,29 @@ class GetVolunteerEventsForOrg(APIView):
         'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
         'events__causes', 'events__description', 'events__organizations', 'events__instructions',
         'events__attendee_cap')
-        print("events")
-        print(events)
+        # print("events")
+        # print(events)
         return Response(events, status=status.HTTP_200_OK)
+
+class GetNumIncompleteClearances(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        attendee_id = request.GET['user_id']
+        org_id = request.GET['orgId']
+        date = timezone.now()
+        username = User.objects.filter(id=attendee_id)[0]
+        events = Attendee.objects.filter(username=username, events__organizations__id=org_id, events__enddate__gte=date).values('events__id')
+
+        org_files = OrgFile.objects.filter(organization=org_id, event__id__in=events.values_list('events__id', flat=True))
+        print("len(org_files)")
+        print(len(org_files))
+
+        user_files = UserFile.objects.filter(user=username, org_file__id__in=org_files.values_list('id', flat=True)).exclude(status="Complete")
+        print("len(user_files)")
+        print(len(user_files))
+        return Response(len(org_files) - len(user_files), status=status.HTTP_200_OK)      
 
 class GetAttendees(APIView):
     permission_classes = (permissions.AllowAny,)

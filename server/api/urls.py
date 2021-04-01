@@ -28,6 +28,7 @@ urlpatterns = [
     path('attendees/delete/', views.DeleteAttendee.as_view(), name="delete_attendees"),
     path('attendees/get-volunteer-events/', views.GetVolunteerEvents.as_view(), name="get_volunteer_events"),
     path('attendees/get-volunteer-events-for-org/', views.GetVolunteerEventsForOrg.as_view(), name="get_volunteer_events_for_org"),
+    path('attendees/get-num-incomplete-clearances/', views.GetNumIncompleteClearances.as_view(), name="get_num_incomplete_clearances"),
     path('invite/delete/', views.DeleteInvite.as_view(), name="delete_invite"),
     path('invite/validate/', views.validate_invite, name="validate_invite"),
     path('invite/accept/', views.AcceptInvite.as_view(), name="accept_invite"),
