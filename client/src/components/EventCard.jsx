@@ -95,6 +95,12 @@ function EventCard ({item, isAdmin, removeEvent, updateEvents}){
 				<Card.Meta title={item.name} description={
 					<React.Fragment>
 						<Paragraph><i>{date}</i></Paragraph>
+						{item.attendee_count == item.attendee_cap ?
+							<Paragraph><i>No. of Attendees: {item.attendee_count}/{item.attendee_cap} [Closed]</i></Paragraph>
+							:
+							<Paragraph><i>No. of Attendees: {item.attendee_count}/{item.attendee_cap} </i></Paragraph>
+						}
+						
 						{<JoinButton item={item}/>}
 					</React.Fragment>
 				} />
