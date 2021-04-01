@@ -148,7 +148,7 @@ function Clearances({isAdmin, orgId}) {
                     <p></p>
                     <Alert
                         message="Incomplete Clearances Notice"
-                        description={"You have incomplete clearances for " + numIncompleteEvents + " upcoming events."}
+                        description={"You have "  + numIncompleteEvents + " incomplete clearances for upcoming events."}
                         type="warning"
                         showIcon
                     />

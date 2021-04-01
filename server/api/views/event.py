@@ -256,7 +256,7 @@ class GetNumIncompleteClearances(APIView):
         print("len(org_files)")
         print(len(org_files))
 
-        user_files = UserFile.objects.filter(user=username, org_file__id__in=org_files.values_list('id', flat=True)).exclude(status="Complete")
+        user_files = UserFile.objects.filter(user=username, org_file__id__in=org_files.values_list('id', flat=True), status="Complete")
         print("len(user_files)")
         print(len(user_files))
         return Response(len(org_files) - len(user_files), status=status.HTTP_200_OK)      
