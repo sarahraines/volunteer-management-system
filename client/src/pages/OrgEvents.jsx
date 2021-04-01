@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Button, Typography, message, Select, Space} from 'antd';
+import {Typography, List, Select, Space} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
@@ -105,12 +105,23 @@ const OrgEvents = ({orgId, isAdmin}) => {
                     <Option value="filled">Filled</Option>
                 </Select>
             </Space> 
-            <div style={{ flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll", height: '100%'}}>
-                {filterDisplay.map((item, i) => 
-                    <EventCard key={i} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
+            <List
+                grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 1,
+                    md: 2,
+                    lg: 2,
+                    xl: 3,
+                    xxl: 3,
+                }}
+                dataSource={filterDisplay}
+                renderItem={item => (
+                    <List.Item>
+                        <EventCard key={item.id} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
+                    </List.Item>
                 )}
-            </div>
-            
+            />
         </React.Fragment>
     );
 }; export default OrgEvents;
