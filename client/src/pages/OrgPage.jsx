@@ -8,7 +8,6 @@ import OrgFeedback from './OrgFeedback';
 import Analytics from './Analytics'; 
 import InvitePage from './InvitePage'; 
 import Clearances from './Clearances';
-import ManageVolunteerClearances from './ManageVolunteerClearances'
 import NewEmail from './NewEmail'
 import Attendees from './Attendees';
 import "./OrgPage.css";
@@ -52,7 +51,7 @@ function OrgPage({member, orgId}) {
                 <TabPane tab="Events" key="events">
                     <OrgEvents orgId={orgId} viewmore={false} eventId={-1}/>
                 </TabPane>
-                <TabPane tab="Event Clearances" key="clearance">
+                <TabPane tab="Clearances" key="clearance">
                     <Clearances isAdmin={isAdmin} orgId={orgId} />
                 </TabPane>
                 {isAdmin &&
@@ -60,11 +59,6 @@ function OrgPage({member, orgId}) {
                     <Attendees orgId={orgId} />
                 </TabPane>
                 }
-                {/* {isAdmin &&
-                    <TabPane tab="Attendee Clearances" key="clearance_table">
-                        <ManageVolunteerClearances orgId={orgId} />
-                    </TabPane> 
-                } */}
                 <TabPane tab="Feedback" key="feedback">
                     <OrgFeedback isAdmin={member?.member_type} orgId={orgId} />
                 </TabPane>
