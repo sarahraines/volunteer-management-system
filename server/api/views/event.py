@@ -119,12 +119,8 @@ class UpsertEvent(APIView):
     def post(self, request, format='json'):
         data = request.data.dict()
 
-        print(data)
-
         if 'causes' in data and not isinstance(data['causes'], list):
             data['causes'] = data['causes'].split(',')
-        
-        print(data)
 
         id = data.get('id')
         no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
