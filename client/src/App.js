@@ -6,9 +6,10 @@ import Home from './pages/Home/Home';
 import Feed from './pages/Feed';
 import InviteNoAuth from './pages/InviteNoAuth';
 import Activate from './pages/Activate';
-// import ForgotPassword from './pages/ForgotPassword';
 import EventFeedback from './pages/EventFeedback'
 import './App.css';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
 
@@ -33,6 +34,8 @@ function App() {
           <Route path="/activate" component={Activate} />
           <Route path="/invite" component={InviteNoAuth} />
           <Route path="/feedback" component={EventFeedback} />
+          <Route path="/forgot-password" component={ForgotPassword} />
+          <Route path="/reset-password" component={ResetPasswordNoAuth} />
       </Switch> 
   </main>
   );
@@ -41,4 +44,5 @@ function App() {
 
 const Register = () => <Auth isRegister={true}/>;
 const Login = () => <Auth isRegister={false}/>;
+const ResetPasswordNoAuth = () => <ResetPassword isAuthenticated={false}/>;
 export default App;

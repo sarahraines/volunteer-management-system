@@ -1,14 +1,17 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select, message } from 'antd';
+import { useDispatch } from 'react-redux'
+import { setOrgs, setSidebarItem } from '../actionCreators.js';
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
 
 const { TextArea } = Input;
 
-const NewOrgForm = () => {
+const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
+    const dispatch = useDispatch();
 
     const getCauses = useCallback(async () => {
         try {
@@ -23,13 +26,23 @@ const NewOrgForm = () => {
         getCauses();
     }, [getCauses]);
 
+    useEffect(() => {
+        if (org?.id) {
+            form.setFieldsValue(org);
+        }
+    }, [org?.id])
+
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
     }, [selectedCauses, causes]);
 
     const onFinish = useCallback(async (values) => {
+        if (form) {
+            setLoading(true);
+        }
         try {
-            await axiosAPI.post("organization/create/", {
+           const newOrg = await axiosAPI.post("organization/upsert/", {
+                id: org?.id,
                 name: values.name,
                 causes: values.causes,
                 description: values.description,
@@ -38,24 +51,40 @@ const NewOrgForm = () => {
                 address: values.address,
                 email: values.email
             });
-            await axiosAPI.post("member/create/", {
-                user_id: localStorage.getItem("user_id"),
-                organization: values.name,
-                member_type: 1,
-                status: 0,
+            if (!form) {
+                await axiosAPI.post("member/create/", {
+                    user_id: localStorage.getItem("user_id"),
+                    org_id: newOrg.data.id,
+                    member_type: 1,
+                    status: 0,
+                });
+            }
+            const response = await axiosAPI.get("user/get-member/", {
+                params: {
+                    user_id: localStorage.getItem("user_id"), 
+                }
             });
-            message.success('Organization created');
+            response.data.forEach(member => member.key = member.organization.id)
+            dispatch(setOrgs(response.data));
+            dispatch(setSidebarItem(newOrg.data.id));
+            message.success(`Organization ${form ? "updated" : "created"}`);
+            if (form) {
+                closeModalWithUpdate();
+            }
         }
         catch {
-            message.error('Organization creation failed');
+            message.error(`Organization ${form ? "update" : "creation"} failed`);
         }
-    }, []);
+        if (form) {
+            setLoading(false);
+        }
+    }, [org?.id]);
 
     return (
         <Form
             name="org"
             className="org-form"
-            initialValues={{ remember: true }}
+            form={form}
             onFinish={onFinish}
         >   
             <Form.Item
@@ -68,6 +97,7 @@ const NewOrgForm = () => {
             <Form.Item
                 name="causes"
                 hasFeedback
+                rules={[{ required: true, message: 'Charitable causes are required.' }]}
             >
                 <Select
                     mode="multiple"
@@ -114,11 +144,13 @@ const NewOrgForm = () => {
             >
                 <TextArea row={6} style={{ width: '100%' }} placeholder="Describe your organization..." />
             </Form.Item>
-            <Form.Item>
-                <Button type="primary" htmlType="submit" className="org-form-button">
-                    Create
-                </Button>
-            </Form.Item>
+            {!form &&
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" className="org-form-button">
+                        Create
+                    </Button>
+                </Form.Item>
+             }
         </Form>
     );
 };

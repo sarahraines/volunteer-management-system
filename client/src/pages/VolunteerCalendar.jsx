@@ -58,9 +58,6 @@ const VolunteerCalendar = () => {
             const bdate = new Date(events.events__begindate);
             const edate = new Date(events.events__enddate);
 
-            // console.log("date issue " + value.year());
-            // console.log("edate " + edate.getFullYear());
-
             return ((value.month() <= edate.getMonth() && value.month() >= bdate.getMonth())
                 && (value.date() <= edate.getDate() && value.date() >= bdate.getDate())
                 && (value.year() <= edate.getFullYear() && value.year() >= bdate.getFullYear()));
@@ -75,8 +72,6 @@ const VolunteerCalendar = () => {
         monthData = events.filter(events => {
             const bdate = new Date(events.events__begindate);
             const edate = new Date(events.events__enddate);
-            // console.log("date issue " + value.year());
-            // console.log("edate " + edate.getFullYear());
             return ((value.month() <= edate.getMonth() && value.month() >= bdate.getMonth())
                 && (value.year() <= edate.getFullYear() && value.year() >= bdate.getFullYear()));
         })

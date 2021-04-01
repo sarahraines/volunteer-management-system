@@ -19,6 +19,7 @@
 .event-card {
     margin-top: 8px;
     margin-bottom: 8px;
+    height: 200px;
 }
 
 .event-form-button {
@@ -35,3 +36,15 @@
     padding: 0;
     margin-left: 0px;
 }
+
+.button-container {
+    display:inline-block;
+    position:relative;
+}
+
+.expand-button {
+    position: absolute !important;
+    top:1em;
+    right:1em;
+}
+

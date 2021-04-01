@@ -11,9 +11,10 @@ class Event(models.Model):
     enddate = models.DateTimeField()
     causes = models.ManyToManyField('Cause')
     description = models.TextField()
-    organizations = models.ManyToManyField('Organization')
+    organization = models.ForeignKey('Organization', on_delete=models.CASCADE)
     instructions = models.TextField(null=True)
     attendee_cap = models.IntegerField(null=True)
+    image = models.ImageField(upload_to='events/', null=True)
     REQUIRED_FIELDS = ['name', 'virtual']
 
 class OrgFile(models.Model):

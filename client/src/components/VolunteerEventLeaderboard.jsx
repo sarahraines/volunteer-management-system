@@ -13,8 +13,8 @@ function VolunteerEventLeaderboard({ data}) {
         },
         {
             title: 'Nonprofit',
-            dataIndex: 'event__organizations__name',
-            key: 'event__organizations__name',
+            dataIndex: 'event__organization__name',
+            key: 'event__organization__name',
         },
         {
             title: 'Date',

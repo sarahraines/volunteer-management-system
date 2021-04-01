@@ -10,19 +10,38 @@ import json
 
 logger = logging.getLogger(__name__)
 
-class CreateOrganization(APIView):
+class UpsertOrganization(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
     def post(self, request, format='json'):
         data = request.data
-        serializer = OrganizationSerializer(data=data)
+        id = data.get('id')
+        no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
+
+        if id:
+            org = Organization.objects.get(pk=id)
+            serializer = OrganizationSerializer(org, data=data)
+        else:
+            serializer = OrganizationSerializer(data=data)
+        
         if serializer.is_valid():
-            org = serializer.save()
-            org.causes.set(data.get('causes'))
-            org.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status=no_error_status)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        if request.GET.get('orgId'):
+            org_id = request.GET['orgId']
+            org = Organization.objects.get(pk=org_id)
+            serializer = OrganizationSerializer(org)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST)
 
 class GetCausesByOrg(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -51,7 +70,6 @@ class UpsertFAQ(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        print('data: ' + str(request.data))
         id = data.get('id')
         no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
         if id:

@@ -25,7 +25,6 @@ const EventFeedbackForm = () => {
                 better:values.better,
                 experience:values.experience,
             });
-            console.log('here feedback'); 
             dispatch(addAlert('Feedback submitted', 'success'));
         }
         catch {
@@ -44,7 +43,7 @@ const EventFeedbackForm = () => {
         try{
             const response = await axiosAPI.get("event/get-event-by-id/", {
                  params: {
-                     attendee_id: new URLSearchParams(window.location.search).get('attendee_id'),  
+                     rt: new URLSearchParams(window.location.search).get('rt'),  
                  }
              });
             setInfo(response.data[0]); 
@@ -94,7 +93,7 @@ const EventFeedbackForm = () => {
         <p>
             <strong>Name: </strong>{info.username__first_name} {info.username__last_name}<br/>
             <strong>Email: </strong>{info.username__email}<br/>
-            <strong>Organization: </strong> {info.events__organizations__name}<br/>
+            <strong>Organization: </strong> {info.events__organization__name}<br/>
             <strong>Event: </strong>{info.events__name} <br/>
             <strong>Location: </strong>{info.events__location}<br/>
             <strong>Date: </strong>{(new Date(info.events__begindate)).toLocaleString('en-US', date_options)} - {(new Date(info.events__enddate)).toLocaleString('en-US', date_options)}<br/>

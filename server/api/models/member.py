@@ -16,7 +16,7 @@ MEMBER_STATUS = (
 INVITE_STATUS = (
     (10, 'Pending'),
     (11, 'Invitation Failed'),
-    (12, 'Invitation Expired'),
+    (12, 'Invitation Rejected'),
 )
 
 class Member(models.Model):
@@ -30,4 +30,4 @@ class Invitee(models.Model):
     email = models.EmailField()
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     member_type = models.IntegerField(choices=MEMBER_TYPES)
-    status = models.IntegerField(choices=INVITE_STATUS)
+    status = models.IntegerField(choices=INVITE_STATUS, default=10)
