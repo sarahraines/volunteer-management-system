@@ -237,8 +237,10 @@ class GetVolunteerEventsForOrg(APIView):
         'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
         'events__causes', 'events__description', 'events__organizations', 'events__instructions',
         'events__attendee_cap')
-        # print("events")
-        # print(events)
+        
+        for e in events:
+            e['key'] = e['events__id']
+
         return Response(events, status=status.HTTP_200_OK)
 
 class GetNumIncompleteClearances(APIView):
