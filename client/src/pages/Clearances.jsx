@@ -9,7 +9,8 @@ const { Title, Text } = Typography;
 function Clearances({isAdmin, orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
-    const [numIncompleteEvents, setNumIncompleteEvents] = useState([]); 
+    const [numIncompleteEvents, setNumIncompleteEvents] = useState([]);
+    const [numPending, setNumPending] = useState([]); 
     const [filterDisplay, setFilterDisplay] = useState([]);
     
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -60,18 +61,14 @@ function Clearances({isAdmin, orgId}) {
         try {
             let data = {};
             if(isAdmin) {
-                const response = await axiosAPI.get("events/get-by-org/", {
+                const response = await axiosAPI.get("events/get-num-pending-clearances-for-org/", {
                     params: {
                         orgId: orgId,
                     }
                 });
 
                 data = response.data;
-                // data = 0;
-                // data.map(e => {
-                //     e.bdate = (new Date(e.begindate)).toLocaleString('en-US', options);
-                //     e.edate = (new Date(e.enddate)).toLocaleString('en-US', options);
-                // });
+                setNumPending(data);
             } else {
                 const response = await axiosAPI.get("attendees/get-num-incomplete-clearances/", {
                     params: {
@@ -82,9 +79,8 @@ function Clearances({isAdmin, orgId}) {
                 // console.log("not admin: " +  response.data[0].events__name);
 
                 data = response.data;
+                setNumIncompleteEvents(data);
             }
-
-            setNumIncompleteEvents(data);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -137,7 +133,7 @@ function Clearances({isAdmin, orgId}) {
                     <p></p>
                     <Alert
                         message="Pending Clearances to Approve/Reject"
-                        description="You have 3 pending clearances that require approval/rejection."
+                        description={"You have " + numPending + " pending clearances that require approval/rejection."}
                         type="warning"
                         showIcon
                     />

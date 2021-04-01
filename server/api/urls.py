@@ -17,6 +17,7 @@ urlpatterns = [
     path('events/get-by-org/', views.GetEventsByOrg.as_view(), name='get_events_by_org'),
     path('events/get-event-attendee-count/', views.GetEventAttendeeCount.as_view(), name='get-event-attendee-count'),
     path('events/get-register-status/', views.GetRegisterStatus.as_view(), name="get_register_status"),
+    path('events/get-num-pending-clearances-for-org/', views.GetNumPendingClearancesForOrg.as_view(), name="get_num_pending_clearances_for_org"),
     path('event/create/', views.CreateEvent.as_view(), name='create_event'),
     path('event/get-event-by-id/', views.GetEventById.as_view(), name='get-event-by-id'),
     path('event/get-attendees/', views.GetAttendees.as_view(), name='get_events'),

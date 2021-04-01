@@ -259,7 +259,25 @@ class GetNumIncompleteClearances(APIView):
         user_files = UserFile.objects.filter(user=username, org_file__id__in=org_files.values_list('id', flat=True), status="Complete")
         print("len(user_files)")
         print(len(user_files))
-        return Response(len(org_files) - len(user_files), status=status.HTTP_200_OK)      
+        return Response(len(org_files) - len(user_files), status=status.HTTP_200_OK)   
+
+class GetNumPendingClearancesForOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request):
+        org_id = request.GET['orgId']
+        date = timezone.now()
+        events = Event.objects.filter(organizations__id=org_id, enddate__gte=date).values('id')
+
+        # org_files = OrgFile.objects.filter(organization=org_id, event__id__in=events.values_list('events__id', flat=True))
+        # print("len(org_files)")
+        # print(len(org_files))
+
+        user_files = UserFile.objects.filter(org_file__event__id__in=events.values_list('id', flat=True)).exclude(status="Complete")
+        print("len(user_files)")
+        print(len(user_files))
+        return Response(len(user_files), status=status.HTTP_200_OK)      
 
 class GetAttendees(APIView):
     permission_classes = (permissions.AllowAny,)
