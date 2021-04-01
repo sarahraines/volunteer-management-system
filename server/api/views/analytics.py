@@ -109,17 +109,24 @@ class VolunteerLeaderboard(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
-        events_attended = Attendee.objects.filter(events__organization__id=org_id, events__enddate__lte=timezone.now()).values(
-            'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
-            count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
-        for event in events_attended:
-            event['key'] = event['username__id']
-            event['name'] = event['username__first_name'] + ' ' + event['username__last_name']
-            event['email'] = event['username__email']
-            event['total'] = (event['total'])/10**6//3600
-            event['event_list'] = (event['event_list']).replace(',', ', ')
+
+        timeframes = [timezone.now() - timedelta(days=30), timezone.now() - timedelta(days=365), timezone.now() - timedelta(days=10**5)]
+
+        results = []
         
-        return Response(events_attended, status = status.HTTP_200_OK)
+        for time in timeframes:
+            events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now(), events__begindate__gte=time).values(
+                'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
+                count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
+            for event in events_attended:
+                event['key'] = event['username__id']
+                event['name'] = event['username__first_name'] + ' ' + event['username__last_name']
+                event['email'] = event['username__email']
+                event['total'] = (event['total'])/10**6//3600
+                event['event_list'] = (event['event_list']).replace(',', ', ')
+            results.append(events_attended)
+        
+        return Response(results, status = status.HTTP_200_OK)
 
 class EventLeaderboard(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -182,10 +189,11 @@ class VolunteerEventLeaderboard(APIView):
         user = request.GET['user']
         
         events = EventFeedback.objects.filter(username__id=user, event__enddate__lte=timezone.now()).values(
-            'event__id', 'event__name', 'event__organization__name', 'overall', 'satisfaction')
+            'event__id', 'event__name', 'event__organization__name', 'event__begindate', 'event__enddate', 'overall', 'satisfaction')
 
         for event in events:
             event['key'] = event['event__id']
+            event['date'] = str(event['event__begindate']).split()[0] 
         
         return Response(events, status = status.HTTP_200_OK)
 
@@ -295,14 +303,18 @@ class GetVolunteerGoals(APIView):
 
         duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
 
-        goals = UserGoals.objects.filter(user__id=user, begindate__lte=timezone.now(), enddate__gte=timezone.now()).values('id', 'hours', 'begindate', 'enddate')
+        goals = UserGoals.objects.filter(user__id=user).values('id', 'hours', 'begindate', 'enddate')
 
         for goal in goals:
             attendees = Attendee.objects.filter(username__id=user, events__begindate__gte=goal['begindate'], events__enddate__lte=timezone.now()).values(
-                'username__id').annotate(completed = Sum(duration))[0]
-            goal['key'] = goal['id']
-            goal['completed'] = attendees['completed']/10**6//3600
-            goal['progress'] = round(goal['completed']/goal['hours']*100)
+                'username__id').annotate(completed = Sum(duration))
+
+            if len(attendees) > 0:
+                goal['completed'] = attendees[0]['completed']/10**6//3600
+                goal['progress'] = round(goal['completed']/goal['hours']*100)
+            else:
+                goal['completed'] = 0
+                goal['progress'] = 0
         
         return Response(goals, status = status.HTTP_200_OK)
         
@@ -330,19 +342,22 @@ class GetMonthlyHours(APIView):
 
         attendees = Attendee.objects.filter(username__id=user, events__begindate__lte=timezone.now()).values('events__begindate').annotate(
             hours=Sum(duration)).order_by('events__begindate')
+        
+        print(attendees)
 
-        month_counts = dict()
-        year_counts = dict()
+        hours_counts = dict()
+        events_counts = dict()
 
         for attendee in attendees:
-            month = str(attendee['events__begindate'])[:7]
-            if month not in month_counts:
-                month_counts[month] = 0
-            month_counts[month] += attendee['hours']/10**6//3600
+            date = str(attendee['events__begindate'].year) + '-' + str(attendee['events__begindate'].month)
 
-            year = str(attendee['events__begindate'])[:4]
-            if year not in year_counts:
-                year_counts[year] = 0
-            year_counts[year] += attendee['hours']/10**6//3600
+            if date not in hours_counts or date not in events_counts:
+                hours_counts[date] = 0
+                events_counts[date] = 0
+            hours_counts[date] += attendee['hours']/10**6//3600
+            events_counts[date] += 1
 
-        return Response([month_counts.keys(), month_counts.values(), year_counts.keys(), year_counts.values()], status=status.HTTP_200_OK)
+        print(hours_counts)
+        print(events_counts)
+
+        return Response([hours_counts.keys(), hours_counts.values(), events_counts.keys(), events_counts.values()], status=status.HTTP_200_OK)

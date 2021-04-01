@@ -75,7 +75,7 @@ const OrgEvents = ({orgId, isAdmin}) => {
         if (value == "open") {
             let newList = [];
             newList = oldList.filter(event =>
-                    (event.attendee_count < event.attendee_cap)
+                (event.attendee_count < event.attendee_cap)
             );
             setFilterDisplay(newList);
         } else if (value == "filled") {

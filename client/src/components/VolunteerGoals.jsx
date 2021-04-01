@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Table, Progress} from 'antd';
 
 function VolunteerGoals({ data}) {
+    
 
     const columns = [
         {

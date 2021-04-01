@@ -6,6 +6,7 @@ import OrgPage from "../pages/OrgPage"
 import LoadingOrg from "../pages/LoadingOrg"
 import VolunteerAnalytics from "../pages/VolunteerAnalytics"
 import VolunteerCalendar from "../pages/VolunteerCalendar"
+import Tutorial from "../components/Tutorial"
 import NewGoal from "../pages/NewGoal"
 import { useSelector } from 'react-redux'
 

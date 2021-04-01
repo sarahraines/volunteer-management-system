@@ -1,14 +1,16 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Table, Typography, Button, Popconfirm, Tooltip, message, Select } from 'antd';
+import { Table, Typography, Button, Popconfirm, Tooltip, message, Input } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 
 const { Title } = Typography;
-const { Option } = Select;
+const { Search } = Input;
 
 function MemberPage({orgId}) {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filterDisplay, setFilterDisplay] = useState([]);
+
     const currentUser = localStorage.getItem("user_id");
     
     const getMembers = useCallback(async () => {
@@ -18,7 +20,8 @@ function MemberPage({orgId}) {
                     org_id: orgId,
                 }
             });
-            response.data.forEach(member => member.key = member.organization.id)
+            response.data.forEach(member => member.key = member.id);
+            setFilterDisplay(response.data); 
             setMembers(response.data);
             setLoading(false);
         } catch(error) {
@@ -48,16 +51,24 @@ function MemberPage({orgId}) {
         }
     }, [orgId]);
 
+    const handleChange = e => {
+        let oldList = members;
+        if (e !== "") {
+            let newList = [];
+            newList = oldList.filter(member =>
+                member.user.name.toLowerCase().includes(e.toLowerCase())
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
+
     const columns = [
         {
-            title: 'First',
-            dataIndex: ['user', 'first_name'],
-            key: 'first',
-        },
-        {
-            title: 'Last',
-            dataIndex: ['user', 'last_name'],
-            key: 'last',
+            title: 'Name',
+            dataIndex: ['user', 'name'],
+            key: 'name',
         },
         {
             title: 'Email',
@@ -105,7 +116,8 @@ function MemberPage({orgId}) {
     return (
         <React.Fragment>
             <Title level={4}>Members</Title>
-            <Table columns={columns} dataSource={members} loading={loading}/>
+            <Search placeholder="search by member name" onChange={e => handleChange(e.target.value)} style={{ width: 300, marginBottom: 16 }}  />
+            <Table columns={columns} dataSource={filterDisplay} loading={loading}/>
         </React.Fragment>
     );
 };
