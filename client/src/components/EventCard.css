@@ -1,4 +1,4 @@
-@media screen and (min-width: 40em) {
+/* @media screen and (min-width: 40em) {
     .event-card {
        max-width: 100%;
     }
@@ -14,7 +14,7 @@
     .event-card {
         max-width: calc(33% - 1em);
     }
-}
+} */
 
 .event-card {
     margin-top: 8px;
