@@ -40,7 +40,7 @@ class DeleteAttendee(APIView):
     def post(self, request, format='json'):
         data = request.data
         event = Event.objects.filter(id=data['event'])[0]
-        attendee = Attendee.objects.filter(username=data['user_id'], events=event).delete()
+        _attendee = Attendee.objects.filter(username=data['user_id'], events=event).delete()
         return Response("deleted", status=status.HTTP_200_OK)   
 
 class GetEvents(APIView):
@@ -52,6 +52,17 @@ class GetEvents(APIView):
         events = Event.objects.filter(enddate__gte=date).order_by('begindate')
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DeleteEvent(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def delete(self, request):
+        id = request.GET.get('id')
+        event = get_object_or_404(Event, pk=id)
+        event.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 class GetEventsByOrg(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -71,7 +82,7 @@ class GetEventsByOrg(APIView):
                 attendee_count = len(attendees)
                 serializer.data[i]["attendee_count"] = attendee_count
                 serializer.data[i]["key"] = events[i].id
-                if is_localhost:
+                if is_localhost and serializer.data[i]['image'] :
                     serializer.data[i]['image'] = "http://" + request.get_host() + serializer.data[i]['image']
                  
 
@@ -85,7 +96,7 @@ class GetEventCountForOrg(APIView):
     def get(self, request):
         if request.GET.get('orgId'):
             orgId = request.GET['orgId']
-            events = Event.objects.filter(organizations__in=[orgId])
+            events = Event.objects.filter(organization=orgId)
             return Response(len(events), status=status.HTTP_200_OK)
         return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST) 
 
@@ -101,16 +112,34 @@ class GetCausesByEvent(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response("Request missing parameter eventId", status=status.HTTP_400_BAD_REQUEST)
 
-class CreateEvent(APIView):
+class UpsertEvent(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
     def post(self, request, format='json'):
-        data = request.data
-        serializer = EventSerializer(data=data)
+        data = request.data.dict()
+
+        if 'causes' in data and not isinstance(data['causes'], list):
+            data['causes'] = [data['causes']]
+
+        id = data.get('id')
+        no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
+
+        image = data.get('image')
+        if image == 'null':
+            data['image'] = None
+
+        if id:
+            event = Event.objects.get(pk=id)
+            serializer = EventSerializer(event, data=data)
+        else:
+            serializer = EventSerializer(data=data)
+        
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=no_error_status)
+
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetAdminOrganizations(APIView):
@@ -139,7 +168,7 @@ class GetEventById(APIView):
         attendees = Attendee.objects.filter(id=attendee_id). \
         values('events__name', 'events__location', 'events__begindate',  \
         'events__enddate', 'events__causes__name', 'events__description',  \
-        'events__organizations__name', 'username__email', 'username__first_name', 'username__last_name')
+        'events__organization__name', 'username__email', 'username__first_name', 'username__last_name')
 
         return Response(attendees, status=status.HTTP_200_OK)
 
@@ -176,12 +205,12 @@ class GetEventFeedback(APIView):
         user_id = request.GET['userId']
 
         if str(is_admin)=='1':
-            feedback = EventFeedback.objects.filter(event__organizations__id=org_id, event__enddate__lte=timezone.now()).values(
+            feedback = EventFeedback.objects.filter(event__organization__id=org_id, event__enddate__lte=timezone.now()).values(
             'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
         else:
-            feedback = EventFeedback.objects.filter(event__organizations__id=org_id, username__id=user_id, event__enddate__lte=timezone.now()).values(
+            feedback = EventFeedback.objects.filter(event__organization__id=org_id, username__id=user_id, event__enddate__lte=timezone.now()).values(
             'id', 'event__name', 'event__location', 'event__begindate', 'event__enddate', 
             'username__email', 'username__first_name', 'username__last_name',
             'overall', 'satisfaction', 'likely', 'expectations', 'future', 'better', 'experience')
@@ -234,7 +263,7 @@ class GetVolunteerEvents(APIView):
         username = User.objects.filter(id=attendee_id)[0]
         events = Attendee.objects.filter(username=username).values('events__id',
         'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
-        'events__causes', 'events__description', 'events__organizations', 'events__instructions',
+        'events__causes', 'events__description', 'events__organization', 'events__instructions',
         'events__attendee_cap')
 
         return Response(events, status=status.HTTP_200_OK)
@@ -246,7 +275,7 @@ class GetAttendees(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         num_attendees = Attendee.objects.annotate(name=Concat('username__first_name', V(' '), 'username__last_name')).filter(
-            events__organizations__id=org_id, events__begindate__gte=timezone.now()).values(
+            events__organization__id=org_id, events__begindate__gte=timezone.now()).values(
                 'events__id', 'events__name', 'events__location', 'events__begindate', 'events__enddate', 'events__attendee_cap',).annotate(
                     count=Count('events__id'), attendees = GroupConcat('name')).order_by('events__begindate')
 

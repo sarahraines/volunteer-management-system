@@ -29,6 +29,15 @@ const OrgEvents = ({orgId, isAdmin}) => {
         getEventsByOrg();
     }, [orgId, getEventsByOrg]);
 
+    const updateEvents = () => {
+        getEventsByOrg();
+    }
+
+    const removeEvent = useCallback(id => {
+        setEvents(events.filter(event => event.id !== id));
+        setFilterDisplay(events.filter(event => event.id !== id));
+    }, [events]);
+
     const handleChange = e => {
         let oldList = events;
         if (e !== "") {
@@ -98,7 +107,7 @@ const OrgEvents = ({orgId, isAdmin}) => {
             </Space> 
             <div style={{ flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll", height: '100%'}}>
                 {filterDisplay.map((item, i) => 
-                    <EventCard key={i} item={item} isAdmin={isAdmin}/>
+                    <EventCard key={i} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
                 )}
             </div>
             

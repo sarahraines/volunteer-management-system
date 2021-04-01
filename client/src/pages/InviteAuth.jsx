@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { Layout, Typography, Button, Space, Skeleton } from 'antd';
 import InviteAuthForm from '../forms/InviteAuthForm';
-import { isAuthenticated } from '../api/authenticationApi';
 import { useHistory } from 'react-router-dom';
 import LoginLogo from '../assets/login.svg';
 import RegisterLogo from '../assets/register.svg';
@@ -17,9 +16,11 @@ const InviteAuth = ({isRegister, invite, user}) => {
 
     const acceptInvite = useCallback(async () => {
         try {
-            const response = await axiosAPI.post("invite/accept/", {
-                invite_id: invite.id,
-                user_id: user.id
+            const response = await axiosAPI.get("invite/accept/", {
+                params: {
+                    rt: new URLSearchParams(window.location.search).get('rt'),
+                }
+
             });
             history.push("/login")
         } catch (error) {
@@ -29,7 +30,7 @@ const InviteAuth = ({isRegister, invite, user}) => {
 
     const declineInvite = useCallback(async () => {
         try {
-            const response = await axiosAPI.delete("invite/reject/", {
+            const response = await axiosAPI.get("invite/reject/", {
                 params: {
                     invite_id: invite.id,
                 }

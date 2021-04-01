@@ -27,7 +27,7 @@ class VolunteerBreakdown(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
-        events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
+        events_attended = Attendee.objects.filter(events__organization__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
             count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
         members = Member.objects.filter(organization__id=org_id).values('user__first_name', 'user__last_name')
@@ -109,7 +109,7 @@ class VolunteerLeaderboard(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
-        events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values(
+        events_attended = Attendee.objects.filter(events__organization__id=org_id, events__enddate__lte=timezone.now()).values(
             'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
             count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
         for event in events_attended:
@@ -128,7 +128,7 @@ class EventLeaderboard(APIView):
     def get(self, request):
         org_id = request.GET['org_id']
         num_attendees = EventFeedback.objects.annotate(name=Concat('username__first_name', V(' '), 'username__last_name')).filter(
-            event__organizations__id=org_id, event__enddate__lte=timezone.now()).values(
+            event__organization__id=org_id, event__enddate__lte=timezone.now()).values(
                 'event__id', 'event__name', 'event__location', 'event__begindate', 'event__enddate').annotate(
                 count = Count('event__id'), avg_rating = Sum('overall'), avg_satisfaction = Sum('satisfaction'),
                 attendees = GroupConcat('name'), ratings = GroupConcat('overall'), satisfactions = GroupConcat('satisfaction'), 
@@ -182,7 +182,7 @@ class VolunteerEventLeaderboard(APIView):
         user = request.GET['user']
         
         events = EventFeedback.objects.filter(username__id=user, event__enddate__lte=timezone.now()).values(
-            'event__id', 'event__name', 'event__organizations__name', 'overall', 'satisfaction')
+            'event__id', 'event__name', 'event__organization__name', 'overall', 'satisfaction')
 
         for event in events:
             event['key'] = event['event__id']
@@ -199,10 +199,10 @@ class NonprofitBreakdown(APIView):
         duration = ExpressionWrapper(T('events__enddate') - T('events__begindate'), output_field=fields.BigIntegerField())
 
         nonprofits = Attendee.objects.filter(username__id=user, events__enddate__lte=timezone.now()).values(
-            'events__organizations__id', 'events__organizations__name').annotate(count = Count('events__organizations__id'), hours = Sum(duration), events=GroupConcat('events__name'))
+            'events__organization__id', 'events__organization__name').annotate(count = Count('events__organization__id'), hours = Sum(duration), events=GroupConcat('events__name'))
         
         for nonprofit in nonprofits:
-            nonprofit['key'] = nonprofit['events__organizations__id']
+            nonprofit['key'] = nonprofit['events__organization__id']
             nonprofit['hours'] = nonprofit['hours']/10**6//3600
             nonprofit['events'] = nonprofit['events'].replace(',', ', ')
         
@@ -228,8 +228,8 @@ class VolunteerSummary(APIView):
 
         for time in timeframes:
             np = Attendee.objects.filter(username__id=user, events__enddate__lte=timezone.now(), events__enddate__gte=time).values(
-                'events__organizations__id', 'events__organizations__name').annotate(
-                    count = Count('events__organizations__id'), hours = Sum(duration), events = GroupConcat('events__name'), dates = GroupConcat('events__enddate'))
+                'events__organization__id', 'events__organization__name').annotate(
+                    count = Count('events__organization__id'), hours = Sum(duration), events = GroupConcat('events__name'), dates = GroupConcat('events__enddate'))
     
             count_sum = 0
             hours_sum = 0
@@ -240,7 +240,7 @@ class VolunteerSummary(APIView):
             for nonprofit in np:
                 count_sum += nonprofit['count']
                 hours_sum += nonprofit['hours']/10**6//3600
-                nonprofits_string = nonprofits_string + nonprofit['events__organizations__name'] + ', '
+                nonprofits_string = nonprofits_string + nonprofit['events__organization__name'] + ', '
                 events_string = events_string + nonprofit['events'].replace(',', ', ') + ', '
                 events_enddate_string = events_enddate_string + nonprofit['dates'].replace(',', ', ') + ', '
             
@@ -314,8 +314,8 @@ class VolunteerFunnel(APIView):
         org_id = request.GET['org_id']
     
         members = Member.objects.filter(organization__id=org_id).values('user__id')
-        attendees = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now()).values('username__id').distinct()
-        feedback = EventFeedback.objects.filter(event__organizations__id=org_id, event__enddate__lte=timezone.now()).values('username__email').distinct()
+        attendees = Attendee.objects.filter(events__organization__id=org_id, events__enddate__lte=timezone.now()).values('username__id').distinct()
+        feedback = EventFeedback.objects.filter(event__organization__id=org_id, event__enddate__lte=timezone.now()).values('username__email').distinct()
 
         return Response([len(members), len(attendees), len(feedback)], status=status.HTTP_200_OK)
 

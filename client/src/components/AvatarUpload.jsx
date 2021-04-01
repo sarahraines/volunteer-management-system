@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import './AvatarUpload.css';
 
-const AvatarUpload = ({updateImageField}) => {
+const AvatarUpload = ({updateImageField, initialImageURL}) => {
   const [fileList, setFileList] = useState([]);
+
+  useEffect(() => {
+    if (initialImageURL) {
+      setFileList([{
+        name: '',
+        status: 'done',
+        url: initialImageURL,
+      }]);
+      updateImageField(-1);
+    }
+  }, []);
 
   const onChange = async({ fileList: newFileList }) => {
     if (newFileList.length > 0) {

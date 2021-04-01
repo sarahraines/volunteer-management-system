@@ -37,10 +37,6 @@ const Event = () => {
         }
     };
 
-    // const eventList = events.map(item => 
-    //     <EventCard key={item.id} item={item} />
-    // );
-
     return (
         <React.Fragment>
             <Typography.Title style={{ textAlign: "center" }} level={2}>Find service opportunities</Typography.Title>

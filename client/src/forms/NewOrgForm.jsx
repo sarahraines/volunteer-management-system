@@ -54,7 +54,7 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
             if (!form) {
                 await axiosAPI.post("member/create/", {
                     user_id: localStorage.getItem("user_id"),
-                    organization: values.name,
+                    org_id: newOrg.data.id,
                     member_type: 1,
                     status: 0,
                 });

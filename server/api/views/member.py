@@ -9,11 +9,13 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from api.tokens import account_activation_token
-from request_token.models import RequestToken
 from request_token.decorators import use_request_token
 from jwt.exceptions import InvalidSignatureError, DecodeError
 from rest_framework.decorators import api_view
+from django.conf import settings
 import logging
+import jwt
+from django.forms.models import model_to_dict
 
 logger = logging.getLogger(__name__)
 
@@ -22,10 +24,9 @@ class CreateMember(APIView):
     authentication_classes = ()
 
     def post(self, request, format='json'):
-        user = User.objects.filter(id=request.data.get('user_id'))[0]
-        print(Organization.objects.filter(name=request.data.get('organization')).values('name'))
-        print(request.data.get('organization'))
-        organization = Organization.objects.filter(name=request.data.get('organization'))[0]
+        user = User.objects.get(pk=request.data.get('user_id'))
+        logger.error(request.data.get('user_id'))
+        organization = Organization.objects.get(pk=request.data.get('org_id'))
         data = {
             'member_type': request.data.get('member_type'),
             'status': request.data.get('status')
@@ -86,24 +87,10 @@ class InviteMembers(APIView):
             }
             serializer = InviteeSerializer(data=invitee_data)
             if serializer.is_valid():
-                invitee, _ = Invitee.objects.update_or_create(
-                    email=address,
-                    organization=organization,
-                    defaults={
-                        "member_type": member_type,
-                        "status": 10
-                    }
-                )
-                token = RequestToken.objects.create_token(
-                    scope="invitation",
-                    login_mode=RequestToken.LOGIN_MODE_NONE,
-                    data={
-                        'iid': invitee.id
-                    }
-                )
-
+                invitee, _ = Invitee.objects.update_or_create(invitee_data)
+                token = jwt.encode({'invite_id': invitee.id}, settings.SECRET_KEY, algorithm='HS256')
                 is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
-                activation_url = request.build_absolute_uri(f"/invite?rt={token.jwt()}") if not is_localhost else f"http://localhost:3000/invite?rt={token.jwt()}"
+                activation_url = request.build_absolute_uri(f"/invite?rt={token}") if not is_localhost else f"http://localhost:3000/invite?rt={token}"
                 mail_subject = 'You\'ve been invited!'
                 from_email = 'vol.mgmt.system@gmail.com'
                 message = render_to_string('invite_organization.html', {
@@ -111,9 +98,9 @@ class InviteMembers(APIView):
                     'activation_url': activation_url
                 })
                 email = (mail_subject, message, from_email, [address])
-
                 emails.append(email)
-        send_mass_mail(emails)
+
+        send_mass_mail(emails, fail_silently=False)
         return Response(None, status=status.HTTP_201_CREATED)
 
 
@@ -136,65 +123,62 @@ class DeleteInvite(APIView):
         invite_id = request.GET.get('invite_id')
         invite = get_object_or_404(Invitee, id=invite_id)
         invite.delete()
-        token = get_object_or_404(RequestToken, data__iid=int(invite_id))
-        token.delete()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET'])
-@use_request_token(scope="invitation")
-def validate_invite(request):
-    if request.token:
-        token = request.token
-        invite_id = token.data['iid']
-        token.delete()
-        invite = Invitee.objects.get(pk=invite_id)
-        serialized_invite = InviteeSerializer(invite)
-        user = User.objects.filter(email=invite.email).first()
-        serialized_user = UserSerializer(user)
-        data = {
-            "user": serialized_user.data,
-            "invite": serialized_invite.data
-        }
-        return Response(data, status=status.HTTP_200_OK)
-    return Response(None, status=status.HTTP_403_FORBIDDEN)
-
+class ValidateInvite(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        try:
+            tokendata = jwt.decode(request.GET['rt'], settings.SECRET_KEY, algorithms=["HS256"])
+            _invite_id = tokendata['invite_id']
+        except:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        return Response(None, status=status.HTTP_200_OK)
+        
 class RejectInvite(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     
-    def delete(self, request):
-        invite_id = request.GET.get('invite_id')
+    def get(self, request):
+        try:
+            tokendata = jwt.decode(request.GET['rt'], settings.SECRET_KEY, algorithms=["HS256"])
+            invite_id = tokendata['invite_id']
+        except:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         invite = get_object_or_404(Invitee, id=invite_id)
-        invite.delete()
+        invite.status = 12
+        invite.save()
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
 class AcceptInvite(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
     
-    def post(self, request):
-        data = request.data
-        user_id = data['user_id']
-        invite_id = data['invite_id']
-        user = get_object_or_404(User, id=user_id)
+    def get(self, request):
+        try:
+            tokendata = jwt.decode(request.GET['rt'], settings.SECRET_KEY, algorithms=["HS256"])
+            invite_id = tokendata['invite_id']
+        except:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
         invite = get_object_or_404(Invitee, id=invite_id)
+        user = get_object_or_404(User, email=invite.email)
+
         member_data = {
             'user': user,
             'member_type': invite.member_type,
             'organization': invite.organization,
             'status': 0
         }
+        logger.error(member_data)
         serializer = MemberSerializer(data=member_data)
         if serializer.is_valid():
-            Member.objects.create(
-                user=member_data['user'],
-                member_type=member_data['member_type'],
-                organization=member_data['organization'],
-                status=member_data['status']
-            )
+            Member.objects.create(**member_data)
             invite.delete()
-            return Response(None, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EmailMembers(APIView):

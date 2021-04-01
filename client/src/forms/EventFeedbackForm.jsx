@@ -93,7 +93,7 @@ const EventFeedbackForm = () => {
         <p>
             <strong>Name: </strong>{info.username__first_name} {info.username__last_name}<br/>
             <strong>Email: </strong>{info.username__email}<br/>
-            <strong>Organization: </strong> {info.events__organizations__name}<br/>
+            <strong>Organization: </strong> {info.events__organization__name}<br/>
             <strong>Event: </strong>{info.events__name} <br/>
             <strong>Location: </strong>{info.events__location}<br/>
             <strong>Date: </strong>{(new Date(info.events__begindate)).toLocaleString('en-US', date_options)} - {(new Date(info.events__enddate)).toLocaleString('en-US', date_options)}<br/>

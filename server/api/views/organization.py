@@ -29,7 +29,6 @@ class UpsertOrganization(APIView):
             serializer.save()
             return Response(serializer.data, status=no_error_status)
 
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetOrg(APIView):

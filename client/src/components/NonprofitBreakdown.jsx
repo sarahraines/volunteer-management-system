@@ -6,8 +6,8 @@ function NonprofitBreakdown({ data}) {
     const columns = [
         {
             title: 'Nonprofit',
-            dataIndex: 'events__organizations__name',
-            key: 'events__organizations__name',
+            dataIndex: 'events__organization__name',
+            key: 'events__organization__name',
         },
         {
             title: 'Events',

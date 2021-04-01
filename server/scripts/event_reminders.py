@@ -15,7 +15,7 @@ def run():
 	# , events__begindate__range=[startdate, enddate]
 	attendees = Attendee.objects.filter(username__email='sarah@example.com'). \
 		values('events__name', 'events__location', 'events__begindate',  \
-		'events__enddate', 'events__organizations__name', 'username__id', 'username__email', 'username__first_name')
+		'events__enddate', 'events__organization__name', 'username__id', 'username__email', 'username__first_name')
 	# print(attendees)
 
 	for item in attendees:
@@ -26,7 +26,7 @@ def run():
 		location = item['events__location']
 		begindate = item['events__begindate']
 		enddate = item['events__enddate']
-		org = item['events__organizations__name']
+		org = item['events__organization__name']
 		email = item['username__email']
 		fname = item['username__first_name']
 
@@ -66,7 +66,7 @@ def run():
 	attendees = Attendee.objects.filter(username__email='sarah@example.com'). \
 		values('id', 'events__name', 'events__location', 'events__begindate',  \
 		'events__enddate', 'events__causes__name', 'events__description',  \
-		'events__organizations__name', 'username__id', 'username__email', 'username__first_name')
+		'events__organization__name', 'username__id', 'username__email', 'username__first_name')
 	
 	for item in attendees:
 
@@ -76,7 +76,7 @@ def run():
 		location = item['events__location']
 		begindate = item['events__begindate']
 		enddate = item['events__enddate']
-		org = item['events__organizations__name']
+		org = item['events__organization__name']
 		email = item['username__email']
 		fname = item['username__first_name']
 

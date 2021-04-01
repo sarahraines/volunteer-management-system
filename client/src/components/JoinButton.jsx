@@ -14,12 +14,14 @@ function JoinButton ({item}){
 					user_id: localStorage.getItem("user_id"),
 					event: event_id,
 				});
+				item.attendee_count -= 1;
 				message.success("Unjoined event")
 			} else {
 				await axiosAPI.post("attendees/create/", {
 					user_id: localStorage.getItem("user_id"),
 					event: event_id,
 				});
+				item.attendee_count += 1;
 				message.success("Joined event");
 			}
 			setRegister(!register)
@@ -53,19 +55,12 @@ function JoinButton ({item}){
 	}, [getRegisterStatus]);
 	
 	const buttonText = register ? "Unjoin" : "Join";
+	const buttonIsDisabled = item.attendee_count >= item.attendee_cap && !register;
 
 	return (
-        (item.attendee_count < item.attendee_cap) ? 
-		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
+		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading} disabled={buttonIsDisabled}>
 			{buttonText}
-		</Button> :
-		(register ? 
-		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
-			{buttonText}
-		</Button> : 
-		<Button type="primary" htmlType="submit" className="event-unjoinable-form-button" disabled={true}>
-		 	{buttonText}
-		</Button>)
+		</Button>
 	);
 
 } export default JoinButton; 
