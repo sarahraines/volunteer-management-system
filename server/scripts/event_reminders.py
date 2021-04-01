@@ -61,12 +61,14 @@ def run():
 				# print(message.sid)
 
 	#Event feedback
-	startdate = datetime.now(tz=timezone.utc) - timedelta(hours=1)
+	startdate = datetime.now(tz=timezone.utc) - timedelta(hours=24)
 	enddate = datetime.now(tz=timezone.utc)
-	attendees = Attendee.objects.filter(username__email='sarah@example.com'). \
+	attendees = Attendee.objects.filter(events__enddate__range=[startdate, enddate]). \
 		values('id', 'events__name', 'events__location', 'events__begindate',  \
 		'events__enddate', 'events__causes__name', 'events__description',  \
 		'events__organization__name', 'username__id', 'username__email', 'username__first_name')
+	
+	print(attendees)
 	
 	for item in attendees:
 
@@ -80,6 +82,8 @@ def run():
 		email = item['username__email']
 		fname = item['username__first_name']
 
+		print(email)
+
 		subject = 'Volunteer Event Feedback'
 		
 		token = jwt.encode({'attendee_id': str(item['id'])}, settings.SECRET_KEY, algorithm='HS256')
@@ -92,9 +96,6 @@ def run():
 		'\nDate: ' + str(begindate) + '-' + str(enddate) + 
 		'\n\nPlease take a moment to fill out a feedback form here:' + 
 		'\n\nhttps://volunteersense.com/feedback?rt=' + token)
-
-		print(message)
-
 
 		from_email = 'vol.mgmt.system@gmail.com'
 

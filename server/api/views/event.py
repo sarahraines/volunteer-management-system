@@ -279,10 +279,11 @@ class GetAttendees(APIView):
                 'events__id', 'events__name', 'events__location', 'events__begindate', 'events__enddate', 'events__attendee_cap',).annotate(
                     count=Count('events__id'), attendees = GroupConcat('name')).order_by('events__begindate')
 
-
         for attendee in num_attendees:
             attendee['key'] = attendee['events__id']
             attendee['attendees'] = attendee['attendees'].replace(',', ', ')
 
         return Response(num_attendees, status=status.HTTP_200_OK)
+
+
 
