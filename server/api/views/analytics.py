@@ -115,7 +115,7 @@ class VolunteerLeaderboard(APIView):
         results = []
         
         for time in timeframes:
-            events_attended = Attendee.objects.filter(events__organizations__id=org_id, events__enddate__lte=timezone.now(), events__begindate__gte=time).values(
+            events_attended = Attendee.objects.filter(events__organization__id=org_id, events__enddate__lte=timezone.now(), events__begindate__gte=time).values(
                 'username__id', 'username__first_name', 'username__last_name', 'username__email').annotate( \
                 count=Count('username__id'), total=Sum(duration), event_list=GroupConcat('events__name')).order_by('-count')
             for event in events_attended:
