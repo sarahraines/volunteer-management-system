@@ -41,7 +41,7 @@ export const Banner50DataSource = {
       {
         name: 'explain',
         className: 'banner5-explain',
-        children: 'Build and engage your community with our volunteer management system.',
+        children: 'Build and engage your community with our volunteer management platform.',
       },
       {
         name: 'button',
@@ -60,6 +60,45 @@ export const Banner50DataSource = {
     children: LandingLogo,
   },
 };
+export const Feature10DataSource = {
+  wrapper: { className: 'home-page-wrapper content1-wrapper' },
+  OverPack: { className: 'home-page content1', playScale: 0.3 },
+  imgWrapper: { className: 'content1-img', md: 10, xs: 24 },
+  img: {
+    children: 'https://zos.alipayobjects.com/rmsportal/nLzbeGQLPyBJoli.png',
+  },
+  textWrapper: { className: 'content1-text', md: 14, xs: 24 },
+  title: {
+    className: 'content1-title',
+    children: (
+      <span>
+        <span>
+          <span>
+            <span>
+              <blockquote>About VolunteerSense</blockquote>
+            </span>
+          </span>
+        </span>
+      </span>
+    ),
+  },
+  content: {
+    className: 'content1-content',
+    children: (
+      <span>
+        <p>VolunteerSense is designed to help nonprofits onboard, engage, and retain volunteers by serving as a 
+          single source of truth for nonprofits to interface with their volunteers. This volunteer management 
+          platform allows nonprofits to automate key volunteer interactions, enabling them to move away from 
+          inefficient methods of volunteer management, scale up their volunteer community, and refocus on 
+          what's really important: <i>advancing their mission.</i> </p>
+      </span>
+    ),
+  },
+  image: {
+    className: 'banner5-image',
+    children: LandingLogo,
+  },
+};
 export const Feature00DataSource = {
   wrapper: { className: 'home-page-wrapper content0-wrapper' },
   page: { className: 'home-page content0' },
@@ -67,8 +106,11 @@ export const Feature00DataSource = {
   titleWrapper: {
     className: 'title-wrapper',
     children: [
-      { name: 'title', children: 'About VolunteerSense' },
-      { name: 'explain', children: 'Our secret recipe for wrangling your volunteers.' }
+      { name: 'title', children: 'Why Use VolunteerSense?' },
+      { name: 'explain', children: 'Are you a nonprofit that finds itself spending hours entering data into Excel or filing paperwork ' + 
+      'in order to manage your volunteers? Are these time consuming tasks preventing your nonprofit from scaling up your volunteer base (and ' +
+      'your impact)? VolunteerSense will allow your nonprofit to manage volunteers in a fraction of the time, easily engage volunteers, and ' + 
+      'expand your volunteer base. Still unsure if you should switch to VolunteerSense? Check out a few of our key features below.' }
     ],
   },
   childWrapper: {
@@ -93,12 +135,35 @@ export const Feature00DataSource = {
               className: 'content0-block-title',
               children: 'Recruit',
             },
-            { name: 'content', children: 'Easily onboard new volunteers and track their progress in signing required clearances.' },
+            { name: 'content', children: 'Easily invite new volunteers and allow VolunteerSense to track volunteer event sign-ups for you automatically.' },
           ],
         },
       },
       {
         name: 'block1',
+        className: 'content0-block',
+        md: 8,
+        xs: 24,
+        children: {
+          className: 'content0-block-item',
+          children: [
+            {
+              name: 'image',
+              className: 'content0-block-icon',
+              children:
+                'https://zos.alipayobjects.com/rmsportal/WBnVOjtIlGWbzyQivuyq.png',
+            },
+            {
+              name: 'title',
+              className: 'content0-block-title',
+              children: 'Onboard',
+            },
+            { name: 'content', children: 'Say goodbye to filing volunteer permission slips and waivers. Manage these \'clearances\' with just a few button clicks instead.'  },
+          ],
+        },
+      },
+      {
+        name: 'block2',
         className: 'content0-block',
         md: 8,
         xs: 24,
@@ -118,13 +183,13 @@ export const Feature00DataSource = {
             },
             {
               name: 'content',
-              children: 'Alert your community about new opportunities to get involved.',
+              children: 'Alert your community about new opportunities to get involved with a single click.',
             },
           ],
         },
       },
       {
-        name: 'block2',
+        name: 'block3',
         className: 'content0-block',
         md: 8,
         xs: 24,
@@ -145,6 +210,58 @@ export const Feature00DataSource = {
             {
               name: 'content',
               children: 'Remind your volunteers about upcoming events and solicit their feedback.',
+            },
+          ],
+        },
+      },
+      {
+        name: 'block4',
+        className: 'content0-block',
+        md: 8,
+        xs: 24,
+        children: {
+          className: 'content0-block-item',
+          children: [
+            {
+              name: 'image',
+              className: 'content0-block-icon',
+              children:
+                'https://zos.alipayobjects.com/rmsportal/EkXWVvAaFJKCzhMmQYiX.png',
+            },
+            {
+              name: 'title',
+              className: 'content0-block-title',
+              children: 'Analyze',
+            },
+            {
+              name: 'content',
+              children: 'Use VolunteerSense\'s extensive analytics page to understand volunteer behavior and how best to engage with your community.',
+            },
+          ],
+        },
+      },
+      {
+        name: 'block5',
+        className: 'content0-block',
+        md: 8,
+        xs: 24,
+        children: {
+          className: 'content0-block-item',
+          children: [
+            {
+              name: 'image',
+              className: 'content0-block-icon',
+              children:
+                'https://zos.alipayobjects.com/rmsportal/EkXWVvAaFJKCzhMmQYiX.png',
+            },
+            {
+              name: 'title',
+              className: 'content0-block-title',
+              children: 'Automate',
+            },
+            {
+              name: 'content',
+              children: 'Automatically track volunteers\' service hours and remind volunteers to attend events they\'ve signed up for.',
             },
           ],
         },
