@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Button, Typography, DatePicker, Select, Space} from 'antd';
+import {Button, Typography, DatePicker, Select, Space, List} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
@@ -139,7 +139,23 @@ const OrgEvents = ({orgId, isAdmin}) => {
                     <EventCard key={i} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
                 )}
             </div>
-            
+            <List
+                grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 1,
+                    md: 2,
+                    lg: 2,
+                    xl: 3,
+                    xxl: 3,
+                }}
+                dataSource={filterDisplay}
+                renderItem={item => (
+                    <List.Item>
+                        <EventCard key={item.id} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
+                    </List.Item>
+                )}
+            />
         </React.Fragment>
     );
 }; export default OrgEvents;

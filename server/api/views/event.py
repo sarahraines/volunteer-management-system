@@ -120,7 +120,7 @@ class UpsertEvent(APIView):
         data = request.data.dict()
 
         if 'causes' in data and not isinstance(data['causes'], list):
-            data['causes'] = [data['causes']]
+            data['causes'] = data['causes'].split(',')
 
         id = data.get('id')
         no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
@@ -279,10 +279,11 @@ class GetAttendees(APIView):
                 'events__id', 'events__name', 'events__location', 'events__begindate', 'events__enddate', 'events__attendee_cap',).annotate(
                     count=Count('events__id'), attendees = GroupConcat('name')).order_by('events__begindate')
 
-
         for attendee in num_attendees:
             attendee['key'] = attendee['events__id']
             attendee['attendees'] = attendee['attendees'].replace(',', ', ')
 
         return Response(num_attendees, status=status.HTTP_200_OK)
+
+
 
