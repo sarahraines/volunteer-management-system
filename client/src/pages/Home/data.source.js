@@ -1,5 +1,12 @@
 import React from 'react';
 import LandingLogo from '../../assets/landing.svg';
+import AboutImage from '../../assets/AboutImage.svg';
+import Recruit from '../../assets/Recruit.svg';
+import Onboard from '../../assets/Onboard.svg';
+import Engage from '../../assets/Engage.svg';
+import Retain from '../../assets/Retain.svg';
+import Analyze from '../../assets/Analyze.svg';
+import Automate from '../../assets/Automate.svg';
 import logo from '../../assets/volunteersense.png';
 export const Nav30DataSource = {
   wrapper: { className: 'header3 home-page-wrapper jzih1dpqqrg-editor_css' },
@@ -63,11 +70,8 @@ export const Banner50DataSource = {
 export const Feature10DataSource = {
   wrapper: { className: 'home-page-wrapper content1-wrapper' },
   OverPack: { className: 'home-page content1', playScale: 0.3 },
-  imgWrapper: { className: 'content1-img', md: 10, xs: 24 },
-  img: {
-    children: 'https://zos.alipayobjects.com/rmsportal/nLzbeGQLPyBJoli.png',
-  },
-  textWrapper: { className: 'content1-text', md: 14, xs: 24 },
+  imgWrapper: { className: 'content1-img', md: 12, xs: 24 },
+  textWrapper: { className: 'content1-text', md: 10, xs: 24 },
   title: {
     className: 'content1-title',
     children: (
@@ -96,7 +100,7 @@ export const Feature10DataSource = {
   },
   image: {
     className: 'banner5-image',
-    children: LandingLogo,
+    children: AboutImage,
   },
 };
 export const Feature00DataSource = {
@@ -127,8 +131,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children:
-                'https://zos.alipayobjects.com/rmsportal/WBnVOjtIlGWbzyQivuyq.png',
+              children: Recruit,
             },
             {
               name: 'title',
@@ -150,8 +153,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children:
-                'https://zos.alipayobjects.com/rmsportal/WBnVOjtIlGWbzyQivuyq.png',
+              children: Onboard,
             },
             {
               name: 'title',
@@ -173,8 +175,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children:
-                'https://zos.alipayobjects.com/rmsportal/YPMsLQuCEXtuEkmXTTdk.png',
+              children: Engage,
             },
             {
               name: 'title',
@@ -199,8 +200,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children:
-                'https://zos.alipayobjects.com/rmsportal/EkXWVvAaFJKCzhMmQYiX.png',
+              children: Retain,
             },
             {
               name: 'title',
@@ -225,8 +225,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children:
-                'https://zos.alipayobjects.com/rmsportal/EkXWVvAaFJKCzhMmQYiX.png',
+              children: Analyze,
             },
             {
               name: 'title',
@@ -251,8 +250,7 @@ export const Feature00DataSource = {
             {
               name: 'image',
               className: 'content0-block-icon',
-              children:
-                'https://zos.alipayobjects.com/rmsportal/EkXWVvAaFJKCzhMmQYiX.png',
+              children: Automate,
             },
             {
               name: 'title',
@@ -267,6 +265,10 @@ export const Feature00DataSource = {
         },
       },
     ],
+  },
+  image: {
+    className: 'banner5-image',
+    children: Recruit,
   },
 };
 export const Footer20DataSource = {
