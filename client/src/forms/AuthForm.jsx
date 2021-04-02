@@ -131,7 +131,7 @@ const AuthForm = ({isRegister}) => {
                     {submitButtonText}
                 </Button>
                 {switchAuthPages}
-                {!isRegister && <Link className="auth-form-forgot" to="/register">Forgot password?</Link>}
+                {!isRegister && <Link className="auth-form-forgot" to="/forgot-password">Forgot password?</Link>}
             </Form.Item>
         </Form>
     </React.Fragment>

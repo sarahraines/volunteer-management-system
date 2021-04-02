@@ -4,29 +4,32 @@ import { Form, Input, Button } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { reset_password } from '../api/authenticationApi';
 import { addAlert } from '../actionCreators.js';
+import { Link } from 'react-router-dom';
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
-const ResetPasswordForm = () => {
+const ResetPasswordForm = ({isAuthenticated}) => {
     const dispatch = useDispatch();
 
     const onFinish = useCallback(async (values) => {
-        try {
-            await reset_password(values.old_password, values.new_password);
-            dispatch(addAlert('Password reset success', 'success'));
-        } catch (error) {
-            dispatch(addAlert('Old password incorrect', 'error'));
-        }
-    }, [dispatch]);
-
-    const sendForgotPasswordEmail = useCallback(async () => {
-        try {
-            const url = "users/forgot-password/?user_id=" + localStorage.getItem("user_id")
-            await axiosAPI.get(url);
-            dispatch(addAlert('Password reset link sent to email', 'success'));
-        } catch (error) {
-            dispatch(addAlert('Password reset email failed to send', 'error'));
+        if (isAuthenticated) {
+            try {
+                await reset_password(values.old_password, values.new_password);
+                dispatch(addAlert('Password reset success', 'success'));
+            } catch (error) {
+                dispatch(addAlert('Cannot reset password', 'error'));
+            }
+        } else {
+            try {
+                await axiosAPI.post("/users/reset-password/", {
+                    rt: new URLSearchParams(window.location.search).get('rt'),
+                    new_password: values.new_password
+                });
+                dispatch(addAlert('Password reset success', 'success'));
+            } catch (error) {
+                dispatch(addAlert('Cannot reset password', 'error'));
+            }
         }
     }, [dispatch]);
 
@@ -38,7 +41,7 @@ const ResetPasswordForm = () => {
             initialValues={{ remember: true }}
             onFinish={onFinish}
         > 
-            <Form.Item
+            {isAuthenticated && <Form.Item
                 name="old_password"
                 hasFeedback
                 rules={[
@@ -51,7 +54,7 @@ const ResetPasswordForm = () => {
                     type="password"
                     placeholder="Old password"
                 />
-            </Form.Item>
+            </Form.Item>}
             <Form.Item
                 name="new_password"
                 hasFeedback
@@ -92,10 +95,7 @@ const ResetPasswordForm = () => {
                 <Button type="primary" htmlType="submit" className="auth-form-button">
                     Submit
                 </Button>
-                Forgot password? 
-                <Button type="link" style={{ paddingLeft: 4, paddingRight: 4}} onClick={sendForgotPasswordEmail}>
-                    Send a password reset email
-                </Button>
+                {isAuthenticated && <Link style={{ paddingLeft: 4, paddingRight: 4}} to="/forgot-password">Forgot password?</Link>}
             </Form.Item>
         </Form>
     </React.Fragment>

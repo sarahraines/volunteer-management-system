@@ -51,7 +51,7 @@ function InvitePage({orgId}) {
 
     const deleteInvite = useCallback(async (inviteId) => {
         try {
-            const response =  await axiosAPI.delete("invite/delete/", {
+            await axiosAPI.delete("invite/delete/", {
                 params: {
                     invite_id: inviteId,
                 }

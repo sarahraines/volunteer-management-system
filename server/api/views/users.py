@@ -3,7 +3,7 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer, UserSettingsSerializer, UserGoalsSerializer
+from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer, UserSettingsSerializer, UserGoalsSerializer, ResetPasswordSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from api.models import User, Invitee, Member, UserSettings, UserGoals
 from django.core.mail import EmailMessage
@@ -13,7 +13,10 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from api.tokens import account_activation_token
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+import hashlib
 import logging
+import jwt
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +79,6 @@ class CreateUserFromInvite(APIView):
                 last_name=data['last_name'],
                 is_active=True
             )
-            logger.error(data)
             invite_id = data['invite_id']
             invite = get_object_or_404(Invitee, id=invite_id)
             logger.error(invite)
@@ -88,16 +90,57 @@ class CreateUserFromInvite(APIView):
             }
             member_serializer = MemberSerializer(data=member_data)
             if member_serializer.is_valid():
-                Member.objects.create(
-                    user=member_data['user'],
-                    member_type=member_data['member_type'],
-                    organization=member_data['organization'],
-                    status=member_data['status']
-                )
+                Member.objects.create(**member_data)
                 invite.delete()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(member_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ValidateResetPassword(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        try:
+            tokendata = jwt.decode(request.GET['rt'], settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = tokendata['user_id']
+            token = tokendata['token']
+            user = User.objects.get(pk=user_id)
+            hashed_old_password = hashlib.sha256(user.password.encode('utf-8')).hexdigest()
+            if hashed_old_password != token:
+                return Response("Invalid password reset request", status=status.HTTP_403_FORBIDDEN)
+        except jwt.ExpiredSignatureError:
+            return Response("Password reset request expired", status=status.HTTP_403_FORBIDDEN)
+        except:
+            return Response("Invalid password reset request", status=status.HTTP_403_FORBIDDEN)
+        return Response(None, status=status.HTTP_200_OK)
+
+class ResetPassword(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def post(self, request, format='json'):
+        data = request.data
+        try:
+            tokendata = jwt.decode(data['rt'], settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = tokendata['user_id']
+            token = tokendata['token']
+        except jwt.ExpiredSignatureError:
+            return Response("Password reset request expired", status=status.HTTP_403_FORBIDDEN)
+        except:
+            return Response("Invalid password reset request", status=status.HTTP_403_FORBIDDEN)
+
+        user = User.objects.get(pk=user_id)
+        hashed_old_password = hashlib.sha256(user.password.encode('utf-8')).hexdigest()
+        if hashed_old_password == token:
+            serializer = ResetPasswordSerializer(data=data)
+            if serializer.is_valid():
+                user.set_password(data['new_password'])
+                user.save()
+                return Response("New password set", status=status.HTTP_200_OK)
+            return Response("New password invalid", status=status.HTTP_400_BAD_REQUEST)
+        return Response("Invalid password reset request", status=status.HTTP_403_FORBIDDEN)
+
 
 class ChangePassword(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -114,6 +157,7 @@ class ChangePassword(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.data, status=status.HTTP_403_FORBIDDEN)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -152,24 +196,20 @@ class ForgotPassword(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
-    def get(self, request):
-        if request.GET.get('user_id'):
-            try:
-                user = User.objects.get(pk=request.GET['user_id'])
-            except:
-                return Response(None, status=status.HTTP_200_OK)
-        elif request.GET.get('email'):
-            try:
-                user = User.objects.get(email=request.GET['email'])
-            except:
-                user = None
+    def post(self, request, format='json'):
+        data = request.data
+        try:
+            user = User.objects.get(email=data['email'])
+        except:
+            user = None
         
         if user is not None:
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            token = account_activation_token.make_token(user)
-
+            token = jwt.encode({
+                'user_id': user.id,
+                'token': hashlib.sha256(user.password.encode('utf-8')).hexdigest()
+            }, settings.SECRET_KEY, algorithm='HS256')
             is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000" 
-            password_reset_url = request.build_absolute_uri(f"/reset-password?uid={uid}&token={token}") if not is_localhost else f"http://localhost:3000/reset-password?uid={uid}&token={token}"
+            password_reset_url = request.build_absolute_uri(f"/reset-password?rt={token}") if not is_localhost else f"http://localhost:3000/reset-password?rt={token}"
             mail_subject = 'Reset your password.'
             message = render_to_string('reset_password.html', {
                 'user': user,
@@ -179,8 +219,7 @@ class ForgotPassword(APIView):
                 mail_subject, message, to=[user.email]
             )
             email.send()
-            return Response(None, status=status.HTTP_200_OK)
-        return Response("There was ", status=status.HTTP_400_BAD_REQUEST) 
+        return Response(None, status=status.HTTP_200_OK)
 
 
 class UpdateUser(APIView):

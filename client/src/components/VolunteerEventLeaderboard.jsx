@@ -3,6 +3,8 @@ import { Typography, Table} from 'antd';
 
 function VolunteerEventLeaderboard({ data}) {
 
+    console.log(data); 
+
     const columns = [
         {
             title: 'Event',
@@ -11,8 +13,13 @@ function VolunteerEventLeaderboard({ data}) {
         },
         {
             title: 'Nonprofit',
-            dataIndex: 'event__organizations__name',
-            key: 'event__organizations__name',
+            dataIndex: 'event__organization__name',
+            key: 'event__organization__name',
+        },
+        {
+            title: 'Date',
+            dataIndex: 'date',
+            key: 'date',
         },
         {
             title: 'Rating',

@@ -3,13 +3,22 @@ import NewOrg from "../pages/NewOrg";
 import Settings from "../pages/Settings";
 import NewEvent from "../pages/NewEvent";
 import OrgPage from "../pages/OrgPage"
+import LoadingOrg from "../pages/LoadingOrg"
 import VolunteerAnalytics from "../pages/VolunteerAnalytics"
 import VolunteerCalendar from "../pages/VolunteerCalendar"
+import Tutorial from "../components/Tutorial"
 import NewGoal from "../pages/NewGoal"
+import EventFeedback from "../pages/EventFeedback"
 
 
-const FeedContent = ({member, context}) => {
+import { useSelector } from 'react-redux'
+
+
+const FeedContent = ({member}) => {
+    const context = useSelector(state => state.sidebar_item);
     switch(context) {
+        case "loading":
+            return(<LoadingOrg />)
         case "create-org":
             return (<NewOrg />);
         case "settings":
@@ -22,6 +31,8 @@ const FeedContent = ({member, context}) => {
             return (<VolunteerCalendar />); 
         case "view-analytics":
             return (<VolunteerAnalytics />); 
+        case "give-feedback":
+            return (<EventFeedback />); 
         default:
             const orgId = parseInt(context)
             if (isNaN(orgId)) {

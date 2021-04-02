@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { Form, Input, Button, Radio} from 'antd';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import { Form, Input, Button, Radio, Select} from 'antd';
 import axiosAPI from "../api/axiosApi";
 import { useDispatch } from 'react-redux';
 import { addAlert } from '../actionCreators.js';
@@ -11,12 +11,36 @@ const {TextArea} = Input;
 const EventFeedbackForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
+    const [selectedEvents, setSelectedEvents] = useState([]);
+    const [events, setEvents] = useState([]);
+
+    const getEvents = useCallback(async () => {
+        try {
+            const response = await axiosAPI.get("attendees/get-volunteer-events/", {
+                 params: {
+                     user_id: localStorage.getItem("user_id"),  
+                 }
+             });
+            setEvents(response.data);
+        } catch (error) {
+            console.error(error)
+        }
+    }, [setEvents]);
+
+    useEffect(() => {
+        getEvents();
+    }, [getEvents]);
+
+    const filteredEvents = useMemo(() => {
+        return events.filter(e => !selectedEvents.includes(e));
+    }, [selectedEvents, events]);
 
     const onFinish = useCallback(async (values) => {
         setIsLoading(true);
         try {
             await axiosAPI.post("eventFeedback/create/", {
-                id: new URLSearchParams(window.location.search).get('attendee_id'),
+                id: localStorage.getItem("user_id"),
+                events: values.events,
                 overall: values.overall,
                 satisfaction: values.satisfaction,
                 likely: values.likely,
@@ -25,7 +49,6 @@ const EventFeedbackForm = () => {
                 better:values.better,
                 experience:values.experience,
             });
-            console.log('here feedback'); 
             dispatch(addAlert('Feedback submitted', 'success'));
         }
         catch {
@@ -36,22 +59,22 @@ const EventFeedbackForm = () => {
 
     const [info, setInfo] = useState([]);
 
-    useEffect(() => {
-        getInfo();
-    }, []);
+    // useEffect(() => {
+    //     getInfo();
+    // }, []);
 
-    const getInfo = async () => {
-        try{
-            const response = await axiosAPI.get("event/get-event-by-id/", {
-                 params: {
-                     attendee_id: new URLSearchParams(window.location.search).get('attendee_id'),  
-                 }
-             });
-            setInfo(response.data[0]); 
-        } catch (error) {
-            console.error(error)
-        }
-    } 
+    // const getInfo = async () => {
+    //     try{
+    //         const response = await axiosAPI.get("event/get-event-by-id/", {
+    //              params: {
+    //                  rt: new URLSearchParams(window.location.search).get('rt'),  
+    //              }
+    //          });
+    //         setInfo(response.data[0]); 
+    //     } catch (error) {
+    //         console.error(error)
+    //     }
+    // } 
 
     const options = [
         { label: 'Poor', value: 1},
@@ -91,16 +114,37 @@ const EventFeedbackForm = () => {
         onFinish={onFinish}
     >
 
-        <p>
+        {/* <p>
             <strong>Name: </strong>{info.username__first_name} {info.username__last_name}<br/>
             <strong>Email: </strong>{info.username__email}<br/>
-            <strong>Organization: </strong> {info.events__organizations__name}<br/>
+            <strong>Organization: </strong> {info.events__organization__name}<br/>
             <strong>Event: </strong>{info.events__name} <br/>
             <strong>Location: </strong>{info.events__location}<br/>
             <strong>Date: </strong>{(new Date(info.events__begindate)).toLocaleString('en-US', date_options)} - {(new Date(info.events__enddate)).toLocaleString('en-US', date_options)}<br/>
         </p>
-        
+         */}
 
+        <p>Which event would you like to provide feedback for?</p>
+        <Form.Item
+                name="events"
+                hasFeedback
+                rules={[{ required: true, message: 'Event is required.' }]}
+            >
+                <Select
+                    mode="multiple"
+                    placeholder="Attended Events"
+                    value={selectedEvents}
+                    onChange={setSelectedEvents}
+                    style={{ width: '100%' }}
+                >
+                    
+                {filteredEvents.map(item => (
+                    <Select.Option key={item.events__id} value={item.events__id}>
+                        {item.events__name}
+                    </Select.Option>
+                ))}
+                </Select>
+            </Form.Item>
         <p>How would you rate your overall experience?</p>
         <Form.Item
             name="overall"

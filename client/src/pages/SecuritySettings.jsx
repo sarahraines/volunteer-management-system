@@ -7,7 +7,7 @@ function SecuritySettings() {
         <React.Fragment>
             <div style={{ maxWidth: '600px' }}>
                 <Typography.Title level={4}>Reset password</Typography.Title>
-                <ResetPasswordForm />
+                <ResetPasswordForm isAuthenticated={true}/>
             </div>
             <Divider/>
         </React.Fragment>

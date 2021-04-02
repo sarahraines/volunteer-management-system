@@ -69,7 +69,7 @@ function QAndA ({isAdmin, item, removeFaq, orgId}) {
                 <Paragraph style={{ float: "left", verticalAlign: "top", fontWeight: 700 }}>Question: </Paragraph>
                 {'  '}
                 <div style={{ marginLeft: 4, flexGrow: 100 }}>
-                    <Paragraph style={{ width: "100%" }} editable={isAdmin ? { onChange: (newQuestionStr) => updateQ(newQuestionStr) }: false}>{questionStr}</Paragraph>
+                    <Paragraph style={{ width: "100%" }} editable={{ onChange: (newQuestionStr) => updateQ(newQuestionStr) }}>{questionStr}</Paragraph>
                 </div>
             </div>
             <div style={{ display: "flex" }}>

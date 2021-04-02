@@ -15,6 +15,7 @@
     "@vx/text": "^0.0.199",
     "all": "^0.0.0",
     "antd": "^4.7.0",
+    "antd-img-crop": "^3.14.1",
     "axios": "^0.20.0",
     "axios-retry": "^3.1.9",
     "craco-less": "^1.17.1",

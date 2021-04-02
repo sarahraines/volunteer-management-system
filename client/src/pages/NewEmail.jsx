@@ -1,11 +1,12 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Table, Typography, Form, Input, Button} from 'antd';
+import { Table, Typography, Form, Input, Button, Space} from 'antd';
 import axiosAPI from '../api/axiosApi';
 import { addAlert } from '../actionCreators.js';
 import { useDispatch } from 'react-redux';
 import './NewEmail.css';
 
 const { TextArea } = Input;
+const { Search } = Input;
 
 const { Title } = Typography;
 
@@ -13,6 +14,7 @@ function NewEmail({orgId}) {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [checkedList, setCheckedList] = useState([]); 
+    const [filterDisplay, setFilterDisplay] = useState([]);
     const dispatch = useDispatch();
 
     const getMembers = useCallback(async () => {
@@ -23,6 +25,7 @@ function NewEmail({orgId}) {
                 }
             });
             response.data.forEach(member => member.key = member.id);
+            setFilterDisplay(response.data); 
             setMembers(response.data);
             setLoading(false);
         } catch(error) {
@@ -40,25 +43,29 @@ function NewEmail({orgId}) {
         setCheckedList(selectedRows);
     }, []);
 
-    
+    const handleChange = e => {
+        let oldList = members;
+        if (e !== "") {
+            let newList = [];
+            newList = oldList.filter(member =>
+                member.user.name.toLowerCase().includes(e.toLowerCase())
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
+
     const columns = [
         {
-            title: 'First',
-            dataIndex: ['user', 'first_name'],
-            key: 'first',
-            width: '25%',
-        },
-        {
-            title: 'Last',
-            dataIndex: ['user', 'last_name'],
-            key: 'last',
-            width: '25%',
+            title: 'Name',
+            dataIndex: ['user', 'name'],
+            key: 'name',
         },
         {
             title: 'Email',
             dataIndex: ['user', 'email'],
             key: 'email',
-            width: '25%',
         },
         {
             title: 'Role',
@@ -67,7 +74,6 @@ function NewEmail({orgId}) {
             render: (_, record) => (
                 record.member_type === 1 ? "Admin" : "Member"
             ),
-            width: '25%',
         },
     ];
 
@@ -90,13 +96,14 @@ function NewEmail({orgId}) {
     return (
         <React.Fragment>
             <Title level={4}>Email members</Title>
-
+            <Search placeholder="search by volunteer name" onChange={e => handleChange(e.target.value)} style={{ width: 300, marginBottom: 16 }}  />
             <Table 
                 className = "member-table"
                 rowSelection={{ onChange }}
                 columns={columns} 
-                dataSource={members} 
-                loading={loading}/>  
+                dataSource={filterDisplay} 
+                loading={loading}
+                pagination={{ pageSize: 5 }}/>  
 
             <Form
                 name="org"
@@ -126,7 +133,7 @@ function NewEmail({orgId}) {
                 </Form.Item>
 
             </Form>
-        </React.Fragment>
+            </React.Fragment>
     );
 };
 

@@ -6,15 +6,16 @@ from api.serializers import EventSerializer, AttendeeSerializer
 from twilio.rest import Client
 from django.conf import settings
 import os
+import jwt
 
 def run():
-
 	#Event reminders
 	startdate = datetime.now(tz=timezone.utc) + timedelta(hours=23)
 	enddate = datetime.now(tz=timezone.utc) + timedelta(hours=24)
-	attendees = Attendee.objects.filter(events__begindate__range=[startdate, enddate]). \
+	# , events__begindate__range=[startdate, enddate]
+	attendees = Attendee.objects.filter(username__email='sarah@example.com'). \
 		values('events__name', 'events__location', 'events__begindate',  \
-		'events__enddate', 'events__organizations__name', 'username__id', 'username__email', 'username__first_name')
+		'events__enddate', 'events__organization__name', 'username__id', 'username__email', 'username__first_name')
 	# print(attendees)
 
 	for item in attendees:
@@ -25,7 +26,7 @@ def run():
 		location = item['events__location']
 		begindate = item['events__begindate']
 		enddate = item['events__enddate']
-		org = item['events__organizations__name']
+		org = item['events__organization__name']
 		email = item['username__email']
 		fname = item['username__first_name']
 
@@ -60,12 +61,14 @@ def run():
 				# print(message.sid)
 
 	#Event feedback
-	startdate = datetime.now(tz=timezone.utc) - timedelta(hours=1)
+	startdate = datetime.now(tz=timezone.utc) - timedelta(hours=24)
 	enddate = datetime.now(tz=timezone.utc)
 	attendees = Attendee.objects.filter(events__enddate__range=[startdate, enddate]). \
 		values('id', 'events__name', 'events__location', 'events__begindate',  \
 		'events__enddate', 'events__causes__name', 'events__description',  \
-		'events__organizations__name', 'username__id', 'username__email', 'username__first_name')
+		'events__organization__name', 'username__id', 'username__email', 'username__first_name')
+	
+	print(attendees)
 	
 	for item in attendees:
 
@@ -75,11 +78,15 @@ def run():
 		location = item['events__location']
 		begindate = item['events__begindate']
 		enddate = item['events__enddate']
-		org = item['events__organizations__name']
+		org = item['events__organization__name']
 		email = item['username__email']
 		fname = item['username__first_name']
 
+		print(email)
+
 		subject = 'Volunteer Event Feedback'
+		
+		token = jwt.encode({'attendee_id': str(item['id'])}, settings.SECRET_KEY, algorithm='HS256')
 
 		message = ('Hello ' + fname + ','
 		'\n\nThank you for attending the following event.\n\n'
@@ -88,14 +95,14 @@ def run():
 		'\nLocation: ' + location + 
 		'\nDate: ' + str(begindate) + '-' + str(enddate) + 
 		'\n\nPlease take a moment to fill out a feedback form here:' + 
-		'\n\nhttps://volunteersense.com/feedback?attendee_id=' + str(item['id']))
+		'\n\nhttps://volunteersense.com/feedback?rt=' + token)
 
 		from_email = 'vol.mgmt.system@gmail.com'
 
-		if len(exists) == 0:
-			send_mail(subject, message, from_email, [email], fail_silently=False)
-		else:
-			 if exists[0]['email']:
-				 send_mail(subject, message, from_email, [email], fail_silently=False)
+		# if len(exists) == 0:
+		# 	send_mail(subject, message, from_email, [email], fail_silently=False)
+		# else:
+		# 	 if exists[0]['email']:
+		# 		 send_mail(subject, message, from_email, [email], fail_silently=False)
 
 	

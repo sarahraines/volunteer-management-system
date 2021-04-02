@@ -15,3 +15,17 @@ export function addAlert(message, alert_type) {
       id
     }
   }
+
+  export function setOrgs(orgs) {
+    return {
+      type: 'SET_ORGS',
+      orgs
+    }
+  }
+
+  export function setSidebarItem(sidebar_item) {
+    return {
+      type: 'SET_SIDEBAR',
+      sidebar_item
+    }
+  }

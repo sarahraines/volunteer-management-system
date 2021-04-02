@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, Typography } from 'antd';
 import RegisterLogo from '../assets/register.svg';
 import './Auth.css';
-// import ForgotPasswordForm from '../forms/ForgotPasswordForm';
+import ForgotPasswordForm from '../forms/ForgotPasswordForm';
 
 const ForgotPassword = () => {
   const logo = RegisterLogo;
@@ -16,7 +16,7 @@ const ForgotPassword = () => {
                     src={logo} 
                     alt={"Forgot Password logo"}
                 />
-                {/* <ForgotPasswordForm/> */}
+                <ForgotPasswordForm/>
             </div>
         </Layout.Content>
     </Layout>

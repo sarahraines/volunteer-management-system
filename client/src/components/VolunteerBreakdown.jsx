@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Table} from 'antd';
+import Plot from 'react-plotly.js';
 
-function VolunteerBreakdown({ data}) {
-
+function VolunteerBreakdown({data}) {
     const columns = [
         { 
             title: '',
@@ -31,6 +31,7 @@ function VolunteerBreakdown({ data}) {
     return (
         <React.Fragment>
             <Typography.Title level={5}>Volunteer Breakdown</Typography.Title>
+
             <Table 
                 dataSource={data} 
                 columns={columns}
