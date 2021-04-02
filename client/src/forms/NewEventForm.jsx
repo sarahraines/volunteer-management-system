@@ -1,21 +1,21 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Form, Input, Button, Select, Switch, DatePicker, InputNumber, message } from 'antd';
+import moment from 'moment'
 import axiosAPI from "../api/axiosApi";
-import { useDispatch } from 'react-redux';
-import { addAlert } from '../actionCreators.js';
 import "antd/dist/antd.css";
 import "./NewEventForm.css"
+import AvatarUpload from "../components/AvatarUpload"
 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const NewEventForm = () => {
+const NewEventForm = ({form, event, closeModalWithUpdate, setLoading}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
     const [selectedOrgs, setSelectedOrgs] = useState([]);
+    const [imageFile, setImageFile] = useState(null);
     const [orgs, setOrgs] = useState([]);
-    const dispatch = useDispatch();
 
     const getCauses = useCallback(async () => {
         try{
@@ -43,60 +43,88 @@ const NewEventForm = () => {
         getCauses();
         getOrgs();
     }, [getCauses, getOrgs]);
-    
-    const filteredOrgs = useMemo(() => {
-        return orgs.filter(o => !selectedOrgs.includes(o));
-    }, [selectedOrgs, orgs]);
 
+    useEffect(() => {
+        if (event?.id) {
+            form.setFieldsValue(event)
+            const beginMoment = moment(new Date(event?.begindate));
+            const endMoment = moment(new Date(event?.enddate));
+            form.setFieldsValue({date: [beginMoment, endMoment]});
+        }
+    }, [event, event?.id])
+    
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
     }, [selectedCauses, causes]);
 
 
     const onFinish = useCallback(async (values) => {
-        setIsLoading(true);
+        if (form) {
+            setLoading(false);
+        } else {
+            setIsLoading(false);
+        }
         try {
-            await axiosAPI.post("event/create/", {
-                name: values.name,
-                virtual: values.virtual,
-                location: values.location,
-                causes: values.causes,
-                organizations: values.organizations,
-                date:values.date,
-                description: values.description,
-                instructions: values.instructions,
-                attendee_cap: values.attendeeCap,
+            const formdata = new FormData();
+            if (event?.id) {
+                formdata.append('id', event.id);
+            }
+            formdata.append('name', values.name);
+            formdata.append('virtual', values.virtual);
+            formdata.append('location', values.location);
+            formdata.append('causes', values.causes);
+            formdata.append('organization', values.organization);
+            formdata.append('begindate', values.date[0].toISOString());
+            formdata.append('enddate', values.date[1].toISOString());
+            formdata.append('attendee_cap', values.attendee_cap);
+            formdata.append('description', values.description);
+            formdata.append('instructions', values.instructions);
+            // -1 means retain existing image
+            if (imageFile !== -1) {
+                formdata.append('image', imageFile);
+            }
 
-            });
-            message.success('Event created');
+            await axiosAPI.post("event/upsert/", formdata);
+            if (form) {
+                setLoading(false);
+                closeModalWithUpdate();
+            } else {
+                setIsLoading(false);
+            }
+            message.success(`Event ${form ? "updated" : "created"}`);
         }
         catch {
-            message.success('Event creation failed');
+            message.error(`Event ${form ? "update" : "creation"} failed`);
+            if (form) {
+                setLoading(false);
+            } else {
+                setIsLoading(false);
+            }
         }
-        setIsLoading(false);
-    }, [dispatch, setIsLoading]);
+    }, [setIsLoading, form, imageFile, event?.id]);
 
     return (
         <Form
             name="event"
             className="event-form"
+            form={form}
             initialValues={{ remember: true }}
             onFinish={onFinish}
+            layout="vertical"
         >   
             <Form.Item
-                name="organizations"
+                name="organization"
                 hasFeedback
                 rules={[{ required: true, message: 'Organization name is required.' }]}
             >
                 <Select
-                    mode="multiple"
-                    placeholder="Organization(s)"
+                    placeholder="Organization"
                     value={selectedOrgs}
                     onChange={setSelectedOrgs}
                     style={{ width: '100%' }}
                 >
                     
-                {filteredOrgs.map(item => (
+                {orgs.map(item => (
                     <Select.Option key={item.id} value={item.id}>
                         {item.name}
                     </Select.Option>
@@ -111,9 +139,15 @@ const NewEventForm = () => {
                 <Input style={{ width: '100%' }} placeholder="Event name" />
             </Form.Item>
             <Form.Item
+                name="image"
+            >
+                <AvatarUpload updateImageField={setImageFile} initialImageURL={event?.image} />
+            </Form.Item>
+            <Form.Item
                 name="virtual"
                 hasFeedback
                 valuePropName="checked"
+                initialValue={true}
             >
                 <Switch checkedChildren="Virtual" unCheckedChildren="Non-virtual" defaultChecked />
             </Form.Item>
@@ -129,8 +163,7 @@ const NewEventForm = () => {
                 hasFeedback
                 rules={[{ required: true, message: 'Date is required.' }]}
             >
-                <RangePicker style={{ width: '100%' }}  showTime={{ format: 'HH:mm' }}
-      format="YYYY-MM-DD HH:mm" />
+                <RangePicker style={{ width: '100%' }}  showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD HH:mm" />
             </Form.Item>
             <Form.Item
                 name="causes"
@@ -153,7 +186,7 @@ const NewEventForm = () => {
                 </Select>
             </Form.Item>
             <Form.Item
-                name="attendeeCap"
+                name="attendee_cap"
                 hasFeedback
                 rules={[{ required: true, message: 'Max number of attendees is required and must be a number.'}]}
             >
@@ -174,11 +207,11 @@ const NewEventForm = () => {
             >
                 <TextArea row={6} style={{ width: '100%' }} placeholder="Provide volunteers with instructions (i.e. how to get there, what to bring, etc.)" />
             </Form.Item>
-            <Form.Item>
+            {!form && <Form.Item>
                 <Button type="primary" htmlType="submit" className="event-form-button" loading={isLoading}>
                     Create
                 </Button>
-            </Form.Item>
+            </Form.Item>}
         </Form>
     );
 };

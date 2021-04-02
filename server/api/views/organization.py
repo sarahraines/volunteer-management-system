@@ -10,19 +10,47 @@ import json
 
 logger = logging.getLogger(__name__)
 
-class CreateOrganization(APIView):
+class UpsertOrganization(APIView):
     permission_classes = (permissions.AllowAny,)
     authentication_classes = ()
 
     def post(self, request, format='json'):
-        data = request.data
-        serializer = OrganizationSerializer(data=data)
+        data = request.data.dict()
+
+        if 'causes' in data:
+            data['causes'] = data['causes'].split(',')
+
+        image = data.get('image')
+        if image == 'null':
+            data['image'] = None
+
+        id = data.get('id')
+        no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
+
+
+        if id:
+            org = Organization.objects.get(pk=id)
+            serializer = OrganizationSerializer(org, data=data)
+        else:
+            serializer = OrganizationSerializer(data=data)
+        
         if serializer.is_valid():
-            org = serializer.save()
-            org.causes.set(data.get('causes'))
-            org.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status=no_error_status)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetOrg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        if request.GET.get('orgId'):
+            org_id = request.GET['orgId']
+            org = Organization.objects.get(pk=org_id)
+            serializer = OrganizationSerializer(org)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response("Request missing parameter orgId", status=status.HTTP_400_BAD_REQUEST)
 
 class GetCausesByOrg(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -51,7 +79,6 @@ class UpsertFAQ(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        print('data: ' + str(request.data))
         id = data.get('id')
         no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
         if id:
@@ -95,6 +122,10 @@ class GetMembersFromOrg(APIView):
         org_id = request.GET['org_id']
         members = Member.objects.filter(organization__id=org_id)
         serializer = MemberSerializer(members, many=True)
+
+        for item in serializer.data:
+            item['user']['name'] = item['user']['first_name'] + ' ' + item['user']['last_name']
+
         return Response(serializer.data)
 
 class GetPublicOrgs(APIView):
@@ -102,13 +133,18 @@ class GetPublicOrgs(APIView):
     authentication_classes = ()
     
     def get(self, request):
-        print("REACHED REQ")
         user_id = request.GET['user_id']
-        print("USER ID" + str(user_id))
         orgs = Organization.objects.filter(is_public=True)
-        org_serializer = OrganizationSerializer(orgs, many=True).data
+        org_serializer = OrganizationSerializer(orgs, many=True)
+        orgdata = org_serializer.data
+        is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000"
+        if is_localhost:
+            for i in range(len(orgdata)):
+                if orgdata[i]['image']:
+                    orgdata[i]['image'] = "http://" + request.get_host() + orgdata[i]['image']
         members = Member.objects.filter(user__id=user_id)
-        member_serializer = MemberSerializer(members, many=True).data
-        data = {"org": org_serializer, "member": member_serializer }
+        member_serializer = MemberSerializer(members, many=True)
+        data = {"org": orgdata, "member": member_serializer.data}
+        print(member_serializer.data)
         return Response(data)
         

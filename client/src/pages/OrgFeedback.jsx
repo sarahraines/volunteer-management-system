@@ -1,12 +1,14 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Typography, Table} from 'antd';
+import {Typography, Table, Input} from 'antd';
 import "antd/dist/antd.css";
 import axiosAPI from "../api/axiosApi";
 
+const { Search } = Input;
 
 const OrgFeedback = ({isAdmin, orgId}) => {
 
     const [info, setInfo] = useState([]); 
+    const [filterDisplay, setFilterDisplay] = useState([]);
 
     const getFeedbackByOrg = useCallback(async () => {
         try {
@@ -18,6 +20,7 @@ const OrgFeedback = ({isAdmin, orgId}) => {
                 }
             });
             setInfo(response.data);
+            setFilterDisplay(response.data);
         } catch (error) {
             console.error(error);
         }
@@ -25,7 +28,21 @@ const OrgFeedback = ({isAdmin, orgId}) => {
 
     useEffect(() => {
         getFeedbackByOrg();
-    }, [getFeedbackByOrg, orgId]);
+    }, [orgId]);
+
+    const handleChange = e => {
+        let oldList = info;
+        if (e !== "") {
+            let newList = [];
+            newList = oldList.filter(feedback =>
+                feedback.event__name.toLowerCase().includes(e.toLowerCase()) || 
+                feedback.name.toLowerCase().includes(e.toLowerCase())
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
 
     const columns = [
     {
@@ -174,8 +191,9 @@ const OrgFeedback = ({isAdmin, orgId}) => {
     return (
         <React.Fragment>
             <Typography.Title level={4}>Event Feedback</Typography.Title>
+            <Search placeholder="search by event or volunteer" onChange={e => handleChange(e.target.value)} style={{ width: 300, marginBottom: 16 }}  />
             <Table 
-            dataSource={info} 
+            dataSource={filterDisplay} 
             columns={columns}
             expandedRowRender= {record =>
                 <p>

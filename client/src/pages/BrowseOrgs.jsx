@@ -1,7 +1,8 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Card, Typography, Button, message } from 'antd';
+import { Typography, List, message } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
+import OrgCard from '../components/OrgCard';
 const { Title } = Typography;
 
 
@@ -22,6 +23,7 @@ function BrowseOrgs({}) {
             const org_data  = response.data["org"]
             const complete_data = org_data.map(org => ({org: org, isCurrMember:orgsUserIsInSet.has(org.id), isAdmin: (orgsUserIsInSet.has(org.id) && orgsToTypeSet[org.id]==1) }))
             setOrgs(complete_data);
+            console.log(complete_data)
 
         } catch (error) {
             console.error(error);
@@ -46,14 +48,26 @@ function BrowseOrgs({}) {
     }, []);
 
     return (
-        orgs.length > 0 && (
-            orgs.map(data => 
-            <Card title={data.org.name} extra={<Button type="primary"  disabled={data.isCurrMember} onClick= {() => addMember(data.org.name)} >Join {data.org.name}</Button>} style={{ width: 300 }}>
-                    <p>{data.org.description}</p>
-                    <p>{data.org.website}</p>
-                    <p>{data.org.address}</p>
-                </Card>
-        ))
+        <React.Fragment>
+            <Typography.Title level={2}>Browse organizations</Typography.Title>
+            <List
+                grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 1,
+                    md: 2,
+                    lg: 2,
+                    xl: 3,
+                    xxl: 3,
+                }}
+                dataSource={orgs}
+                renderItem={item => (
+                    <List.Item>
+                        <OrgCard key={item.id} org={item} />
+                    </List.Item>
+                )}
+            />
+        </React.Fragment>
     );
 };
 

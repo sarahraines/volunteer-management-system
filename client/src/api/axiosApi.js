@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
     baseURL: baseURL,
     timeout: 20000,
     headers: {
-        'Authorization': "JWT " + accessToken,
+        'Authorization': "Bearer " + accessToken,
         'Content-Type': 'application/json',
         'accept': 'application/json'
     }
@@ -33,8 +33,8 @@ axiosInstance.interceptors.response.use(
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
 
-            axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
-            originalRequest.headers['Authorization'] = "JWT " + response.data.access;
+            axiosInstance.defaults.headers['Authorization'] = "Bearer " + response.data.access;
+            originalRequest.headers['Authorization'] = "Bearer " + response.data.access;
             return axiosInstance(originalRequest);
         } catch (_) {
             window.location.href = '/login/';
@@ -58,7 +58,7 @@ axiosRetry(axiosInstance, {
 });
 
 export function setNewHeaders(response) {
-    axiosInstance.defaults.headers["Authorization"] = "JWT " + response.data.access;
+    axiosInstance.defaults.headers["Authorization"] = "Bearer " + response.data.access;
     localStorage.setItem("access_token", response.data.access);
     localStorage.setItem("refresh_token", response.data.refresh);
     localStorage.setItem("user_id", response.data.user_id);

@@ -12,8 +12,6 @@ export async function register(email, firstName, lastName, password) {
 }
 
 export async function registerFromInvite(email, firstName, lastName, password, invite_id) {
-  console.log(email)
-  console.log(invite_id)
   const response = await axiosAPI.post("users/create-from-invite/", {
     email,
     first_name: firstName,
@@ -37,10 +35,17 @@ export async function login(email, password) {
 
 export async function reset_password(old_password, new_password) {
   const user_id = localStorage.getItem("user_id");
-  const response = await axiosAPI.post("users/reset-password/", {
+  const response = await axiosAPI.post("users/change-password/", {
     user_id,
     old_password,
     new_password,
+  });
+  return response;
+}
+
+export async function forgot_password(email) {
+  const response = await axiosAPI.post("users/forgot-password/", {
+    email,
   });
   return response;
 }

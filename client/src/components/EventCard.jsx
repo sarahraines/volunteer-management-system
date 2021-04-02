@@ -1,120 +1,143 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Card, Button, Typography, message} from 'antd';
+import {Card, Button, Typography, Image, message, Modal, Form} from 'antd';
+import {EditOutlined, DeleteOutlined, ExpandOutlined} from '@ant-design/icons';
+import EventLogo from '../assets/undraw_hang_out.svg';
 import axiosAPI from "../api/axiosApi";
+import EventModal from './EventModal';
+import JoinButton from './JoinButton'
 import './EventCard.css';
+import NewEventForm from '../forms/NewEventForm';
 
 const { Paragraph } = Typography;
 
-function EventCard ({item}){
-	const [register, setRegister] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [viewmore, setViewmore] = useState(false);
-	
-	const onClick = useCallback(async (event_id, register) => {
-		setIsLoading(true);
-		try {
-			if (register) {
-				await axiosAPI.post("attendees/delete/", {
-					user_id: localStorage.getItem("user_id"),
-					event: event_id,
-				});
-				message.success("Unjoined event")
-			} else {
-				await axiosAPI.post("attendees/create/", {
-					user_id: localStorage.getItem("user_id"),
-					event: event_id,
-				});
-				message.success("Joined event");
-			}
-			setRegister(!register)
-		}
-		catch {
-			const errMsg = register ? "Join failed" : "Unjoin failed";
-			message.error(errMsg);
-		}
-		setIsLoading(false);
-    }, []);
+function EventCard ({item, isAdmin, removeEvent, updateEvents}){
+	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
+	const [isDeleteDialogOkLoading, setIsDeleteDialogOkLoading] = useState(false);
+	const [isEditDialogOkLoading, setIsEditDialogOkLoading] = useState(false);
+	const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+	const [causes, setCauses] = useState([]);
+	const [form] = Form.useForm();
 
-	const getRegisterStatus = useCallback(async () => {
-        try {
-            const response = await axiosAPI.get("events/get-register-status/", {
-                params: {
-					user_id: localStorage.getItem("user_id"),
-					event: item.id
-                }
-            });
-			setRegister(false);
-			if (response.data == 1) {
-				setRegister(true);
-			}
-        } catch (error) {
-            console.error(error);
-        }
-    }, []);
+	const getCausesByEvent = useCallback(async () => {
+		try {
+			const response = await axiosAPI.get("event/get-causes/", {
+				params: {
+					eventId: item.id
+				}
+			});
+			setCauses(response.data);
+		} catch (error) {
+			console.error(error);
+		}
+    }, [setCauses, item.id]);
 	
 	useEffect(() => {
-        getRegisterStatus();
-	}, [getRegisterStatus]);
-	
-	const onClickViewmore = useCallback(async (event_id, viewmore) => {
-		setIsLoading(true);
-		try {
-			setViewmore(!viewmore);
-		}
-		catch {
-			const errMsg = "Viewmore failed";
-			message.error(errMsg);
-		}
-		setIsLoading(false);
+		getCausesByEvent();
+	}, [getCausesByEvent]);
+
+	const closeModal = useCallback(() => {
+        setIsEditModalVisible(false);
+    }, [item.id]);
+
+    const closeModalWithUpdate = useCallback(() => {
+        setIsEditModalVisible(false);
+        updateEvents();
+		getCausesByEvent();
+    }, [item.id, updateEvents, getCausesByEvent]);
+
+	const setLoading = useCallback((loadingVal) => {
+        setIsEditDialogOkLoading(loadingVal);
     }, []);
 	
-	const buttonText = register ? "Unjoin" : "Join";
-	const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 	const begindate = new Date(item.begindate)
 	const enddate = new Date(item.enddate)
-	const virtual = item.virtual ? "Yes." : "No.";
+	const begindateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+	const enddateOptions = begindate.getDate() === enddate.getDate() ?  { hour: '2-digit', minute: '2-digit' } : begindateOptions;
 
-	const joinButton = (item.attendee_count < item.attendee_cap) ? 
-		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
-			{buttonText}
-		</Button> :
-		(register ? 
-		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading}>
-			{buttonText}
-		</Button> : 
-		<Button type="primary" htmlType="submit" className="event-unjoinable-form-button" disabled={true}>
-		 	{buttonText}
-		</Button>)
+	const onClose = useCallback(() => {
+		setIsModalVisible(false);
+	}, [setIsModalVisible])
 
-	if (viewmore) {
-			return (
-				<Card className="event-card" title={item.name} bordered={true}>
-						<Paragraph><b>Location: </b>{item.location}</Paragraph>
-						<Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
-						<Paragraph><b>Description: </b>{item.description}</Paragraph>
-						<Paragraph><b>Virtual? </b>{virtual}</Paragraph>
-						<Paragraph><b>Instructions: </b>{item.instructions}</Paragraph>
-						<Paragraph><b>No. of Attendees: </b>{item.attendee_count}/{item.attendee_cap}</Paragraph>
-					<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
-						View Less
-					</Button></p>
-					{joinButton}
-				</Card>
-			);
-		// }
-	} else {
-		return (
-			<Card className="event-card" title={item.name} bordered={true}>
-					<Paragraph><b>Location: </b>{item.location}</Paragraph>
-					<Paragraph><b>Date: </b>{begindate.toLocaleString('en-US', options)} - {enddate.toLocaleString('en-US', options)}</Paragraph>
-					<Paragraph><b>Description: </b>{item.description.substring(0, 50)}...</Paragraph>
-				<p style={{color: '#1890ff'}}>>><Button type="link" className="event-viewmore-form-button" onClick={() => onClickViewmore(item.id, viewmore)}>
-					View More
-				</Button></p>
-				{joinButton}
+	const date = begindate.toLocaleString('en-US', begindateOptions) + " - " + enddate.toLocaleString('en-US', enddateOptions)
+
+	const onDelete = async (eventId) => {
+        try {
+            await axiosAPI.delete("event/delete/", {
+                params: {
+                    id: eventId,
+                }
+            });
+			removeEvent(eventId);
+            message.success('Event deleted');
+        }
+        catch {
+            message.error('Event failed to delete');
+        }
+    }
+
+	return (
+		<React.Fragment>
+			<Card 
+				className="event-card" 
+				bordered={true}
+				actions={isAdmin ? [
+					<EditOutlined key="edit" onClick={() => {setIsEditModalVisible(true)}}/>,
+					<DeleteOutlined key="delete" onClick={() => {setIsDeleteDialogVisible(true)}}/>,
+					] : []}
+				style={{ height: 'auto' }}
+				cover={
+					<div className="button-container">
+						<Image preview={false} alt="img" src={item?.image ?? EventLogo}/>
+						<Button className="expand-button" icon={<ExpandOutlined />} ghost onClick={setIsModalVisible}/>
+					</div>
+				}
+			>
+				<Card.Meta title={item.name} description={
+					<React.Fragment>
+						<Paragraph><i>{date}</i></Paragraph>
+						{<JoinButton item={item}/>}
+					</React.Fragment>
+				} />
 			</Card>
-		);
-	}
+			<EventModal event={item} causes={causes} isModalVisible={isModalVisible} onClose={onClose}/>
+			<Modal
+				title="Delete Event"
+				visible={isDeleteDialogVisible}
+				onOk={() => {
+						setIsDeleteDialogOkLoading(true);
+						onDelete(item.id);
+						setIsDeleteDialogOkLoading(false);
+						setIsDeleteDialogVisible(false);
+					}
+				}
+				onCancel={() => setIsDeleteDialogVisible(false)}
+				okText="Delete"
+				okButtonProps={{
+					loading: isDeleteDialogOkLoading,
+					danger: true,
+				}}
+			>
+				<p>{`Are you sure that you want to delete ${item.name}?`}</p>
+			</Modal>
+			<Modal 
+                title="Edit event" 
+                visible={isEditModalVisible}
+                onCancel={closeModal}
+				width={448}
+                footer={[
+                    <Button key="cancel" onClick={closeModal}>
+                      Cancel
+                    </Button>,
+                    <Button key="submit" type="primary" loading={isEditDialogOkLoading} onClick={form.submit} >
+                      Update
+                    </Button>,
+                  ]}
+            >
+                <NewEventForm form={form} event={item} closeModalWithUpdate={closeModalWithUpdate} setLoading={setLoading}/>
+            </Modal>
+		</React.Fragment>
+	);
 
 } export default EventCard; 
 

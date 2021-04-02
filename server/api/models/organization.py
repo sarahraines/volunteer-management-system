@@ -16,6 +16,7 @@ class Organization(models.Model):
     phone = models.CharField(max_length=32, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
     is_public = models.BooleanField(default = True)
+    image = models.ImageField(upload_to='orgs/', null=True)
 
 
 class FAQ(models.Model):

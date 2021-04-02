@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Table} from 'antd';
+import Plot from 'react-plotly.js';
 
 function VolunteerSummary({ data}) {
 
@@ -37,6 +38,7 @@ function VolunteerSummary({ data}) {
     return (
         <React.Fragment>
             <Typography.Title level={5}>Summary</Typography.Title>
+    
             <Table 
                 dataSource={data} 
                 columns={columns}

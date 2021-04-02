@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Button, Typography, message, Select, Space} from 'antd';
+import {Typography, List, Select, Space} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
@@ -7,10 +7,9 @@ import axiosAPI from "../api/axiosApi";
 
 const { Option } = Select;
 
-const OrgEvents = ({orgId}) => {
+const OrgEvents = ({orgId, isAdmin}) => {
     const [events, setEvents] = useState([]); 
     const [filterDisplay, setFilterDisplay] = useState([]);
-    const [attendeeCount, setAttendeeCount] = useState([]); 
     
     const getEventsByOrg = useCallback(async () => {
         try {
@@ -29,6 +28,15 @@ const OrgEvents = ({orgId}) => {
     useEffect(() => {
         getEventsByOrg();
     }, [orgId, getEventsByOrg]);
+
+    const updateEvents = () => {
+        getEventsByOrg();
+    }
+
+    const removeEvent = useCallback(id => {
+        setEvents(events.filter(event => event.id !== id));
+        setFilterDisplay(events.filter(event => event.id !== id));
+    }, [events]);
 
     const handleChange = e => {
         let oldList = events;
@@ -64,13 +72,13 @@ const OrgEvents = ({orgId}) => {
 
     const openFilterChange = value => {
         let oldList = events;
-        if (value == "open") {
+        if (value === "open") {
             let newList = [];
             newList = oldList.filter(event =>
-                    (event.attendee_count < event.attendee_cap)
+                (event.attendee_count < event.attendee_cap)
             );
             setFilterDisplay(newList);
-        } else if (value == "filled") {
+        } else if (value === "filled") {
             let newList = [];
             newList = oldList.filter(event =>
                 !(event.attendee_count < event.attendee_cap)
@@ -97,12 +105,23 @@ const OrgEvents = ({orgId}) => {
                     <Option value="filled">Filled</Option>
                 </Select>
             </Space> 
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll" }}>
-                {filterDisplay.map((item, i) => 
-                    <EventCard key={i} item={item}/>
+            <List
+                grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 1,
+                    md: 2,
+                    lg: 2,
+                    xl: 3,
+                    xxl: 3,
+                }}
+                dataSource={filterDisplay}
+                renderItem={item => (
+                    <List.Item>
+                        <EventCard key={item.id} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
+                    </List.Item>
                 )}
-            </div>
-            
+            />
         </React.Fragment>
     );
 }; export default OrgEvents;

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { register, login } from '../api/authenticationApi';
+import { register, login, forgot_password } from '../api/authenticationApi';
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 

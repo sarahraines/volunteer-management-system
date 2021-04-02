@@ -33,9 +33,9 @@ function QAndAPage({isAdmin, orgId}) {
 
     const addQAField = async () => {
         const response = await axiosAPI.post("faq/upsert/", {
-            org_id: orgId, question: "question", answer: "answer"
+            org_id: orgId, question: "question", answer: "Not yet answered"
         });
-        setQA([...qA, {id: response.data.id, question: "question", answer: "answer"}]);
+        setQA([...qA, {id: response.data.id, question: "question", answer: "Not yet answered"}]);
     }
 
 
@@ -45,7 +45,7 @@ function QAndAPage({isAdmin, orgId}) {
             {qA.map(item => 
                 <QAndA isAdmin={isAdmin} key={item.id} item={item} removeFaq={removeFaq} orgId={orgId}/>
             )}
-            {isAdmin && (<Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>)}
+            <Button style={{ width: '100%' }} type="primary" onClick={() => {addQAField()}}>Add New FAQ</Button>
         </div>
     );
 };

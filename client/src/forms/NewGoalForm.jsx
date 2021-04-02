@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Form, Input, Button, DatePicker} from 'antd';
+import { Form, InputNumber, Button, DatePicker} from 'antd';
 import axiosAPI from "../api/axiosApi";
 import { addAlert } from '../actionCreators.js';
 import { useDispatch } from 'react-redux';
@@ -37,7 +37,7 @@ const NewGoalForm = () => {
                     hasFeedback
                     rules={[{ required: true, message: 'Hours is required and must be a number.'}]}
                 >
-                    <Input style={{ width: '100%' }} placeholder="Volunteer Hours" type="tel"/>
+                    <InputNumber style={{ width: '100%' }} placeholder="Volunteer hours"/>
             </Form.Item>
             <Form.Item
                 name="date"

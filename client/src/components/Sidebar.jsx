@@ -1,17 +1,21 @@
 import React, { useCallback, useEffect } from 'react';
 import { Menu } from 'antd';
-import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined } from '@ant-design/icons';
+import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined, SearchOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axiosAPI from '../api/axiosApi';
 import { logout } from '../api/authenticationApi';
 import './Sidebar.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSidebarItem } from '../actionCreators';
 
 const { Divider, Item, SubMenu } = Menu;
 
-const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
+const Sidebar = ({member}) =>  {
+    const sidebarItem = useSelector(state => state.sidebar_item).toString();
     const history = useHistory();
+    const dispatch = useDispatch();
     const onSelect = (latestSelectedKey) => {
-        setSelectedKeys([latestSelectedKey.key]);
+        dispatch(setSidebarItem(latestSelectedKey.key));
     }
 
     const onLogout = useCallback(async () => {
@@ -21,11 +25,6 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
         logout();
         history.push("/login");
     }, [history]);
-
-    useEffect(() => {
-        setFeedContext(selectedKeys[0] ?? "");
-    }, [selectedKeys, setFeedContext]);
-
 
     const organizationsList = (
 		member.map(member => 
@@ -40,7 +39,7 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
             <Menu
                 mode="inline"
                 theme="dark"
-                selectedKeys={selectedKeys}
+                selectedKeys={[sidebarItem]}
                 onSelect={onSelect}
             >
                 <SubMenu title="Take action" icon={<BulbOutlined />}>
@@ -50,8 +49,8 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
                     <Item className="action-submenu-item" key="create-event" icon={<PlusSquareOutlined />}>
                         Create event
                     </Item>
-                    <Item className="action-submenu-item" key="browse-orgs" icon={<PlusSquareOutlined />}>
-                        Browse Organizations
+                    <Item className="action-submenu-item" key="browse-orgs" icon={<SearchOutlined />}>
+                        Browse organizations
                     </Item>
                     <Item className="action-submenu-item" key="set-goals" icon={<CheckSquareOutlined />}>
                         Set goals
@@ -68,7 +67,7 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
             <Menu
                 mode="inline"
                 theme="dark"
-                selectedKeys={selectedKeys}
+                selectedKeys={[sidebarItem]}
                 onSelect={onSelect}
             >
                 {organizationsList}
@@ -76,7 +75,7 @@ const Sidebar = ({selectedKeys, setSelectedKeys, setFeedContext, member}) =>  {
             <Menu
                 mode="inline"
                 theme="dark"
-                selectedKeys={selectedKeys}
+                selectedKeys={[sidebarItem]}
                 onSelect={onSelect}
             >
                 <Divider/>
