@@ -20,7 +20,7 @@ const EventFeedbackForm = () => {
                  params: {
                      user_id: localStorage.getItem("user_id"),  
                  }
-             });
+            });
             setEvents(response.data);
         } catch (error) {
             console.error(error)

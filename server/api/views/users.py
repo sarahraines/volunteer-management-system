@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer, UserSettingsSerializer, UserGoalsSerializer, ResetPasswordSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.models import User, Invitee, Member, UserSettings, UserGoals, Attendee, Event, Change
+from api.models import User, Invitee, Member, UserSettings, UserGoals, Attendee, Event, Change, EventFeedback, OrgFile, UserFile
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -20,6 +20,7 @@ import jwt
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.db.models import F
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -306,21 +307,6 @@ class GenerateDailyReport(APIView):
     authentication_classes = ()
 
     def get(self, request, format='json'):
-        """
-        Members
-        1. Any changes to event dates/locations for future events for which they are an attendee
-        2. Any new clearances for events for which they are an attendee
-        3. Any clearance status changes (accept or reject from admin) for clearances they have uploaded
-        4. Any new events created by their organizations
-        5. Any new feedback forms (and remind them of old, unfilled ones)
-
-        Admins (includes everything from members)
-        *1. Any changes to event dates/locations for future events for which they are an attendee/admin
-        *2. Any new clearances uploaded by members
-        3. Number of people who have filled out feedback/still need to (optional)
-        4. List of members who have joined and left
-        5. Number of people who have joined events
-        """
         data = request.GET
         user_id = data['user_id']
 
@@ -330,11 +316,11 @@ class GenerateDailyReport(APIView):
         # Changes to event date/location.
         attendee = Attendee.objects.filter(username=user_id, events__begindate__gt=timezone.now()).first()
 
+        event_changes = {}
         if attendee is not None:
-            future_events = attendee.events.all()
+            future_events = attendee.events.filter(begindate__gt=timezone.now()).all()
             future_events = {event.id: event for event in future_events}
 
-            event_changes = {}
             for column in ['location', 'begindate', 'enddate']:
                 changes = Change.objects.filter(model='Event', column=column, created_at__gt=start_datetime, object_id__in=list(future_events)).order_by('created_at')
                 for change in changes:
@@ -360,6 +346,72 @@ class GenerateDailyReport(APIView):
                     delta['name'] = event.name
                     delta['id'] = event.id
 
-            print(list(event_changes.values()))
+        # Clearances for events in which they are an attendee.
+        if attendee is not None:
+            new_clearances = OrgFile.objects.filter(created_at__gt=start_datetime, event__name__in=[event.name for event in attendee.events.all()])
+            new_clearances = [{
+                'org_id': c.organization.id,
+                'org_name': c.organization.name,
+                'event_name': c.event.name,
+            } for c in new_clearances]
 
-        return Response({}, status=status.HTTP_200_OK)
+            new_clearances_final = defaultdict(set)
+            for c in new_clearances:
+                new_clearances_final[c['org_id']].add((c['org_name'], c['event_name']))
+
+            out = {}
+            for item in new_clearances_final:
+                out[item] = [{'org_name': c[0], 'event_name': c[1]} for c in new_clearances_final[item]]
+            
+            new_clearances_final = out
+            
+        else:
+            new_clearances_final = []
+
+        # Clearance status changes for clearances they uploaded.
+        my_files = UserFile.objects.filter(user__id=user_id).all()
+        my_files = {file.id: file for file in my_files}
+        my_changed_files = Change.objects \
+            .filter(model='UserFile', column='status', created_at__gt=start_datetime, object_id__in=list(my_files)) \
+            .order_by('created_at')
+
+        changed_clearances = defaultdict(list)
+        for change in my_changed_files:
+            if change.old_value != my_files[change.object_id]:
+                if change.object_id in changed_clearances:
+                    continue
+
+                event_id = my_files[change.object_id].org_file.event.id
+                changed_clearances[event_id].append({
+                    'id': change.object_id,
+                    'event_name': my_files[change.object_id].org_file.event.name,
+                    'old_status': change.old_value,
+                    'new_status': my_files[change.object_id].status,
+                })
+
+        # Any new clearances uploaded by members (organization admin only).
+        admin_members = Member.objects.filter(member_type=1, status=0).all()
+        admin_orgs = {member.organization.id: member.organization for member in admin_members}
+        
+        uploaded_clearances = {}
+        for admin_org_id, admin_org in admin_orgs.items():
+            count = UserFile.objects.filter(created_at__gt=start_datetime, status='Pending', org_file__organization__id=admin_org_id).count()
+
+            if count > 0:
+                uploaded_clearances[admin_org_id] = {
+                    'id': admin_org_id,
+                    'org_name': admin_org.name,
+                    'uploaded_clearances_count': count,
+                }
+
+        # Any new feedback forms (and remind them of old, unfilled ones).
+        past_attendees = Attendee.objects.filter(username=user_id, events__enddate__gt=start_datetime, events__enddate__lt=timezone.now()).first().events.all()
+        past_events = [{'id': event.id, 'event_name': event.name, 'org_name': event.organization.name} for event in past_attendees]
+
+        return Response({
+            "events": list(event_changes.values()), 
+            "new_clearances": new_clearances_final,
+            "changed_clearances": changed_clearances,
+            "uploaded_clearances": uploaded_clearances,
+            "feedback": past_events, 
+        }, status=status.HTTP_200_OK)

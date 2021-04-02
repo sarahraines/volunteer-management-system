@@ -8,3 +8,9 @@
     top:0;
     right:0;
 }         
+
+.notifications-button {
+    position: absolute;
+    top:0;
+    right:3em;
+}     

@@ -286,8 +286,7 @@ class GetVolunteerEventsForOrg(APIView):
         username = User.objects.filter(id=attendee_id)[0]
         events = Attendee.objects.filter(username=username, events__organization__id=org_id, events__enddate__gte=date) \
             .values('events__id',
-            'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
-            'events__causes', 'events__description', 'events__organization', 'events__instructions',
+            'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate', 'events__description', 'events__organization', 'events__instructions',
             'events__attendee_cap')
         
         for e in events:

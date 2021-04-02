@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Menu } from 'antd';
 import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined, SearchOutlined, OrderedListOutlined, NotificationOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
@@ -82,9 +82,9 @@ const Sidebar = ({member}) =>  {
                 onSelect={onSelect}
             >
                 <Divider/>
-                <Item key="notifications" icon={<NotificationOutlined />} >
+                {/* <Item key="notifications" icon={<NotificationOutlined />} onClick={setIsModalShowing}>
                     Notifications
-                </Item>
+                </Item> */}
                 <Item key="settings" icon={<SettingOutlined />}>
                     Manage user settings
                 </Item>

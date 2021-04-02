@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Typography, Table, Alert } from 'antd';
+import { Typography, Table, Alert, Input } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import ClearanceUpload from '../components/ClearanceUpload';
@@ -56,7 +56,7 @@ function Clearances({isAdmin, orgId}) {
         } catch (error) {
             console.error(error);
         }
-    }, [setEvents, orgId, isAdmin, options]);
+    }, [setEvents, orgId, isAdmin]);
 
     const getAlertInfo = useCallback(async () => {
         try {
@@ -84,7 +84,7 @@ function Clearances({isAdmin, orgId}) {
         } catch (error) {
             console.error(error);
         }
-    }, [setNumIncompleteEvents, orgId, isAdmin]);
+    }, [orgId, isAdmin]);
 
     useEffect(() => {
         getEventsByOrg();
@@ -153,7 +153,7 @@ function Clearances({isAdmin, orgId}) {
             }
             
             <p></p>
-            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{ float: 'right' }}/>
+            <Input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{ width: 200, float: 'right', marginBottom: 4}}/>
             <Table 
                 columns={columns}
                 dataSource={filterDisplay} 

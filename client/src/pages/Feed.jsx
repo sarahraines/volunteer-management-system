@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { removeAlert, setOrgs, setSidebarItem } from '../actionCreators.js';
-import { QuestionOutlined } from '@ant-design/icons';
+import { NotificationOutlined, QuestionOutlined } from '@ant-design/icons';
 import { Alert, Layout, Button, Modal } from 'antd';
 import Sidebar from "../components/Sidebar";
-import ReportModal from "../components/ReportModal"
 import FeedContent from "../components/FeedContent";
+import ReportModal from "../components/ReportModal";
 import Tutorial from "../components/Tutorial"; 
 import axiosAPI from '../api/axiosApi';
 import "./Feed.css"
@@ -13,6 +13,7 @@ import "./Feed.css"
 const { Content, Sider } = Layout;
 
 const Feed = () => {
+  const [isModalShowing, setIsModalShowing] = useState(false);
   const alerts = useSelector(state => state.alerts, shallowEqual);
   const orgs = useSelector(state => state.orgs);
   const dispatch = useDispatch();
@@ -65,6 +66,10 @@ const Feed = () => {
     setIsModalVisible(false);
   };
 
+  const closeModal = () => {
+    setIsModalShowing(false);
+  };
+
   return (
     <>
       <Layout id="content" style={{ minHeight:"100vh" }}>
@@ -77,6 +82,7 @@ const Feed = () => {
             <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
               <div className="button-container">
                 <Button className="tutorial-button" shape="circle" icon={<QuestionOutlined />} onClick={showModal}></Button>
+                <Button className="notifications-button" shape="circle" icon={<NotificationOutlined />} onClick={() => setIsModalShowing(true)}></Button>
                 <Modal title="Application Tutorial" visible={isModalVisible} footer={null} onOk={handleOk} onCancel={handleCancel}>
                     <Tutorial/>
                 </Modal>
@@ -86,7 +92,7 @@ const Feed = () => {
           </Layout>
         </Layout>
       </Layout>
-      <ReportModal/>
+      <ReportModal isModalShowing={isModalShowing} onClose={closeModal}/>
     </>
   );
 }

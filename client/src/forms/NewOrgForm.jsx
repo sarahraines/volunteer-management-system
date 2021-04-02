@@ -96,7 +96,7 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
         } else {
             setIsLoading(false);
         }
-    }, [setIsLoading, form, imageFile, org.id, closeModalWithUpdate, dispatch, setLoading]);
+    }, [setIsLoading, form, imageFile, org, closeModalWithUpdate, dispatch, setLoading]);
 
     return (
         <Form
