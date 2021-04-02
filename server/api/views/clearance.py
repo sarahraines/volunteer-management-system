@@ -14,6 +14,7 @@ class AddOrgFile(APIView):
         e = Event.objects.filter(id=request.data['eventId'])[0]
         data = request.data
         serializer = OrgFileSerializer(data=data)
+
         if serializer.is_valid():
             serializer.save(organization = org, event=e)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

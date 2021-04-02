@@ -61,6 +61,9 @@ const Sidebar = ({member}) =>  {
                     <Item className="action-submenu-item" key="view-analytics" icon={<BarChartOutlined />}>
                         View my analytics
                     </Item>
+                    <Item className="action-submenu-item" key="give-feedback" icon={<BarChartOutlined />}>
+                        Give Feedback
+                    </Item>
                 </SubMenu>
                 <Divider/>
             </Menu>

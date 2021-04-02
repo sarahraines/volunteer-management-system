@@ -8,6 +8,9 @@ import VolunteerAnalytics from "../pages/VolunteerAnalytics"
 import VolunteerCalendar from "../pages/VolunteerCalendar"
 import NewGoal from "../pages/NewGoal"
 import BrowseOrgs from "../pages/BrowseOrgs"
+import EventFeedback from "../pages/EventFeedback"
+
+
 import { useSelector } from 'react-redux'
 
 
@@ -30,6 +33,8 @@ const FeedContent = ({member}) => {
             return (<VolunteerAnalytics />); 
         case "browse-orgs":
             return <BrowseOrgs />
+        case "give-feedback":
+            return (<EventFeedback />); 
         default:
             const orgId = parseInt(context)
             if (isNaN(orgId)) {
