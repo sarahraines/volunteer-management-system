@@ -4,6 +4,7 @@ import axiosAPI from '../api/axiosApi';
 import UserFilesTable from '../pages/UserFilesTable';
 import { UploadOutlined } from '@ant-design/icons';
 const { Title } = Typography;
+const { Dragger } = Upload;
 
 function ClearanceUpload({isAdmin, orgId, eId}) {
     const [fileList, setFileList] = useState([]);
@@ -17,7 +18,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 }
             });
             const files = response.data;
-            console.log('files', files);
+            // console.log('files', files);
             
             const formattedFiles = files.map(file => ({
                 key: file.id, 
@@ -28,7 +29,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 event: file.event,
                 eventName: file.event__name
             }));
-            console.log(formattedFiles)
+            // console.log(formattedFiles)
             setFileList(formattedFiles);
         } catch(error) {
             console.error(error);
@@ -78,9 +79,13 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
         <div>
             {isAdmin ? 
                 <>
-                    <Upload {...orgProps}>
-                        <Button icon={<UploadOutlined/>}>Upload New Form</Button>  
-                    </Upload>
+                    <Dragger {...orgProps}>
+                        {/* <Button icon={<UploadOutlined/>}>Upload New Form</Button>   */}
+                        <p className="ant-upload-drag-icon">
+                        <UploadOutlined />
+                        </p>
+                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    </Dragger>
                 </> :
                 <UserFilesTable orgId={orgId} fileList={fileList} />
             }
