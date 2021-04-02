@@ -38,7 +38,7 @@ const AuthForm = ({isRegister}) => {
                 message.error('Login failed. Email or password is incorrect.');
             }
         }
-    }, [isRegister, history]);
+    }, [isRegister, history, dispatch]);
 
     const submitButtonText = isRegister ? "Create account" : "Log in";
     const switchAuthPages = isRegister ? (

@@ -1,13 +1,11 @@
 import React, { useCallback } from 'react';
-import { Link, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
-import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { register, login, forgot_password } from '../api/authenticationApi';
+import { MailOutlined } from '@ant-design/icons';
+import { forgot_password } from '../api/authenticationApi';
 import "antd/dist/antd.css";
 import "./AuthForm.css"
 
 const ForgotPasswordForm = ({isRegister}) => {
-    const history = useHistory();
 
     const onFinish = useCallback(async (values) => {
         try {
@@ -16,7 +14,7 @@ const ForgotPasswordForm = ({isRegister}) => {
         } catch (error) {
             throw error;
         }
-    }, [isRegister, history]);
+    }, []);
 
 
   return (

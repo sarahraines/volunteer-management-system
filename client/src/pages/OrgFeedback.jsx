@@ -28,7 +28,7 @@ const OrgFeedback = ({isAdmin, orgId}) => {
 
     useEffect(() => {
         getFeedbackByOrg();
-    }, [orgId]);
+    }, [getFeedbackByOrg]);
 
     const handleChange = e => {
         let oldList = info;

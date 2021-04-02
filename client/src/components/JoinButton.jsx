@@ -31,7 +31,7 @@ function JoinButton ({item}){
 			message.error(errMsg);
 		}
 		setIsLoading(false);
-    }, []);
+    }, [item.attendee_count]);
 
 	const getRegisterStatus = useCallback(async () => {
         try {
@@ -42,13 +42,13 @@ function JoinButton ({item}){
                 }
             });
 			setRegister(false);
-			if (response.data == 1) {
+			if (response.data === 1) {
 				setRegister(true);
 			}
         } catch (error) {
             console.error(error);
         }
-    }, []);
+    }, [item.id]);
 	
 	useEffect(() => {
         getRegisterStatus();

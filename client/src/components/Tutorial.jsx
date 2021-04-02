@@ -1,35 +1,18 @@
-import React, {useState} from 'react';
-import { Button, Modal, Carousel } from 'antd';
+import React from 'react';
+import { Carousel } from 'antd';
 
 function Tutorial() {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
-    function onChange(a, b, c) {
-        console.log(a, b, c);
-    }
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-      };
-    
-      const handleCancel = () => {
-        setIsModalVisible(false);
-      };
 
     const contentStyle = {
         height: '160px',
         color: '#fff',
         background: '#364d79',
         padding: '20px'
-      };
+    };
 
     return (
         <React.Fragment>      
-            <Carousel afterChange={onChange} >
+            <Carousel>
                 <div>
                     <p style={contentStyle}>
                         <b><center>Create and Access Organizations</center></b><br/>

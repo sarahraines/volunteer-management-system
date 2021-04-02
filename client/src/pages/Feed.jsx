@@ -4,6 +4,7 @@ import { removeAlert, setOrgs, setSidebarItem } from '../actionCreators.js';
 import { QuestionOutlined } from '@ant-design/icons';
 import { Alert, Layout, Button, Modal } from 'antd';
 import Sidebar from "../components/Sidebar";
+import ReportModal from "../components/ReportModal"
 import FeedContent from "../components/FeedContent";
 import Tutorial from "../components/Tutorial"; 
 import axiosAPI from '../api/axiosApi';
@@ -52,49 +53,41 @@ const Feed = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
+  const showModal = () => {
+      setIsModalVisible(true);
+  };
 
-    function onChange(a, b, c) {
-        console.log(a, b, c);
-    }
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
 
-    const handleOk = () => {
-        setIsModalVisible(false);
-      };
-    
-      const handleCancel = () => {
-        setIsModalVisible(false);
-      };
-
-    const contentStyle = {
-        height: '160px',
-        color: '#fff',
-        background: '#364d79',
-        padding: '20px'
-      };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   return (
-    <Layout id="content" style={{ minHeight:"100vh" }}>
-      <Sider width={240} style={{ background: '#fff' }}>
-        <Sidebar member={orgs}/>
-      </Sider>
-      <Layout>
-        {alertList}
-        <Layout style={{ padding: '24px', height: "100%"  }}>
-          <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
-            <div className="button-container">
-              <Button className="tutorial-button" shape="circle" icon={<QuestionOutlined />} onClick={showModal}></Button>
-              <Modal title="Application Tutorial" visible={isModalVisible} footer={null} onOk={handleOk} onCancel={handleCancel}>
-                  <Tutorial/>
-              </Modal>
-              <FeedContent member={orgs} />
-            </div>
-          </Content>
+    <>
+      <Layout id="content" style={{ minHeight:"100vh" }}>
+        <Sider width={240} style={{ background: '#fff' }}>
+          <Sidebar member={orgs}/>
+        </Sider>
+        <Layout>
+          {alertList}
+          <Layout style={{ padding: '24px', height: "100%"  }}>
+            <Content style={{ background: '#fff', padding: 24, margin: 0, display: "flex", flexDirection: "column" }}>
+              <div className="button-container">
+                <Button className="tutorial-button" shape="circle" icon={<QuestionOutlined />} onClick={showModal}></Button>
+                <Modal title="Application Tutorial" visible={isModalVisible} footer={null} onOk={handleOk} onCancel={handleCancel}>
+                    <Tutorial/>
+                </Modal>
+                <FeedContent member={orgs} />
+              </div>
+            </Content>
+          </Layout>
         </Layout>
       </Layout>
-    </Layout>
+      <ReportModal/>
+    </>
   );
 }
 

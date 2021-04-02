@@ -43,7 +43,7 @@ function OrgJoinButton({item}) {
 			message.error(errMsg);
 		}
 		setIsLoading(false);
-    }, [register]);
+    }, [dispatch, item.id]);
 
 	const getRegisterStatus = useCallback(async () => {
         try {
@@ -59,7 +59,7 @@ function OrgJoinButton({item}) {
         } catch (error) {
             console.error(error);
         }
-    }, []);
+    }, [item.id]);
 	
 	useEffect(() => {
         getRegisterStatus();

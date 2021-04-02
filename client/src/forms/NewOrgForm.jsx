@@ -33,7 +33,7 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
         if (org?.id) {
             form.setFieldsValue(org);
         }
-    }, [org?.id])
+    }, [form, org])
 
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
@@ -96,7 +96,7 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
         } else {
             setIsLoading(false);
         }
-    }, [setIsLoading, form, imageFile, org?.id]);
+    }, [setIsLoading, form, imageFile, org.id, closeModalWithUpdate, dispatch, setLoading]);
 
     return (
         <Form
@@ -178,7 +178,7 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
             </Form.Item>
             {!form &&
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="org-form-button">
+                    <Button type="primary" htmlType="submit" className="org-form-button" loading={isLoading}>
                         Create
                     </Button>
                 </Form.Item>

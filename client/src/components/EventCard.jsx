@@ -38,13 +38,13 @@ function EventCard ({item, isAdmin, removeEvent, updateEvents}){
 
 	const closeModal = useCallback(() => {
         setIsEditModalVisible(false);
-    }, [item.id]);
+    }, []);
 
     const closeModalWithUpdate = useCallback(() => {
         setIsEditModalVisible(false);
         updateEvents();
 		getCausesByEvent();
-    }, [item.id, updateEvents, getCausesByEvent]);
+    }, [updateEvents, getCausesByEvent]);
 
 	const setLoading = useCallback((loadingVal) => {
         setIsEditDialogOkLoading(loadingVal);
@@ -96,7 +96,7 @@ function EventCard ({item, isAdmin, removeEvent, updateEvents}){
 				<Card.Meta title={item.name} description={
 					<React.Fragment>
 						<Paragraph><i>{date}</i></Paragraph>
-						{item.attendee_count == item.attendee_cap ?
+						{item.attendee_count === item.attendee_cap ?
 							<Paragraph><i>No. of Attendees: {item.attendee_count}/{item.attendee_cap} [Closed]</i></Paragraph>
 							:
 							<Paragraph><i>No. of Attendees: {item.attendee_count}/{item.attendee_cap} </i></Paragraph>

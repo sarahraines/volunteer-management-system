@@ -1,7 +1,7 @@
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback, OrgFile, UserFile
+from api.models import Event, User, Attendee, Member, Organization, Cause, EventFeedback, OrgFile, UserFile, Change
 from api.serializers import UserSerializer, EventSerializer, AttendeeSerializer, MemberSerializer, OrganizationSerializer, EventFeedbackSerializer, CauseSerializer
 from django.db.models import Count, CharField, Value as V, F, ExpressionWrapper, fields, Sum, Avg
 from django.db.models.functions import Concat
@@ -136,10 +136,19 @@ class UpsertEvent(APIView):
             serializer = EventSerializer(data=data)
         
         if serializer.is_valid():
+            if id:
+                event = Event.objects.get(pk=id)
             serializer.save()
+            if id:
+                new_event = Event.objects.get(pk=id)
+                if new_event.begindate != event.begindate:
+                    Change(object_id=event.id, model='Event', column='begindate', old_value=event.begindate, new_value=new_event.begindate).save()
+                if new_event.enddate != event.enddate:
+                    Change(object_id=event.id, model='Event', column='enddate', old_value=event.enddate, new_value=new_event.enddate).save()
+                if new_event.location != event.location:
+                    Change(object_id=event.id, model='Event', column='location', old_value=event.location, new_value=new_event.location).save()
             return Response(serializer.data, status=no_error_status)
 
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GetAdminOrganizations(APIView):
@@ -178,7 +187,6 @@ class CreateEventFeedback(APIView):
 
     def post(self, request, format='json'):
         data = request.data
-        print(request.user)
         
         ids = Attendee.objects.filter(id=data['id']).values('events__id', 'username__id')
         
@@ -259,12 +267,11 @@ class GetVolunteerEvents(APIView):
     authentication_classes = ()
 
     def get(self, request):
-        attendee_id = request.GET['user_id']
-        username = User.objects.filter(id=attendee_id)[0]
-        events = Attendee.objects.filter(username=username).values('events__id',
+        user_id = request.GET['user_id']
+        events = Attendee.objects.filter(username=user_id).values('events__id',
         'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
-        'events__causes', 'events__description', 'events__organization', 'events__instructions',
-        'events__attendee_cap')
+        'events__description', 'events__organization', 'events__instructions',
+        'events__attendee_cap', 'id', 'events__organization__name')
 
         return Response(events, status=status.HTTP_200_OK)
 
@@ -277,10 +284,11 @@ class GetVolunteerEventsForOrg(APIView):
         org_id = request.GET['orgId']
         date = timezone.now()
         username = User.objects.filter(id=attendee_id)[0]
-        events = Attendee.objects.filter(username=username, events__organization__id=org_id, events__enddate__gte=date).values('events__id',
-        'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
-        'events__causes', 'events__description', 'events__organization', 'events__instructions',
-        'events__attendee_cap')
+        events = Attendee.objects.filter(username=username, events__organization__id=org_id, events__enddate__gte=date) \
+            .values('events__id',
+            'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
+            'events__causes', 'events__description', 'events__organization', 'events__instructions',
+            'events__attendee_cap')
         
         for e in events:
             e['key'] = e['events__id']

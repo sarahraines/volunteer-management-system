@@ -27,7 +27,7 @@ const NewGoal = () => {
 
     useEffect(() => {
             getGoals();
-    }, []);
+    }, [getGoals]);
 
     usePageView('/set-goal')
     return (

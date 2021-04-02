@@ -7,32 +7,27 @@ const { Paragraph } = Typography;
 function OrgClearanceTable({orgId, eId}) {
     const [rows, setRows] = useState([]);
 
-    function acceptOrReject(value, record) {
-        console.log(value.target.value)
-        console.log(record)
-
+    const acceptOrReject = async (value, record) => {
         const status = value.target.value
 
         try {
-            const response = axiosAPI.post("clearances/set-status-user-file/", 
+            await axiosAPI.post("clearances/set-status-user-file/", 
                 {
                     id: record.key, 
                     status: status,
                 }
-        );
+            );
         } catch(error){
             console.error(error)
         }
     };
 
-    function addComment(value, record) {
-        const comment = value
-
+    const addComment = async (value, record) => {
         try {
-            const response = axiosAPI.post("clearances/set-status-user-file/", 
+            await axiosAPI.post("clearances/set-status-user-file/", 
                 {
                     id: record.key, 
-                    comment: comment,
+                    comment: value,
                 }
             );
             getUserFiles(orgId)
@@ -50,7 +45,7 @@ function OrgClearanceTable({orgId, eId}) {
                 }
             });
             const files = response.data;
-            const result = files.map((file,i) => ({
+            const result = files.map(file => ({
                 key: file.id, 
                 user: file.user__email, 
                 url: file.url, 
@@ -61,11 +56,11 @@ function OrgClearanceTable({orgId, eId}) {
         } catch(error) {
             console.error(error);
         }
-    }, [orgId]);
+    }, [eId]);
 
     useEffect(() => {
         getUserFiles(orgId)
-    }, [orgId]);
+    }, [orgId, getUserFiles]);
    
     const columns = [
         {
@@ -78,7 +73,7 @@ function OrgClearanceTable({orgId, eId}) {
             title: 'File',
             dataIndex: 'url',
             key: 'url',
-            render: url => !!url ? <a target="_blank" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
+            render: url => !!url ? <a target="_blank" rel="noopener noreferrer" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Action',
@@ -94,7 +89,7 @@ function OrgClearanceTable({orgId, eId}) {
             title: 'Comment',
             dataIndex: 'comment',
             key: 'comment',
-            render: (text,record, index) => ( 
+            render: (text, record, index) => ( 
             (<div style={{ marginLeft: 4, flexGrow: 100 }}>
                 <Paragraph style={{ width: "100%" }} editable={{ onChange: (value) => addComment(value, record) }}>{record.comment}</Paragraph>
             </div>))

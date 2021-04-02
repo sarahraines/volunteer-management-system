@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Calendar, Typography , Button, Popover} from 'antd';
+import { Calendar, Typography , Button } from 'antd';
 import { usePageView } from '../utils/googleAnalytics'
 import axiosAPI from "../api/axiosApi";
 import VolunteerCalendarCard from './VolunteerCalendarCard';
@@ -17,7 +17,6 @@ const VolunteerCalendar = () => {
                     user_id: localStorage.getItem("user_id"),
                 }
             });
-            console.log("events: " + response.data[0]);
             setEvents(response.data);
         } catch (error) {
             console.error(error);
@@ -32,9 +31,6 @@ const VolunteerCalendar = () => {
                 }
             });
             setGoals(response.data);
-            console.log("goals: " + response.data[0].begindate + " - " + response.data[0].enddate);
-            console.log("goals: " + response.data[1].begindate + " - " + response.data[1].enddate);
-
         } catch (error) {
             console.error(error);
         }
@@ -43,7 +39,7 @@ const VolunteerCalendar = () => {
     useEffect(() => {
         getVolunteerEvents();
         getVolunteerGoals();
-    }, []);
+    }, [getVolunteerEvents, getVolunteerGoals]);
 
     function getMonthName(monthNo) {
         return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
@@ -86,8 +82,8 @@ const VolunteerCalendar = () => {
             const gmonth = parseInt(goals.begindate.substring(5, 7), 10);
             const gday = parseInt(goals.begindate.substring(8), 10);
             
-            return value.month() + 1 == gmonth && value.date() == gday 
-                && value.year() == gyear;
+            return value.month() + 1 === gmonth && value.date() === gday 
+                && value.year() === gyear;
         })
         return listGoals || [];
     }
@@ -99,8 +95,8 @@ const VolunteerCalendar = () => {
             const gmonth = parseInt(goals.enddate.substring(5, 7), 10);
             const gday = parseInt(goals.enddate.substring(8), 10);
             
-            return value.month() + 1 == gmonth && value.date() == gday 
-                && value.year() == gyear;
+            return value.month() + 1 === gmonth && value.date() === gday 
+                && value.year() === gyear;
         })
         return listGoals || [];
     }
@@ -111,7 +107,7 @@ const VolunteerCalendar = () => {
             const gyear = parseInt(goals.begindate.substring(0, 4), 10);
             const gmonth = parseInt(goals.begindate.substring(5, 7), 10);
             
-            return value.month() + 1 == gmonth && value.year() == gyear;
+            return value.month() + 1 === gmonth && value.year() === gyear;
         })
 
         return monthGoals || [];
@@ -123,7 +119,7 @@ const VolunteerCalendar = () => {
             const gyear = parseInt(goals.enddate.substring(0, 4), 10);
             const gmonth = parseInt(goals.enddate.substring(5, 7), 10);
             
-            return value.month() + 1 == gmonth && value.year() == gyear;
+            return value.month() + 1 === gmonth && value.year() === gyear;
         })
 
         return monthGoals || [];

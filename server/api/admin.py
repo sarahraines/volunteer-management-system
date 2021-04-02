@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Organization, Cause, FAQ, Event, Attendee, Member, EventFeedback, Invitee, OrgFile, UserFile, UserSettings, UserGoals
+from .models import User, Organization, Cause, FAQ, Event, Attendee, Member, EventFeedback, Invitee, OrgFile, UserFile, UserSettings, UserGoals, Change
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 class UserAdmin(admin.ModelAdmin):
@@ -11,6 +11,9 @@ class UserAdmin(admin.ModelAdmin):
         queryset.delete()
 
     actions = ["BE_AWARE_NO_WARNING_clear_tokens_and_delete"]
+
+class ChangeAdmin(admin.ModelAdmin):
+    model = Change
 
 class OrganizationAdmin(admin.ModelAdmin):
     model = Organization
@@ -60,3 +63,4 @@ admin.site.register(OrgFile, OrgFileAdmin)
 admin.site.register(UserFile, UserFileAdmin)
 admin.site.register(UserSettings, UserSettingsAdmin)
 admin.site.register(UserGoals, UserGoalsAdmin)
+admin.site.register(Change, ChangeAdmin)

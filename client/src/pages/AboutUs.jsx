@@ -26,16 +26,16 @@ const AboutUs = ({org, isAdmin}) => {
                 console.error(error);
             }
         }
-    }, [setCauses, org?.id]);
+    }, [setCauses, org]);
 
     const closeModal = useCallback(() => {
         setIsModalVisible(false);
-    }, [org?.id]);
+    }, []);
 
     const closeModalWithUpdate = useCallback(() => {
         setIsModalVisible(false);
         getCausesByOrg();
-    }, [org?.id, getCausesByOrg]);
+    }, [getCausesByOrg]);
 
     const setLoading = useCallback((loadingVal) => {
         setIsLoading(loadingVal);
@@ -43,7 +43,7 @@ const AboutUs = ({org, isAdmin}) => {
 
     useEffect(() => {
         getCausesByOrg();
-    }, [org?.id, getCausesByOrg]);
+    }, [getCausesByOrg]);
 
     const tags = (
         <React.Fragment>
@@ -71,7 +71,7 @@ const AboutUs = ({org, isAdmin}) => {
                   ]}
             >
                   <Descriptions>
-                    {org?.website && <Descriptions.Item label="Website"><a target="_blank" href={org.website}>{org.website}</a></Descriptions.Item>}
+                    {org?.website && <Descriptions.Item label="Website"><a target="_blank" rel="noopener noreferrer" href={org.website}>{org.website}</a></Descriptions.Item>}
                     {org?.phone && <Descriptions.Item label="Telephone">{org.phone}</Descriptions.Item>}
                     {org?.email && <Descriptions.Item label="Email"><a href={`mailto:${org.email}`}>{org.email}</a></Descriptions.Item>}
                     {org?.address && <Descriptions.Item label="Street Address">{org.address}</Descriptions.Item>}

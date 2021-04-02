@@ -133,7 +133,6 @@ class GetPublicOrgs(APIView):
     authentication_classes = ()
     
     def get(self, request):
-        user_id = request.GET['user_id']
         orgs = Organization.objects.filter(is_public=True)
         org_serializer = OrganizationSerializer(orgs, many=True)
         orgdata = org_serializer.data
@@ -142,9 +141,5 @@ class GetPublicOrgs(APIView):
             for i in range(len(orgdata)):
                 if orgdata[i]['image']:
                     orgdata[i]['image'] = "http://" + request.get_host() + orgdata[i]['image']
-        members = Member.objects.filter(user__id=user_id)
-        member_serializer = MemberSerializer(members, many=True)
-        data = {"org": orgdata, "member": member_serializer.data}
-        print(member_serializer.data)
-        return Response(data)
+        return Response(orgdata)
         

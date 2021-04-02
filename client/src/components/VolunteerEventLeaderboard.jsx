@@ -1,10 +1,7 @@
 import React from 'react';
 import { Typography, Table} from 'antd';
 
-function VolunteerEventLeaderboard({ data}) {
-
-    console.log(data); 
-
+function VolunteerEventLeaderboard({data}) {
     const columns = [
         {
             title: 'Event',
@@ -36,8 +33,6 @@ function VolunteerEventLeaderboard({ data}) {
             defaultSortOrder: 'descend',
         },
     ];
-
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
     return (
         <React.Fragment>

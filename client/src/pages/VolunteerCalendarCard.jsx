@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import { Calendar, Typography , Button, Popover, message} from 'antd';
+import React, {useCallback, useState} from 'react';
+import { Typography , Button, Popover, message} from 'antd';
 import axiosAPI from "../api/axiosApi";
 
 const { Paragraph } = Typography;
@@ -46,7 +46,7 @@ function VolunteerCalendarCard ({item, isYearView}){
 			message.error(errMsg);
 		}
 		setIsLoading(false);
-    }, []);
+    }, [item.events__id]);
 
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     const begindate = new Date(item.events__begindate)
@@ -60,7 +60,7 @@ function VolunteerCalendarCard ({item, isYearView}){
                 content={
                     <div>
                         <Typography.Title level={4}>{item.events__name} 
-                            <a onClick={toggleVisible} style={{ float: "right", color: "grey" }}>
+                            <a onClick={toggleVisible} style={{ float: "right", color: "grey" }} href="#">
                                 X
                             </a>
                         </Typography.Title>
@@ -95,7 +95,7 @@ function VolunteerCalendarCard ({item, isYearView}){
                 content={
                     <div>
                         <Typography.Title level={4}>{item.events__name}
-                            <a onClick={toggleVisible} style={{ float: "right", color: "grey" }}>
+                            <a onClick={toggleVisible} style={{ float: "right", color: "grey" }} href="#">
                                 X
                             </a>
                         </Typography.Title>

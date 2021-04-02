@@ -1,19 +1,15 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Card, Button, Typography, Image, message, Modal, Form} from 'antd';
-import {EditOutlined, DeleteOutlined, ExpandOutlined} from '@ant-design/icons';
+import {Card, Button, Image} from 'antd';
+import {ExpandOutlined} from '@ant-design/icons';
 import OrgLogo from '../assets/undraw_team_spirit.svg';
 import axiosAPI from "../api/axiosApi";
 import OrgModal from './OrgModal';
 import OrgJoinButton from './OrgJoinButton'
 import './EventCard.css';
 
-const { Paragraph } = Typography;
-
-function OrgCard ({org}){
+function OrgCard ({organization, selectedCauses}){
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [causes, setCauses] = useState([]);
-	const organization = org?.org
-
 	const getCausesByOrg = useCallback(async () => {
 		try {
 			const response = await axiosAPI.get("organization/get-causes/", {
@@ -25,7 +21,7 @@ function OrgCard ({org}){
 		} catch (error) {
 			console.error(error);
 		}
-    }, [setCauses, organization?.id]);
+    }, [setCauses, organization.id]);
 	
 	useEffect(() => {
 		getCausesByOrg();
@@ -34,6 +30,9 @@ function OrgCard ({org}){
 	const onClose = useCallback(() => {
 		setIsModalVisible(false);
 	}, [setIsModalVisible])
+
+	const causeIntersection = causes.map(cause => cause.id).filter(cause => selectedCauses.includes(cause));
+	const hideCard = selectedCauses.length > 0 && causes.length > 0 && causeIntersection.length === 0;
 
 	return (
 		<React.Fragment>
@@ -49,6 +48,7 @@ function OrgCard ({org}){
 						</div>
 					</div>
 				}
+				hidden={hideCard}
 			>
 				<Card.Meta title={organization?.name} description={
 					<React.Fragment>

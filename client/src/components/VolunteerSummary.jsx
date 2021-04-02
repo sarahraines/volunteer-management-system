@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography, Table} from 'antd';
-import Plot from 'react-plotly.js';
 
 function VolunteerSummary({ data}) {
 
@@ -10,7 +9,7 @@ function VolunteerSummary({ data}) {
             dataIndex: 'label',
             key: 'label',
             ellipsis: true,
-            render: (text: string) => <b>{text}</b>,
+            render: (text) => <b>{text}</b>,
         },
         {
           title: 'Nonprofits',
@@ -32,8 +31,6 @@ function VolunteerSummary({ data}) {
           },
       ];
 
-
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
 
     return (
         <React.Fragment>

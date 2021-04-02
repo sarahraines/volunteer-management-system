@@ -15,12 +15,7 @@ const AuthState = {
 const InviteNoAuth = () => {
 
     const [loadingState, setLoadingState] = useState(AuthState.LOADING); 
-    const [user, setUser] = useState(null);
     const [invite, setInvite] = useState(null);
-
-    useEffect(() => {
-        validate();
-    }, []);
 
     const validate = useCallback(async () => {
         try {
@@ -37,10 +32,8 @@ const InviteNoAuth = () => {
                 const url = `invite/validate/${queryString}`;
                 const response = await axiosAPI.get(url);
                 if (response.status === 200) {
-                    console.log(response.data.user)
-                    if (response.data.user.email !== "") {
+                    if (response.data.returning) {
                         setLoadingState(AuthState.RETURNING_USER);
-                        setUser(response.data.user)
                     } else {
                         setLoadingState(AuthState.NEW_USER);
                     }
@@ -56,6 +49,11 @@ const InviteNoAuth = () => {
             setLoadingState(AuthState.FAILURE);
         }
     }, [setLoadingState])
+
+    
+    useEffect(() => {
+        validate();
+    }, [validate]);
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -77,7 +75,7 @@ const InviteNoAuth = () => {
             );
         default:
             return (
-                <InviteAuth isRegister={loadingState === AuthState.NEW_USER} invite={invite} user={user}/>
+                <InviteAuth isRegister={loadingState === AuthState.NEW_USER} invite={invite} />
             );
     }
 

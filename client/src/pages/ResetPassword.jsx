@@ -17,10 +17,6 @@ const AuthState = {
  const ResetPassword = () => {
     const [loadingState, setLoadingState] = useState(AuthState.LOADING); 
 
-    useEffect(() => {
-        validate();
-    }, []);
-
     const validate = useCallback(async () => {
         try {
             const queryString = window.location.search;
@@ -48,6 +44,10 @@ const AuthState = {
             setLoadingState(AuthState.FAILURE);
         }
     }, [setLoadingState])
+
+    useEffect(() => {
+        validate();
+    }, [validate]);
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 

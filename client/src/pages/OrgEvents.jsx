@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Button, Typography, DatePicker, Select, Space, List} from 'antd';
+import { Typography, DatePicker, Select, Space, List, Input } from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
@@ -54,13 +54,13 @@ const OrgEvents = ({orgId, isAdmin}) => {
 
     const virtualFilterChange = value => {
         let oldList = events;
-        if (value == "virtual") {
+        if (value === "virtual") {
             let newList = [];
             newList = oldList.filter(event =>
                 event.virtual
             );
             setFilterDisplay(newList);
-        } else if (value == "inperson") {
+        } else if (value === "inperson") {
             let newList = [];
             newList = oldList.filter(event =>
                 !event.virtual
@@ -79,7 +79,7 @@ const OrgEvents = ({orgId, isAdmin}) => {
                 (event.attendee_count < event.attendee_cap)
             );
             setFilterDisplay(newList);
-        } else if (value == "closed") {
+        } else if (value === "closed") {
             let newList = [];
             newList = oldList.filter(event =>
                 !(event.attendee_count < event.attendee_cap)
@@ -112,27 +112,24 @@ const OrgEvents = ({orgId, isAdmin}) => {
     return (
         <React.Fragment>
             <Typography.Title level={4}>Upcoming events</Typography.Title>
-            <Space>
-                Filter by Date:<Space direction="vertical" size={12}>
-                    <RangePicker onChange={value => dateFilterChange(value)}/>
-                </Space>
-                Filter by Open:<Select defaultValue="none" style={{ width: 120 }} onChange={value => openFilterChange(value)} size="medium">
-                    <Option value="none">Select All</Option>
-                    <Option value="open">Open</Option>
-                    <Option value="closed">Closed</Option>
-                </Select>
-                Filter by Virtual:<Select defaultValue="none" style={{ width: 120 }} onChange={value => virtualFilterChange(value)} size="medium">
-                    <Option value="none">Select All</Option>
-                    <Option value="virtual">Virtual</Option>
-                    <Option value="inperson">Not Virtual</Option>
-                </Select>
+            <Space direction="vertical">
+                <div style={{  width: "100%" }}>Search by name: <Input onChange={e => handleChange(e.target.value)} placeholder="Event name" size="medium" className="search" style={{height: 33.825, width: "40%", marginLeft: 4 }}/></div>
+                <Space>
+                    Filter by date:<Space direction="vertical" size={12}>
+                        <RangePicker onChange={value => dateFilterChange(value)}/>
+                    </Space>
+                    Filter by open:<Select defaultValue="none" style={{ width: 120 }} onChange={value => openFilterChange(value)} size="medium">
+                        <Option value="none">Select All</Option>
+                        <Option value="open">Open</Option>
+                        <Option value="closed">Closed</Option>
+                    </Select>
+                    Filter by virtual:<Select defaultValue="none" style={{ width: 120 }} onChange={value => virtualFilterChange(value)} size="medium">
+                        <Option value="none">Select All</Option>
+                        <Option value="virtual">Virtual</Option>
+                        <Option value="inperson">Not Virtual</Option>
+                    </Select>
+                </Space> 
             </Space> 
-            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{float: "right", height: 30, width: 150}}/>
-            <div style={{ flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll", height: '100%'}}>
-                {filterDisplay.map((item, i) => 
-                    <EventCard key={i} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
-                )}
-            </div>
             <List
                 grid={{
                     gutter: 16,

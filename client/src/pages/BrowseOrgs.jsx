@@ -1,55 +1,77 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import { Typography, List, message } from 'antd';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
+import { Typography, List, Space, Input, Select } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import OrgCard from '../components/OrgCard';
-const { Title } = Typography;
+
+const { Option } = Select;
 
 
-function BrowseOrgs({}) {
+function BrowseOrgs() {
     const [orgs, setOrgs] = useState([]);
+    const [selectedCauses, setSelectedCauses] = useState([]);
+    const [filterDisplay, setFilterDisplay] = useState([]);
+    const [causes, setCauses] = useState([]);
+
     const getPublicOrgs = useCallback(async () => {
         try {
-            console.log("user id " + localStorage.getItem("user_id"))
             const response = await axiosAPI.get("organization/get-public-orgs/", {
                 params: {
                     user_id: localStorage.getItem("user_id")
                 }
             });
-            const member_data = response.data["member"]
-            const orgsUserIsIn = member_data.map(item => item.organization.id)
-            const orgsUserIsInSet = new Set(orgsUserIsIn)
-            const orgsToTypeSet = Object.assign({}, ...member_data.map(item => ({[item.organization.id]: item.member_type})))
-            const org_data  = response.data["org"]
-            const complete_data = org_data.map(org => ({org: org, isCurrMember:orgsUserIsInSet.has(org.id), isAdmin: (orgsUserIsInSet.has(org.id) && orgsToTypeSet[org.id]==1) }))
-            setOrgs(complete_data);
-            console.log(complete_data)
-
+            setOrgs(response.data);
+            setFilterDisplay(response.data)
         } catch (error) {
             console.error(error);
         }
-    }, [setOrgs]);
+    }, [setOrgs, setFilterDisplay]);
+
+    const getCauses = useCallback(async () => {
+        try {
+            const response = await axiosAPI.get("causes/get/");
+            setCauses(response.data);
+        } catch (error) {
+            console.error(error)
+        }
+    }, [setCauses]);
+
+    useEffect(() => {
+        getCauses();
+    }, [getCauses]);
+
+    const handleChange = e => {
+        if (e !== "") {
+            const newList = orgs.filter(org =>
+                org.name.toLowerCase().includes(e.toLowerCase())
+            );
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(orgs);
+        }
+    };
+
+    const filteredCauses = useMemo(() => {
+        return causes.filter(o => !selectedCauses.includes(o));
+    }, [selectedCauses, causes]);
+
     useEffect(() => {
         getPublicOrgs();
      }, [getPublicOrgs])
     
-    const addMember = useCallback(async (name) => {
-        try {
-            await axiosAPI.post("member/create/", {
-                user_id: localStorage.getItem("user_id"),
-                organization: name,
-                member_type: 1,
-                status: 0,
-            });
-            message.success('Added to Organization');
-        } catch {
-            message.error('Unable to add to Organization');
-        }
-    }, []);
-
     return (
         <React.Fragment>
             <Typography.Title level={2}>Browse organizations</Typography.Title>
+            <Space>
+                Search by name: <Input onChange={e => handleChange(e.target.value)} placeholder="Event name" size="medium" className="search" style={{height: 33.825}}/>
+                Filter by cause:<Select mode="multiple" placeholder="Cause(s)" style={{ minWidth: 200 }} size="medium" value={selectedCauses} onChange={setSelectedCauses}>
+                    {filteredCauses.map(item => (
+                        <Option key={item.id} value={item.id}>
+                            {item.name}
+                        </Option>
+                    ))}
+                </Select>
+            </Space> 
             <List
                 grid={{
                     gutter: 16,
@@ -60,10 +82,10 @@ function BrowseOrgs({}) {
                     xl: 3,
                     xxl: 3,
                 }}
-                dataSource={orgs}
+                dataSource={filterDisplay}
                 renderItem={item => (
                     <List.Item>
-                        <OrgCard key={item.id} org={item} />
+                        <OrgCard key={item.id} organization={item} selectedCauses={selectedCauses}/>
                     </List.Item>
                 )}
             />

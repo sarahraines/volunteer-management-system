@@ -1,11 +1,7 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Card, Button, Typography, PageHeader, Tag, Row, Image, Descriptions} from 'antd';
+import React from 'react';
+import {Typography, PageHeader, Tag, Row, Image} from 'antd';
 import OrgLogo from '../assets/undraw_team_spirit.svg';
-import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import axiosAPI from "../api/axiosApi";
-import './EventCard.css';
 import Modal from 'antd/lib/modal/Modal';
-import JoinButton from './JoinButton';
 import "./EventModal.css";
 
 const { Paragraph } = Typography;

@@ -15,13 +15,8 @@ function VolunteerCharts({monthlyHours, nonprofits, events}) {
     var ratings = [0, 0, 0, 0, 0];
     var satisfactions = [0, 0, 0, 0, 0]; 
 
-    console.log(events); 
-
     events.forEach(element => ratings[element.overall - 1] += 1); 
     events.forEach(element => satisfactions[element.satisfaction - 1] += 1); 
-
-    console.log(ratings);
-    console.log(satisfactions); 
 
     return (
         <React.Fragment>

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from api.serializers import UserSerializer, ChangePasswordSerializer, MyTokenObtainPairSerializer, MemberSerializer, UserSettingsSerializer, UserGoalsSerializer, ResetPasswordSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from api.models import User, Invitee, Member, UserSettings, UserGoals
+from api.models import User, Invitee, Member, UserSettings, UserGoals, Attendee, Event, Change
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -17,6 +17,9 @@ from django.conf import settings
 import hashlib
 import logging
 import jwt
+from django.utils import timezone
+from datetime import datetime, timedelta
+from django.db.models import F
 
 logger = logging.getLogger(__name__)
 
@@ -296,3 +299,67 @@ class CreateGoal(APIView):
             serializer.save(user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GenerateDailyReport(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+
+    def get(self, request, format='json'):
+        """
+        Members
+        1. Any changes to event dates/locations for future events for which they are an attendee
+        2. Any new clearances for events for which they are an attendee
+        3. Any clearance status changes (accept or reject from admin) for clearances they have uploaded
+        4. Any new events created by their organizations
+        5. Any new feedback forms (and remind them of old, unfilled ones)
+
+        Admins (includes everything from members)
+        *1. Any changes to event dates/locations for future events for which they are an attendee/admin
+        *2. Any new clearances uploaded by members
+        3. Number of people who have filled out feedback/still need to (optional)
+        4. List of members who have joined and left
+        5. Number of people who have joined events
+        """
+        data = request.GET
+        user_id = data['user_id']
+
+        # The time after which updates will be considered
+        start_datetime = timezone.now() - timedelta(days=1)
+
+        # Changes to event date/location.
+        attendee = Attendee.objects.filter(username=user_id, events__begindate__gt=timezone.now()).first()
+
+        if attendee is not None:
+            future_events = attendee.events.all()
+            future_events = {event.id: event for event in future_events}
+
+            event_changes = {}
+            for column in ['location', 'begindate', 'enddate']:
+                changes = Change.objects.filter(model='Event', column=column, created_at__gt=start_datetime, object_id__in=list(future_events)).order_by('created_at')
+                for change in changes:
+                    if change.object_id in event_changes and f'old_{column}' in event_changes[change.object_id]:
+                        continue
+
+                    delta = event_changes.setdefault(change.object_id, {})
+                    delta[f'old_{column}'] = change.old_value
+
+
+            for event_id, delta in event_changes.copy().items():
+                event = future_events[event_id]
+
+                for column in ['location', 'begindate', 'enddate']:
+                    if f'old_{column}' in delta and str(getattr(event, column)) == delta[f'old_{column}']:
+                        del delta[f'old_{column}']
+                    elif  f'old_{column}' in delta:
+                        delta[f'new_{column}'] = str(getattr(event, column))
+                
+                if not delta:
+                    del event_changes[event_id]
+                else:
+                    delta['name'] = event.name
+                    delta['id'] = event.id
+
+            print(list(event_changes.values()))
+
+        return Response({}, status=status.HTTP_200_OK)
