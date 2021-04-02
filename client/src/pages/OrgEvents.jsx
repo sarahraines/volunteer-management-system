@@ -1,11 +1,12 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Typography, List, Select, Space} from 'antd';
+import {Button, Typography, DatePicker, Select, Space, List} from 'antd';
 import "antd/dist/antd.css";
 import './Event.css';
 import EventCard from '../components/EventCard';
 import axiosAPI from "../api/axiosApi";
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const OrgEvents = ({orgId, isAdmin}) => {
     const [events, setEvents] = useState([]); 
@@ -78,7 +79,7 @@ const OrgEvents = ({orgId, isAdmin}) => {
                 (event.attendee_count < event.attendee_cap)
             );
             setFilterDisplay(newList);
-        } else if (value == "filled") {
+        } else if (value == "closed") {
             let newList = [];
             newList = oldList.filter(event =>
                 !(event.attendee_count < event.attendee_cap)
@@ -89,22 +90,55 @@ const OrgEvents = ({orgId, isAdmin}) => {
         }
     };
 
+    const dateFilterChange = value => {
+        let oldList = events;
+        if (value != null) {
+            let start_date = new Date(value[0]);
+            let end_date = new Date(value[1]);
+            
+            let newList = events.filter(e => {
+                const bdate = new Date(e.begindate);
+                const edate = new Date(e.enddate);
+                return ((start_date.getMonth() <= edate.getMonth() && end_date.getMonth() >= bdate.getMonth())
+                    && (start_date.getDate() <= edate.getDate() && end_date.getDate() >= bdate.getDate())
+                    && (start_date.getFullYear() <= edate.getFullYear() && end_date.getFullYear() >= bdate.getFullYear()));
+            })
+            setFilterDisplay(newList);
+        } else {
+            setFilterDisplay(oldList);
+        }
+    };
+
     return (
         <React.Fragment>
             <Typography.Title level={4}>Upcoming events</Typography.Title>
             <Space>
-                <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search"/>
-                Filter by Virtual:<Select defaultValue="none" style={{ width: 120 }} onChange={value => virtualFilterChange(value)} size="small">
+                Filter by Date:<Space direction="vertical" size={12}>
+                    <RangePicker onChange={value => dateFilterChange(value)}/>
+                </Space>
+                
+                {/* <Select defaultValue="none" style={{ width: 120 }} onChange={value => virtualFilterChange(value)} size="small">
+                    <Option value="none">Select All</Option>
+                    <Option value="virtual">Virtual</Option>
+                    <Option value="inperson">Not Virtual</Option>
+                </Select> */}
+                Filter by Open:<Select defaultValue="none" style={{ width: 120 }} onChange={value => openFilterChange(value)} size="medium">
+                    <Option value="none">Select All</Option>
+                    <Option value="open">Open</Option>
+                    <Option value="closed">Closed</Option>
+                </Select>
+                Filter by Virtual:<Select defaultValue="none" style={{ width: 120 }} onChange={value => virtualFilterChange(value)} size="medium">
                     <Option value="none">Select All</Option>
                     <Option value="virtual">Virtual</Option>
                     <Option value="inperson">Not Virtual</Option>
                 </Select>
-                Filter by Open:<Select defaultValue="none" style={{ width: 120 }} onChange={value => openFilterChange(value)} size="small">
-                    <Option value="none">Select All</Option>
-                    <Option value="open">Open</Option>
-                    <Option value="filled">Filled</Option>
-                </Select>
             </Space> 
+            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{float: "right", height: 30, width: 150}}/>
+            <div style={{ flexWrap: "wrap", justifyContent: "space-between", overflowY: "scroll", height: '100%'}}>
+                {filterDisplay.map((item, i) => 
+                    <EventCard key={i} item={item} isAdmin={isAdmin} removeEvent={removeEvent} updateEvents={updateEvents} />
+                )}
+            </div>
             <List
                 grid={{
                     gutter: 16,

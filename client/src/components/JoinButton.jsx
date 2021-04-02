@@ -58,9 +58,17 @@ function JoinButton ({item}){
 	const buttonIsDisabled = item.attendee_count >= item.attendee_cap && !register;
 
 	return (
-		<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading} disabled={buttonIsDisabled}>
-			{buttonText}
-		</Button>
+		<div>
+			{register ?
+				<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading} disabled={buttonIsDisabled} style={{ background: "#a4a4a4", borderColor: "#a4a4a4"}}>
+					{buttonText}
+				</Button>
+				:
+				<Button type="primary" htmlType="submit" className="event-form-button" onClick= {() => onClick(item.id, register)} loading={isLoading} disabled={buttonIsDisabled}>
+					{buttonText}
+				</Button>
+			}
+		</div>
 	);
 
 } export default JoinButton; 
