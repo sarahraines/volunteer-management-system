@@ -277,9 +277,9 @@ class GetVolunteerEventsForOrg(APIView):
         org_id = request.GET['orgId']
         date = timezone.now()
         username = User.objects.filter(id=attendee_id)[0]
-        events = Attendee.objects.filter(username=username, events__organizations__id=org_id, events__enddate__gte=date).values('events__id',
+        events = Attendee.objects.filter(username=username, events__organization__id=org_id, events__enddate__gte=date).values('events__id',
         'events__name', 'events__virtual', 'events__location', 'events__begindate', 'events__enddate',
-        'events__causes', 'events__description', 'events__organizations', 'events__instructions',
+        'events__causes', 'events__description', 'events__organization', 'events__instructions',
         'events__attendee_cap')
         
         for e in events:
@@ -296,15 +296,10 @@ class GetNumIncompleteClearances(APIView):
         org_id = request.GET['orgId']
         date = timezone.now()
         username = User.objects.filter(id=attendee_id)[0]
-        events = Attendee.objects.filter(username=username, events__organizations__id=org_id, events__enddate__gte=date).values('events__id')
-
+        events = Attendee.objects.filter(username=username, events__organization__id=org_id, events__enddate__gte=date).values('events__id')
         org_files = OrgFile.objects.filter(organization=org_id, event__id__in=events.values_list('events__id', flat=True))
-        print("len(org_files)")
-        print(len(org_files))
-
         user_files = UserFile.objects.filter(user=username, org_file__id__in=org_files.values_list('id', flat=True), status="Complete")
-        print("len(user_files)")
-        print(len(user_files))
+
         return Response(len(org_files) - len(user_files), status=status.HTTP_200_OK)   
 
 class GetNumPendingClearancesForOrg(APIView):
@@ -314,15 +309,9 @@ class GetNumPendingClearancesForOrg(APIView):
     def get(self, request):
         org_id = request.GET['orgId']
         date = timezone.now()
-        events = Event.objects.filter(organizations__id=org_id, enddate__gte=date).values('id')
-
-        # org_files = OrgFile.objects.filter(organization=org_id, event__id__in=events.values_list('events__id', flat=True))
-        # print("len(org_files)")
-        # print(len(org_files))
-
+        events = Event.objects.filter(organization__id=org_id, enddate__gte=date).values('id')
         user_files = UserFile.objects.filter(org_file__event__id__in=events.values_list('id', flat=True)).exclude(status="Complete")
-        print("len(user_files)")
-        print(len(user_files))
+
         return Response(len(user_files), status=status.HTTP_200_OK)      
 
 class GetAttendees(APIView):

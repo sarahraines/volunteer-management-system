@@ -9,8 +9,8 @@ const { Title, Text } = Typography;
 function Clearances({isAdmin, orgId}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState([]); 
-    const [numIncompleteEvents, setNumIncompleteEvents] = useState([]);
-    const [numPending, setNumPending] = useState([]); 
+    const [numIncompleteEvents, setNumIncompleteEvents] = useState(0);
+    const [numPending, setNumPending] = useState(0); 
     const [filterDisplay, setFilterDisplay] = useState([]);
     
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -66,7 +66,7 @@ function Clearances({isAdmin, orgId}) {
                         orgId: orgId,
                     }
                 });
-
+                console.log("response.data: " + response.data)
                 data = response.data;
                 setNumPending(data);
             } else {
