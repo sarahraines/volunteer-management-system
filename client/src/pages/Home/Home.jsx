@@ -8,10 +8,12 @@ import Nav3 from './Nav3';
 import Banner5 from './Banner5';
 import Feature0 from './Feature0';
 import Footer2 from './Footer2';
+import Feature1 from './Feature1';
 
 import {
   Nav30DataSource,
   Banner50DataSource,
+  Feature10DataSource,
   Feature00DataSource,
   Footer20DataSource,
 } from './data.source';
@@ -63,6 +65,12 @@ export default class Home extends React.Component {
         id="Banner5_0"
         key="Banner5_0"
         dataSource={Banner50DataSource}
+        isMobile={this.state.isMobile}
+      />,
+      <Feature1
+        id="Feature1_0"
+        key="Feature1_0"
+        dataSource={Feature10DataSource}
         isMobile={this.state.isMobile}
       />,
       <Feature0
