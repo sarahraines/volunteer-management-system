@@ -26,7 +26,6 @@ function EventsPerVolunteer({orgId}) {
                     orgId: orgId,
                 }
             });
-            console.log("unique members" + response.data[0]);
             setUniqueMembers(response.data[0])
         } catch(error) {
             console.error(error);
@@ -39,7 +38,6 @@ function EventsPerVolunteer({orgId}) {
                     orgId: orgId,
                 }
             });
-            console.log("unique attendees" + response.data);
             setUniqueAttendees(response.data)
         } catch(error) {
             console.error(error);
@@ -52,7 +50,6 @@ function EventsPerVolunteer({orgId}) {
                     orgId: orgId,
                 }
             });
-            console.log("volunteers with feeback" + response.data);
             setUniqueVolunteersWithFeedback(response.data)
         } catch(error) {
             console.error(error);
@@ -65,14 +62,11 @@ function EventsPerVolunteer({orgId}) {
                     orgId: orgId,
                 }
             });
-            console.log("events per volunteer" + response.data);
             setAvgEventsPerVolunteer(response.data)
         } catch(error) {
             console.error(error);
         }
     }
-    console.log("unique attendees" + uniqueAttendees);
-    console.log("unique vol" + uniqueVolunteersWithFeedback);
     var data = [{type: 'funnel', y: ["Members", "Attendees", "Feedback", "Events per Volunteer"], x: [uniqueMembers, uniqueAttendees, uniqueVolunteersWithFeedback, avgEventsPerVolunteer]}];
     var layout = {margin: {l: 150}, width:600, height: 500}
     return (

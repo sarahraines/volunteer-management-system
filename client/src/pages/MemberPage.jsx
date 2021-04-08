@@ -15,7 +15,7 @@ function MemberPage({orgId}) {
     
     const getMembers = useCallback(async () => {
         try {
-            const response =  await axiosAPI.get("organization/get-members/", {
+            const response = await axiosAPI.get("organization/get-members/", {
                 params: {
                     org_id: orgId,
                 }
@@ -32,7 +32,7 @@ function MemberPage({orgId}) {
 
     const deleteMember = useCallback(async (memberId) => {
         try {
-            const response =  await axiosAPI.delete("member/delete/", {
+            await axiosAPI.delete("member/delete/", {
                 params: {
                     member_id: memberId,
                 }
@@ -49,7 +49,7 @@ function MemberPage({orgId}) {
         if (orgId) {
             getMembers(orgId);
         }
-    }, [orgId]);
+    }, [getMembers, orgId]);
 
     const handleChange = e => {
         let oldList = members;

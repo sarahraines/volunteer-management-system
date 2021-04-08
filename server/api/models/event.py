@@ -17,10 +17,19 @@ class Event(models.Model):
     image = models.ImageField(upload_to='events/', null=True)
     REQUIRED_FIELDS = ['name', 'virtual']
 
+class Change(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    object_id = models.IntegerField()
+    model = models.CharField(max_length=1000)
+    column = models.CharField(max_length=1000)
+    old_value = models.CharField(max_length=1000)
+    new_value = models.CharField(max_length=1000)
+
 class OrgFile(models.Model):
     organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, null=True, blank=True, on_delete=models.CASCADE)
     empty_form = models.FileField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class UserFile(models.Model):
     org_file = models.ForeignKey(OrgFile, null=True, blank=True, on_delete=models.CASCADE)
@@ -28,12 +37,14 @@ class UserFile(models.Model):
     filled_form = models.FileField()
     status = models.CharField(max_length=20)
     comment = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class Attendee(models.Model):
     username = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     events = models.ManyToManyField('Event')
 
 class EventFeedback(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
     username = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, null=True, blank=True, on_delete=models.CASCADE)
 

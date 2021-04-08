@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Card, Button, Typography, Image, message, Modal, Form} from 'antd';
 import {EditOutlined, DeleteOutlined, ExpandOutlined} from '@ant-design/icons';
+import EventLogo from '../assets/undraw_hang_out.svg';
 import axiosAPI from "../api/axiosApi";
 import EventModal from './EventModal';
 import JoinButton from './JoinButton'
@@ -37,13 +38,13 @@ function EventCard ({item, isAdmin, removeEvent, updateEvents}){
 
 	const closeModal = useCallback(() => {
         setIsEditModalVisible(false);
-    }, [item.id]);
+    }, []);
 
     const closeModalWithUpdate = useCallback(() => {
         setIsEditModalVisible(false);
         updateEvents();
 		getCausesByEvent();
-    }, [item.id, updateEvents, getCausesByEvent]);
+    }, [updateEvents, getCausesByEvent]);
 
 	const setLoading = useCallback((loadingVal) => {
         setIsEditDialogOkLoading(loadingVal);
@@ -87,7 +88,7 @@ function EventCard ({item, isAdmin, removeEvent, updateEvents}){
 				style={{ height: 'auto' }}
 				cover={
 					<div className="button-container">
-						<Image preview={false} alt="img" src={item.image}/>
+						<Image preview={false} alt="img" src={item?.image ?? EventLogo}/>
 						<Button className="expand-button" icon={<ExpandOutlined />} ghost onClick={setIsModalVisible}/>
 					</div>
 				}
@@ -95,7 +96,7 @@ function EventCard ({item, isAdmin, removeEvent, updateEvents}){
 				<Card.Meta title={item.name} description={
 					<React.Fragment>
 						<Paragraph><i>{date}</i></Paragraph>
-						{item.attendee_count == item.attendee_cap ?
+						{item.attendee_count === item.attendee_cap ?
 							<Paragraph><i>No. of Attendees: {item.attendee_count}/{item.attendee_cap} [Closed]</i></Paragraph>
 							:
 							<Paragraph><i>No. of Attendees: {item.attendee_count}/{item.attendee_cap} </i></Paragraph>
@@ -104,8 +105,6 @@ function EventCard ({item, isAdmin, removeEvent, updateEvents}){
 						{<JoinButton item={item}/>}
 					</React.Fragment>
 				} />
-				<Paragraph>
-				</Paragraph>
 			</Card>
 			<EventModal event={item} causes={causes} isModalVisible={isModalVisible} onClose={onClose}/>
 			<Modal

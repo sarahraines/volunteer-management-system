@@ -51,7 +51,7 @@ const NewEventForm = ({form, event, closeModalWithUpdate, setLoading}) => {
             const endMoment = moment(new Date(event?.enddate));
             form.setFieldsValue({date: [beginMoment, endMoment]});
         }
-    }, [event, event?.id])
+    }, [event, form])
     
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
@@ -101,7 +101,7 @@ const NewEventForm = ({form, event, closeModalWithUpdate, setLoading}) => {
                 setIsLoading(false);
             }
         }
-    }, [setIsLoading, form, imageFile, event?.id]);
+    }, [setIsLoading, form, imageFile, event, setLoading, closeModalWithUpdate]);
 
     return (
         <Form

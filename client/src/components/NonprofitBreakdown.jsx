@@ -25,8 +25,6 @@ function NonprofitBreakdown({ data}) {
         },
     ];
 
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-
     return (
         <React.Fragment>
             <Typography.Title level={5}>Nonprofit Breakdown</Typography.Title>

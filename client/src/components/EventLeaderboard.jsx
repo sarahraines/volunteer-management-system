@@ -24,7 +24,7 @@ function EventLeaderboard({data}) {
 
     const timeFilterChange = value => {
         let oldList = data;
-        if(value == "month"){
+        if(value === "month"){
 
             let d = new Date(); 
             let newList = []
@@ -35,7 +35,7 @@ function EventLeaderboard({data}) {
             newList = oldList.filter(event => parseInt(new Date(event.event__begindate.slice(0, 10)).valueOf(), 10) - parseInt(d.valueOf(), 10) > 0); 
             setFilterDisplay(newList);
         }
-        else if(value == "year"){
+        else if(value === "year"){
             let d = new Date(); 
             let newList = []
 

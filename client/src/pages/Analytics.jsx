@@ -34,12 +34,6 @@ const Analytics = ({orgId}) => {
             console.error(error);
         }
     }, [orgId]); 
-
-    useEffect(() => {
-        if (orgId) {
-            getFunnel(orgId);
-        }
-    }, []);
     
     const getBreakdown = useCallback(async () => {
         try {
@@ -53,12 +47,6 @@ const Analytics = ({orgId}) => {
             console.error(error);
         }
     }, [orgId]);
-
-    useEffect(() => {
-        if (orgId) {
-            getBreakdown(orgId);
-        }
-    }, []);
     
     const getVolunteers = useCallback(async () => {
         try {
@@ -74,12 +62,6 @@ const Analytics = ({orgId}) => {
         }
     }, [orgId]);
 
-    useEffect(() => {
-        if (orgId) {
-            getVolunteers(orgId);
-        }
-    }, []); 
-
     const getEvents = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("analytics/event-leaderboard/", {
@@ -92,13 +74,15 @@ const Analytics = ({orgId}) => {
             console.error(error);
         }
     }, [orgId]);
-
+    
     useEffect(() => {
         if (orgId) {
+            getFunnel(orgId);
+            getBreakdown(orgId);
+            getVolunteers(orgId);
             getEvents(orgId);
         }
-    }, []);
-
+    }, [getFunnel, getBreakdown, getVolunteers, getEvents, orgId]);
 
     return (
         <React.Fragment>
@@ -107,7 +91,7 @@ const Analytics = ({orgId}) => {
                 <Radio.Button value="table">Table View</Radio.Button>
             </Radio.Group>
             <Typography.Title level={4}>Analytics</Typography.Title>
-            {view=='chart' ? (
+            {view === 'chart' ? (
                 <NonprofitFunnel funnel = {funnel} breakdown = {breakdown} volunteers = {allVolunteers} events = {events}/>
             ) : (
                 <React.Fragment>
@@ -118,4 +102,7 @@ const Analytics = ({orgId}) => {
             )}
         </React.Fragment>
     )
-};export default Analytics;
+
+};
+
+export default Analytics;

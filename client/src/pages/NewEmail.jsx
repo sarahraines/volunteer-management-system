@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Table, Typography, Form, Input, Button, Space} from 'antd';
+import { Table, Typography, Form, Input, Button } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import { addAlert } from '../actionCreators.js';
 import { useDispatch } from 'react-redux';
@@ -78,7 +78,6 @@ function NewEmail({orgId}) {
     ];
 
     const onFinish = useCallback(async (values) => {
-        console.log(checkedList)
         try {
             await axiosAPI.post("member/email/", {
                 subject: values.subject,

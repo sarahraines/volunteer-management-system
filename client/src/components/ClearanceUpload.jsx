@@ -1,9 +1,8 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, message, Typography, Table } from 'antd';
+import { Upload, message } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import UserFilesTable from '../pages/UserFilesTable';
 import { UploadOutlined } from '@ant-design/icons';
-const { Title } = Typography;
 const { Dragger } = Upload;
 
 function ClearanceUpload({isAdmin, orgId, eId}) {
@@ -18,8 +17,6 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 }
             });
             const files = response.data;
-            // console.log('files', files);
-            
             const formattedFiles = files.map(file => ({
                 key: file.id, 
                 uid: file.id, 
@@ -29,16 +26,15 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 event: file.event,
                 eventName: file.event__name
             }));
-            // console.log(formattedFiles)
             setFileList(formattedFiles);
         } catch(error) {
             console.error(error);
         }
-    }, [orgId]);
+    }, [eId]);
 
     useEffect(() => {
         getOrgFiles(orgId)
-    }, [orgId]);
+    }, [getOrgFiles, orgId]);
 
     const orgProps = {
         listType: 'picture',
@@ -70,7 +66,7 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
                 message.success('File uploaded');
             } catch (error) {
                 message.success('File failed to upload');
-                console.log(error)
+                console.error(error)
             }
         },
     };
@@ -80,7 +76,6 @@ function ClearanceUpload({isAdmin, orgId, eId}) {
             {isAdmin ? 
                 <>
                     <Dragger {...orgProps}>
-                        {/* <Button icon={<UploadOutlined/>}>Upload New Form</Button>   */}
                         <p className="ant-upload-drag-icon">
                         <UploadOutlined />
                         </p>

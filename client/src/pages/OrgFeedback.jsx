@@ -28,7 +28,7 @@ const OrgFeedback = ({isAdmin, orgId}) => {
 
     useEffect(() => {
         getFeedbackByOrg();
-    }, [orgId]);
+    }, [getFeedbackByOrg]);
 
     const handleChange = e => {
         let oldList = info;
@@ -190,7 +190,7 @@ const OrgFeedback = ({isAdmin, orgId}) => {
 
     return (
         <React.Fragment>
-            <Typography.Title level={4}>Event Feedback</Typography.Title>
+            <Typography.Title level={4}>Event feedback</Typography.Title>
             <Search placeholder="search by event or volunteer" onChange={e => handleChange(e.target.value)} style={{ width: 300, marginBottom: 16 }}  />
             <Table 
             dataSource={filterDisplay} 

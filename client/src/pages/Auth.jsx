@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Layout, Typography, Alert } from 'antd';
 import AuthForm from '../forms/AuthForm';
 import LoginLogo from '../assets/login.svg';

@@ -31,7 +31,7 @@ const ResetPasswordForm = ({isAuthenticated}) => {
                 dispatch(addAlert('Cannot reset password', 'error'));
             }
         }
-    }, [dispatch]);
+    }, [isAuthenticated, dispatch]);
 
   return (
     <React.Fragment>

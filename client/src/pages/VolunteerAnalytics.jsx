@@ -6,8 +6,6 @@ import VolunteerEventLeaderboard from '../components/VolunteerEventLeaderboard';
 import NonprofitBreakdown from '../components/NonprofitBreakdown';
 import VolunteerSummary from '../components/VolunteerSummary';
 import VolunteerCharts from '../components/VolunteerCharts'; 
-
-import Plotly from 'react-plotly.js';
 import { usePageView } from '../utils/googleAnalytics'
 
 const VolunteerAnalytics = () => {
@@ -24,6 +22,8 @@ const VolunteerAnalytics = () => {
     const handleChange = e => {
         setView(e); 
     };
+
+    usePageView('/volunteer-analytics');
     
     const getMonthlyHours = useCallback(async () => {
         try {
@@ -38,11 +38,6 @@ const VolunteerAnalytics = () => {
         }
     }, [user]);
 
-    useEffect(() => {
-            getMonthlyHours();
-    }, []);
-    usePageView('/volunteer-analytics');
-
     const getSummary = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("analytics/volunteer-summary/", {
@@ -56,10 +51,6 @@ const VolunteerAnalytics = () => {
         }
     }, [user]);
 
-    useEffect(() => {
-            getSummary();
-    }, []);
-
     const getNonprofits = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("analytics/nonprofit-breakdown/", {
@@ -72,10 +63,6 @@ const VolunteerAnalytics = () => {
             console.error(error);
         }
     }, [user]);
-
-    useEffect(() => {
-            getNonprofits();
-    }, []);
     
     const getEvents = useCallback(async () => {
         try {
@@ -91,8 +78,11 @@ const VolunteerAnalytics = () => {
     }, [user]);
 
     useEffect(() => {
-            getEvents();
-    }, []);
+        getEvents();
+        getNonprofits();
+        getSummary();
+        getMonthlyHours();
+    }, [getEvents, getNonprofits, getSummary, getMonthlyHours]);
 
     return (
         <React.Fragment>
@@ -101,7 +91,7 @@ const VolunteerAnalytics = () => {
                 <Radio.Button value="table">Table View</Radio.Button>
             </Radio.Group>
             <Typography.Title level={4}>Analytics</Typography.Title>
-            {view=='chart' ? (
+            {view === 'chart' ? (
                 <VolunteerCharts monthlyHours={monthlyHours} nonprofits={nonprofits} events={events}/>
             ) : (
                 <React.Fragment>

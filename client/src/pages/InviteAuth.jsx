@@ -7,7 +7,7 @@ import RegisterLogo from '../assets/register.svg';
 import axiosAPI from '../api/axiosApi';
 import './Auth.css';
 
-const InviteAuth = ({isRegister, invite, user}) => {
+const InviteAuth = ({isRegister, invite}) => {
     const title = `Join ${invite?.organization?.name ?? "Organization"}`;
     const info = `${isRegister ? "Welcome!" : "Hey there!"} You've been invited to join ${invite?.organization?.name ?? "a new organization"} on VolunteerSense.
     ${isRegister ? "Get started my making an account." : "Do you want to join this organization?"}`;
@@ -16,7 +16,7 @@ const InviteAuth = ({isRegister, invite, user}) => {
 
     const acceptInvite = useCallback(async () => {
         try {
-            const response = await axiosAPI.get("invite/accept/", {
+            await axiosAPI.get("invite/accept/", {
                 params: {
                     rt: new URLSearchParams(window.location.search).get('rt'),
                 }
@@ -26,11 +26,11 @@ const InviteAuth = ({isRegister, invite, user}) => {
         } catch (error) {
             console.error(error);
         }
-    }, [user, invite]);
+    }, [history]);
 
     const declineInvite = useCallback(async () => {
         try {
-            const response = await axiosAPI.get("invite/reject/", {
+            await axiosAPI.get("invite/reject/", {
                 params: {
                     invite_id: invite.id,
                 }
@@ -39,7 +39,7 @@ const InviteAuth = ({isRegister, invite, user}) => {
         } catch (error) {
             console.error(error);
         }
-    }, [user, invite]);
+    }, [history, invite]);
 
     return (
         <Layout style={{ height: "100vh" }}>

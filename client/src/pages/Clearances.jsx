@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, message, Typography, Table, Alert } from 'antd';
+import { Typography, Table, Alert, Input } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 import ClearanceUpload from '../components/ClearanceUpload';
@@ -29,6 +29,7 @@ function Clearances({isAdmin, orgId}) {
                 data.map(e => {
                     e.bdate = (new Date(e.begindate)).toLocaleString('en-US', options);
                     e.edate = (new Date(e.enddate)).toLocaleString('en-US', options);
+                    return e;
                 });
             } else {
                 const response = await axiosAPI.get("attendees/get-volunteer-events-for-org/", {
@@ -37,7 +38,6 @@ function Clearances({isAdmin, orgId}) {
                         user_id: localStorage.getItem("user_id"),
                     }
                 });
-                // console.log("not admin: " +  response.data[0].events__name);
 
                 data = response.data;
                 data.map(e => {
@@ -45,6 +45,7 @@ function Clearances({isAdmin, orgId}) {
                     e.name = e.events__name;
                     e.bdate = (new Date(e.events__begindate)).toLocaleString('en-US', options);
                     e.edate = (new Date(e.events__enddate)).toLocaleString('en-US', options);
+                    return e;
                 })
                 
             }
@@ -55,7 +56,7 @@ function Clearances({isAdmin, orgId}) {
         } catch (error) {
             console.error(error);
         }
-    }, [setEvents, orgId]);
+    }, [setEvents, orgId, isAdmin]);
 
     const getAlertInfo = useCallback(async () => {
         try {
@@ -66,7 +67,6 @@ function Clearances({isAdmin, orgId}) {
                         orgId: orgId,
                     }
                 });
-                console.log("response.data: " + response.data)
                 data = response.data;
                 setNumPending(data);
             } else {
@@ -76,7 +76,6 @@ function Clearances({isAdmin, orgId}) {
                         user_id: localStorage.getItem("user_id"),
                     }
                 });
-                // console.log("not admin: " +  response.data[0].events__name);
 
                 data = response.data;
                 setNumIncompleteEvents(data);
@@ -85,12 +84,12 @@ function Clearances({isAdmin, orgId}) {
         } catch (error) {
             console.error(error);
         }
-    }, [setEvents, orgId]);
+    }, [orgId, isAdmin]);
 
     useEffect(() => {
         getEventsByOrg();
         getAlertInfo();
-    }, [orgId, getEventsByOrg]);
+    }, [getEventsByOrg, getAlertInfo]);
 
     const columns = [
         {
@@ -154,7 +153,7 @@ function Clearances({isAdmin, orgId}) {
             }
             
             <p></p>
-            <input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{ float: 'right' }}/>
+            <Input onChange={e => handleChange(e.target.value)} placeholder="Search for events" className="search" style={{ width: 200, float: 'right', marginBottom: 4}}/>
             <Table 
                 columns={columns}
                 dataSource={filterDisplay} 

@@ -10,12 +10,12 @@ const { Option } = Select;
 function InvitePage({orgId}) {
     const [invites, setInvites] = useState([]);
     const [loading, setLoading] = useState(true);
-    const currentUser = localStorage.getItem("user_id");
     const [showModal, setShowModal] = useState(false);
     const [modalButtonLoading, setModalButtonLoading] = useState(false);
     const [invitedMembers, setInvitedMembers] = useState([]);
     const [memberType, setMemberType] = useState(0);
     
+
     const getInvites = useCallback(async () => {
         try {
             const response =  await axiosAPI.get("organization/get-invites/", {
@@ -60,15 +60,29 @@ function InvitePage({orgId}) {
             message.success("Invitation deleted");
         } catch(error) {
             console.error(error);
-            message.error("Invitation could not be deleted.");
+            message.error("Invitation could not be deleted");
         }
     }, [invites]);
+    
+    const resendEmail = useCallback(async (inviteId) => {
+        try {
+            await axiosAPI.get("invite/resend/", {
+                params: {
+                    invite_id: inviteId,
+                }
+            });
+            message.success("Invitation successfully resent");
+        } catch(error) {
+            console.error(error);
+            message.error("Invitation could not be resent");
+        }
+    }, []);
 
     useEffect(() => {
         if (orgId) {
             getInvites(orgId);
         }
-    }, [orgId]);
+    }, [getInvites, orgId]);
 
     const columns = [
         {
@@ -96,7 +110,7 @@ function InvitePage({orgId}) {
             title: 'Resend',
             key: 'resend',
             render: (_, record) => (
-                <Popconfirm title="Are you sure you want to delete this member?" onConfirm={() => {}} okText="Yes" cancelText="No">
+                <Popconfirm title="Are you sure you want to resend an invitation to this member?" onConfirm={() => resendEmail(record.key)} okText="Yes" cancelText="No">
                     <Button type="primary">
                         Resend
                     </Button>

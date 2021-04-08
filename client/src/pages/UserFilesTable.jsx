@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { Upload, Button, Table, message, Typography } from 'antd';
+import { Upload, Table, message, Typography } from 'antd';
 import {StatusTag} from '../components/StatusTag';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
@@ -29,11 +29,11 @@ function UserFilesTable({orgId, fileList}) {
         } catch(error) {
             console.error(error);
         }
-    }, [orgId]);
+    }, []);
 
     useEffect(() => {
         getUserFiles(orgId)
-    }, [orgId]);
+    }, [getUserFiles, orgId]);
 
     const props = {
         listType: 'text',
@@ -57,13 +57,13 @@ function UserFilesTable({orgId, fileList}) {
             title: 'Incomplete File',
             dataIndex: 'incomplete_file',
             key: 'incomplete_file',
-            render: url => !!url ? <a target="_blank" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
+            render: url => !!url ? <a target="_blank" rel="noopener noreferrer" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Your Uploaded File',
             dataIndex: 'uploaded_file',
             key: 'uploaded_file',
-            render: url => !!url ? <a target="_blank" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
+            render: url => !!url ? <a target="_blank" rel="noopener noreferrer" href={url}>{url.split('/').slice(-1)[0].split('?')[0]}</a> : null,
         },
         {
             title: 'Status',
@@ -81,13 +81,6 @@ function UserFilesTable({orgId, fileList}) {
             title: 'Upload New File',
             key: 'upload',
             render: (record) => (
-                // <Dragger {...orgProps}>
-                //         {/* <Button icon={<UploadOutlined/>}>Upload New Form</Button>   */}
-                //         <p className="ant-upload-drag-icon">
-                //         <InboxOutlined />
-                //         </p>
-                //         <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                //     </Dragger>
                 <Dragger {...props} 
                     customRequest={async (options) => {
                             const formData = new FormData();
@@ -107,7 +100,7 @@ function UserFilesTable({orgId, fileList}) {
                                 message.success('File uploaded');
                             } catch (error) {
                                 message.success('File failed to upload');
-                                console.log(error)
+                                console.error(error)
                             }
                         }
                     }
@@ -121,12 +114,12 @@ function UserFilesTable({orgId, fileList}) {
     ];
 
     function getUserFileForOrgFile(infoType, oFormId) {
-        if ((userFileList.filter(ufile => ufile.orgFormId == oFormId)).length > 0) {
-            const userFile = userFileList.filter(ufile => ufile.orgFormId == oFormId)[0]
+        if ((userFileList.filter(ufile => ufile.orgFormId === oFormId)).length > 0) {
+            const userFile = userFileList.filter(ufile => ufile.orgFormId === oFormId)[0]
             return userFile[infoType]
         }
 
-        if (infoType == "status") {
+        if (infoType === "status") {
             return "None";
         }
 
@@ -140,8 +133,6 @@ function UserFilesTable({orgId, fileList}) {
         "status": getUserFileForOrgFile("status", file.uid),
         "comment": getUserFileForOrgFile("comment", file.uid),
     }))
-    
-    console.log(data)
 
     return (
         <div>

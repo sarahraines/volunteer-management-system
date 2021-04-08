@@ -1,12 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Form, Input, Button, Typography, Row, Col, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
 import { addAlert } from '../actionCreators.js';
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import { useEffect } from 'react';
-
-const { Text } = Typography
 
 const UserNotificationsForm = ({user}) => {
     const dispatch = useDispatch();
@@ -18,7 +16,6 @@ const UserNotificationsForm = ({user}) => {
         setEmail(user?.email);
         setText(user?.text);
         setPhoneNumber(user?.phone_number);
-        console.log('phoneNumber', phoneNumber)
      }, [phoneNumber, user])
 
 

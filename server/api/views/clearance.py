@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Prefetch 
 from api.serializers import EventSerializer,  OrganizationSerializer, UserFileSerializer, OrgFileSerializer
-from api.models import Event, User, Attendee, Member, Organization, Cause, OrgFile, UserFile
+from api.models import Event, User, Attendee, Member, Organization, Cause, OrgFile, UserFile, Change
 
 class AddOrgFile(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -96,7 +96,15 @@ class SetStatusUserFile(APIView):
         user_file = UserFile.objects.filter(id=request.data['id'])[0]
         serializer = UserFileSerializer(user_file, data=data, partial=True)
         if serializer.is_valid():
+            user_file = UserFile.objects.filter(id=request.data['id'])[0]
             serializer.save()
+            new_user_file = UserFile.objects.filter(id=request.data['id'])[0]
+
+            if user_file.status != new_user_file.status:
+                Change(model='UserFile', column='status', old_value=user_file.status, new_value=new_user_file.status, object_id=user_file.id).save()
+            if user_file.comment != new_user_file.comment:
+                Change(model='UserFile', column='comment', old_value=user_file.comment, new_value=new_user_file.comment, object_id=user_file.id).save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

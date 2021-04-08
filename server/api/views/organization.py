@@ -15,9 +15,18 @@ class UpsertOrganization(APIView):
     authentication_classes = ()
 
     def post(self, request, format='json'):
-        data = request.data
+        data = request.data.dict()
+
+        if 'causes' in data:
+            data['causes'] = data['causes'].split(',')
+
+        image = data.get('image')
+        if image == 'null':
+            data['image'] = None
+
         id = data.get('id')
         no_error_status = status.HTTP_200_OK if id else status.HTTP_201_CREATED
+
 
         if id:
             org = Organization.objects.get(pk=id)
@@ -118,4 +127,19 @@ class GetMembersFromOrg(APIView):
             item['user']['name'] = item['user']['first_name'] + ' ' + item['user']['last_name']
 
         return Response(serializer.data)
+
+class GetPublicOrgs(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = ()
+    
+    def get(self, request):
+        orgs = Organization.objects.filter(is_public=True)
+        org_serializer = OrganizationSerializer(orgs, many=True)
+        orgdata = org_serializer.data
+        is_localhost = request.get_host() == "127.0.0.1:8000" or request.get_host() == "localhost:8000"
+        if is_localhost:
+            for i in range(len(orgdata)):
+                if orgdata[i]['image']:
+                    orgdata[i]['image'] = "http://" + request.get_host() + orgdata[i]['image']
+        return Response(orgdata)
         

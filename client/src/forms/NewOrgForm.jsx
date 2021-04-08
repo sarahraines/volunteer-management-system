@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Form, Input, Button, Select, message } from 'antd';
+import { Radio, Form, Input, Button, Select, message } from 'antd';
 import { useDispatch } from 'react-redux'
 import { setOrgs, setSidebarItem } from '../actionCreators.js';
+import AvatarUpload from "../components/AvatarUpload"
 import axiosAPI from "../api/axiosApi";
 import "antd/dist/antd.css";
 import "./NewOrgForm.css";
@@ -9,8 +10,10 @@ import "./NewOrgForm.css";
 const { TextArea } = Input;
 
 const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedCauses, setSelectedCauses] = useState([]);
     const [causes, setCauses] = useState([]);
+    const [imageFile, setImageFile] = useState(null);
     const dispatch = useDispatch();
 
     const getCauses = useCallback(async () => {
@@ -30,7 +33,7 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
         if (org?.id) {
             form.setFieldsValue(org);
         }
-    }, [org?.id])
+    }, [form, org])
 
     const filteredCauses = useMemo(() => {
         return causes.filter(o => !selectedCauses.includes(o));
@@ -39,18 +42,28 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
     const onFinish = useCallback(async (values) => {
         if (form) {
             setLoading(true);
+        } else {
+            setIsLoading(true);
         }
         try {
-           const newOrg = await axiosAPI.post("organization/upsert/", {
-                id: org?.id,
-                name: values.name,
-                causes: values.causes,
-                description: values.description,
-                website: values.website,
-                phone: values.phone,
-                address: values.address,
-                email: values.email
-            });
+            const formdata = new FormData();
+            if (org?.id) {
+                formdata.append('id', org.id);
+            }
+            formdata.append('name', values.name);
+            formdata.append('causes', values.causes);
+            formdata.append('description', values.description);
+            formdata.append('website', values.website);
+            formdata.append('phone', values.phone);
+            formdata.append('address', values.address);
+            formdata.append('email', values.email);
+            formdata.append('is_public', values.is_public);
+            // -1 means retain existing image
+            if (imageFile !== -1) {
+                formdata.append('image', imageFile);
+            }
+           
+            const newOrg = await axiosAPI.post("organization/upsert/", formdata);
             if (!form) {
                 await axiosAPI.post("member/create/", {
                     user_id: localStorage.getItem("user_id"),
@@ -70,6 +83,9 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
             message.success(`Organization ${form ? "updated" : "created"}`);
             if (form) {
                 closeModalWithUpdate();
+                setLoading(false);
+            } else {
+                setIsLoading(false);
             }
         }
         catch {
@@ -77,8 +93,10 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
         }
         if (form) {
             setLoading(false);
+        } else {
+            setIsLoading(false);
         }
-    }, [org?.id]);
+    }, [setIsLoading, form, imageFile, org, closeModalWithUpdate, dispatch, setLoading]);
 
     return (
         <Form
@@ -86,6 +104,9 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
             className="org-form"
             form={form}
             onFinish={onFinish}
+            initialValues={{
+                is_public: true
+            }}
         >   
             <Form.Item
                 name="name"
@@ -112,6 +133,11 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
                     </Select.Option>
                 ))}
                 </Select>
+            </Form.Item>
+            <Form.Item
+                name="image"
+            >
+                <AvatarUpload updateImageField={setImageFile} initialImageURL={org?.image} />
             </Form.Item>
             <Form.Item
                 name="website"
@@ -144,9 +170,15 @@ const NewOrgForm = ({form, org, closeModalWithUpdate, setLoading}) => {
             >
                 <TextArea row={6} style={{ width: '100%' }} placeholder="Describe your organization..." />
             </Form.Item>
+            <Form.Item name="is_public">
+                <Radio.Group>
+                    <Radio value={true}>Public</Radio>
+                    <Radio value={false}>Invitation Only</Radio>
+                </Radio.Group>
+            </Form.Item>
             {!form &&
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="org-form-button">
+                    <Button type="primary" htmlType="submit" className="org-form-button" loading={isLoading}>
                         Create
                     </Button>
                 </Form.Item>

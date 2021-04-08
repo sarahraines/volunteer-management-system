@@ -22,10 +22,10 @@ function VolunteerLeaderboard({data}) {
     };
 
     const timeFilterChange = value => {
-        if(value == "month"){
+        if(value === "month"){
             setFilterDisplay(data[0]);
         }
-        else if(value == "year"){
+        else if(value === "year"){
             setFilterDisplay(data[1]);
         }
         else {

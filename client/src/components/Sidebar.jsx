@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Menu } from 'antd';
-import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined, SelectOutlined } from '@ant-design/icons';
+import { BulbOutlined, LogoutOutlined, PlusSquareOutlined, CheckSquareOutlined, SettingOutlined, UsergroupAddOutlined, BarChartOutlined, CalendarOutlined, SearchOutlined, OrderedListOutlined, NotificationOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axiosAPI from '../api/axiosApi';
 import { logout } from '../api/authenticationApi';
@@ -49,6 +49,9 @@ const Sidebar = ({member}) =>  {
                     <Item className="action-submenu-item" key="create-event" icon={<PlusSquareOutlined />}>
                         Create event
                     </Item>
+                    <Item className="action-submenu-item" key="browse-orgs" icon={<SearchOutlined />}>
+                        Browse organizations
+                    </Item>
                     <Item className="action-submenu-item" key="set-goals" icon={<CheckSquareOutlined />}>
                         Set goals
                     </Item>
@@ -58,8 +61,8 @@ const Sidebar = ({member}) =>  {
                     <Item className="action-submenu-item" key="view-analytics" icon={<BarChartOutlined />}>
                         View my analytics
                     </Item>
-                    <Item className="action-submenu-item" key="give-feedback" icon={<BarChartOutlined />}>
-                        Give Feedback
+                    <Item className="action-submenu-item" key="give-feedback" icon={<OrderedListOutlined  />}>
+                        Give feedback
                     </Item>
                 </SubMenu>
                 <Divider/>
@@ -79,6 +82,9 @@ const Sidebar = ({member}) =>  {
                 onSelect={onSelect}
             >
                 <Divider/>
+                {/* <Item key="notifications" icon={<NotificationOutlined />} onClick={setIsModalShowing}>
+                    Notifications
+                </Item> */}
                 <Item key="settings" icon={<SettingOutlined />}>
                     Manage user settings
                 </Item>

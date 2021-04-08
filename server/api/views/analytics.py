@@ -306,6 +306,7 @@ class GetVolunteerGoals(APIView):
         goals = UserGoals.objects.filter(user__id=user).values('id', 'hours', 'begindate', 'enddate')
 
         for goal in goals:
+            goal['key'] = goal['id']
             attendees = Attendee.objects.filter(username__id=user, events__begindate__gte=goal['begindate'], events__enddate__lte=timezone.now()).values(
                 'username__id').annotate(completed = Sum(duration))
 

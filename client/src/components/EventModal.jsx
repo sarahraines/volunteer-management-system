@@ -1,10 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Card, Button, Typography, PageHeader, Tag, Row, Image, Descriptions} from 'antd';
-import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import axiosAPI from "../api/axiosApi";
+import React from 'react';
+import {Typography, PageHeader, Tag, Row, Image} from 'antd';
+import EventLogo from '../assets/undraw_hang_out.svg';
 import './EventCard.css';
 import Modal from 'antd/lib/modal/Modal';
-import JoinButton from './JoinButton';
 import "./EventModal.css";
 
 const { Paragraph } = Typography;
@@ -61,7 +59,7 @@ function EventModal ({event, causes, onClose, isModalVisible}){
                 tags={tags}
             >
                 <Content
-                    extraContent={<Image preview={false} alt="img" src={event?.image} height={300} width={300}/>}
+                    extraContent={<Image preview={false} alt="img" src={event?.image ?? EventLogo} height={300} width={300}/>}
                 >
                     {content}
                 </Content>

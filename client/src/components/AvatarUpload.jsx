@@ -15,7 +15,7 @@ const AvatarUpload = ({updateImageField, initialImageURL}) => {
       }]);
       updateImageField(-1);
     }
-  }, []);
+  }, [initialImageURL, updateImageField]);
 
   const onChange = async({ fileList: newFileList }) => {
     if (newFileList.length > 0) {

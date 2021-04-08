@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import { Table, Typography, Button, Popconfirm, Tooltip, message, Select } from 'antd';
+import { Table, Typography } from 'antd';
 import axiosAPI from '../api/axiosApi';
 import './NewOrg.css';
 
@@ -25,7 +25,7 @@ function Attendees({orgId}) {
 
     useEffect(() => {
         getAttendees();
-    }, []);
+    }, [getAttendees]);
 
     const columns = [
         {
